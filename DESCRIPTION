@@ -4,8 +4,12 @@ Title: Inference for Regression Trees
 Version: 0.1.0
 Author: Anna Neufeld
 Maintainer: Anna Neufeld <aneufeld@uw.edu>
-Description: Uses selective inference to obtain valid p-values for splits
-and confidence intervals for means in nodes of regression trees built with CART.  
+Description: Uses selective inference to obtain valid p-values for splits and confidence intervals for means in nodes of regression trees built with CART.  
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Imports:
+    MASS,
+    intervals,
+    partykit,
+    rpart

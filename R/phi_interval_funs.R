@@ -1,13 +1,19 @@
 #' getPhiInterval
+#' Should work for CIs or Hyp Tests.
 #'
-#' I think I want to change so that it takes a general nu vector. Instead of locTest
 #' Also make this play nice with other people's real data
 #'
 #' Add warnings to ensure that their base_tree was build properly!!!
-getInterval <- function(base_tree, X, y, locTest, splits, dat) {
+#' Would be a lot nicer if people only ha to pass dat. Or, better yet, only base_tree,
+#' because they will use model=TRUE
+getInterval <- function(base_tree, nu, splits) {
+
+  ### rpart orderes things nicely YAY
+  dat <- base_tree$model
+  y <- dat[,1]
+  X <- dat[,-1]
   n <- nrow(X)
   p <- NCOL(X)
-  nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
 
   Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
   C <- (Pi_perp%*%y)%*%t((Pi_perp%*%y))
@@ -95,24 +101,10 @@ getInterval <- function(base_tree, X, y, locTest, splits, dat) {
 
 
 
-### Right now I think I am assuming that the two nodes in locTEst are right next to eachother
-getSplits<- function(tree, locTest)
-{
-  try1 <- try({
-    object <- partykit::as.party(tree)
-    rules <- partykit:::.list.rules.party(object)
-    relevantRules <- rules[[as.character(locTest[1])]]
-    relevantRules <- strsplit(relevantRules, '&')[[1]]
-    relevantRules <- sapply(relevantRules, trimws)
-    relevantRules <- sapply(relevantRules, function(u) paste0("dat$", u))
-  })
-  if (class(try1)=="try-error") {
-    return(errorCondition("Could not Parse Rule Set"))
-  } else {
-    return(relevantRules)
-  }
-}
-
+### Get all the ancestor splits of a certain node.
+### You need this to be able to call phibounds
+### TREE MUST HAVE BEEN BUILT WITH MODEL=TRUE
+### So we can access the data.
 getAncestors <- function(tree, node)
 {
   try1 <- try({
