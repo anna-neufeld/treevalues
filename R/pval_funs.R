@@ -57,8 +57,10 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #' @param E2 denominator interval
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
 
-  E1 <- mySortE(E1)
-  E2 <- mySortE(E2)
+  #E1 <- mySortE(E1)
+  #E2 <- mySortE(E2)
+  E1 <- SortE(E1)
+  E2 <- SortE(E2)
 
   #### If scale not provided, try a bunch until you find something OK.
   if (is.null(scale)) {
@@ -128,23 +130,23 @@ myGetNormProb <- function(lo, up,sd) {
 
 
 
-mySortE <- function(E) {
-  E.mySortEd <- lapply(1:nrow(E), function(i){
-    temp <- as.numeric(E[i, ])
-    if (temp[1] <= 0 & temp[2] <= 0) {
-      return(sort(-temp))
-    }
-    if (temp[1] >= 0 & temp[2] >= 0) {
-      return(sort(temp))
-    }
+#mySortE <- function(E) {
+#  E.mySortEd <- lapply(1:nrow(E), function(i){
+#    temp <- as.numeric(E[i, ])
+#    if (temp[1] <= 0 & temp[2] <= 0) {
+#      return(sort(-temp))
+#    }
+#    if (temp[1] >= 0 & temp[2] >= 0) {
+#      return(sort(temp))
+#    }
     # we know temp[1] < 0, temp[2] > 0 OR temp[1] > 0, temp[2] < 0
-    temp <- abs(temp)
-    return(rbind(c(0, temp[1]), c(0, temp[2])))
-  })
-  E.mySortEd <- do.call(rbind, E.mySortEd)
+#    temp <- abs(temp)
+#    return(rbind(c(0, temp[1]), c(0, temp[2])))
+#  })
+#  E.mySortEd <- do.call(rbind, E.mySortEd)
   # in order to use the approximation, we translate Inf to a large number
-  return((E.mySortEd))
-}
+ # return((E.mySortEd))
+#}
 
 myFiniteE <- function(E) {
   ind.inf <- which(E == Inf)

@@ -24,7 +24,7 @@ getSplitPval <- function(tree, X,y,locTest, sigma_y) {
 
 #' Full process including building tree and CI/pval for every split
 #' MAKE SURE YOU BUILD YOUR TREE WITH MODEL=TRUE
-fullTreeInference <- function(tree) {
+fullTreeInference <- function(tree, sigma_y) {
 
     ### Add a warning to make sure they build their tree right!!!
 
@@ -60,7 +60,6 @@ fullTreeInference <- function(tree) {
     y1 <- y[temp_tree$where==locTest[1]]
     y2 <- y[temp_tree$where==locTest[2]]
     nu <- (temp_tree$where==locTest[1])/sum((temp_tree$where==locTest[1])) - (temp_tree$where==locTest[2])/sum(temp_tree$where==locTest[2])
-    true_signal <- t(nu)%*%mu_y
     sample_signal <- t(nu)%*%y
     phi_bounds <- getInterval(temp_tree, nu, splits[1])
     bounds2 <- Intervals(as.matrix(phi_bounds)/(sigma_y*sqrt(sum(nu^2))))
@@ -113,7 +112,6 @@ fullTreeInference <- function(tree) {
           }
 
           nu <- (temp_tree$where==locTest[1])/sum((temp_tree$where==locTest[1])) - (temp_tree$where==locTest[2])/sum(temp_tree$where==locTest[2])
-          true_signal <- t(nu)%*%mu_y
           sample_signal <- t(nu)%*%y
           phi_bounds <- getInterval(temp_tree, nu,splits[1:(i+1)])
           bounds2 <- Intervals(as.matrix(phi_bounds)/(sigma_y*sqrt(sum(nu^2))))

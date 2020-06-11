@@ -83,6 +83,6 @@ test_that("Full Inference", {
                                                                              minsplit=2, minbucket=1,
                                                                              cp=-1, maxcompete=0,
                                                                              maxsurrogate=0))
-  fullTreeInference(base_tree)
+  fullTreeInference(base_tree, sigma_y)
 }
 )
