@@ -1,1 +1,5 @@
 exportPattern("^[[:alpha:]]+")
+importFrom(MASS, mvrnorm)
+import(rpart)
+import(partykit)
+import(intervals)
