@@ -1,11 +1,11 @@
 Package: treevalues
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Inference for Regression Trees
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Anna Neufeld
+Maintainer: Anna Neufeld <aneufeld@uw.edu>
+Description: Uses selective inference to obtain valid p-values for splits
+and confidence intervals for means in nodes of regression trees built with CART.  
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
