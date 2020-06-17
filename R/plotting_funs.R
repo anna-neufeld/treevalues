@@ -1,5 +1,5 @@
 treeval.plot <- function(tree, inferenceMatrix) {
-  tree$frame$yval <- round(tree$frame$yval, 6)
+  #tree$frame$yval <- round(tree$frame$yval, 6)
   inferenceMatrix$pval <- as.numeric(inferenceMatrix$pval)
 
   tree$splits <- cbind(tree$splits, inferenceMatrix$pval)
@@ -17,16 +17,16 @@ treeval.plot <- function(tree, inferenceMatrix) {
 
   for (row in 2:NROW(tree$frame)) {
     y <- tree$frame[row,]$yval
-    child1 <- which(inferenceMatrix$branch1mean==y)
-    child2 <- which(inferenceMatrix$branch2mean==y)
+    child1 <- which(abs(inferenceMatrix$branch1mean-y) < 1e-6)
+    child2 <- which(abs(inferenceMatrix$branch2mean-y) < 1e-6)
 
     if (length(child1) > 0) {
-      tree$frame[row,]$CI <- paste("(", inferenceMatrix[child1,]$branch1lower, ", ", inferenceMatrix[child1,]$branch1upper, ")",
+      tree$frame[row,]$CI <- paste("(", round(inferenceMatrix[child1,]$branch1lower,4), ", ", round(inferenceMatrix[child1,]$branch1upper,4), ")",
                                    sep="")
       tree$frame[row,]$pval <- inferenceMatrix[child1,]$pval
     }
     if (length(child2) > 0) {
-      tree$frame[row,]$CI <- paste("(", inferenceMatrix[child2,]$branch2lower, ", ", inferenceMatrix[child2,]$branch2upper, ")",
+      tree$frame[row,]$CI <- paste("(", round(inferenceMatrix[child2,]$branch2lower,4), ", ", round(inferenceMatrix[child2,]$branch2upper,4), ")",
                                    sep="")
       tree$frame[row,]$pval <- inferenceMatrix[child2,]$pval
     }
