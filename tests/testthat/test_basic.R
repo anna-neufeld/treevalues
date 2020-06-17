@@ -83,6 +83,12 @@ test_that("Full Inference", {
                                                                              minsplit=2, minbucket=1,
                                                                              cp=-1, maxcompete=0,
                                                                              maxsurrogate=0))
-  fullTreeInference(base_tree, sigma_y)
+  mat <- fullTreeInference(base_tree, sigma_y)
+
+  expect_equal(sum(mat$lower < mat$effectSize &  mat$effectSize < mat$upper), NROW(mat))
+  expect_equal(sum(mat$branch1lower < mat$branch1mean &  mat$branch1mean < mat$branch1upper), NROW(mat))
+  expect_equal(sum(mat$branch2lower < mat$branch2mean &  mat$branch2mean < mat$branch2upper), NROW(mat))
+
+  treeval.plot(base_tree, mat)
 }
 )

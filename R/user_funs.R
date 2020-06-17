@@ -137,6 +137,7 @@ fullTreeInference <- function(tree, sigma_y) {
         }
       }
     }
+    splitResults[,2:11] <- apply(splitResults[,2:11],2,as.numeric)
     return(splitResults)
   }
 
