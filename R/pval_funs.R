@@ -58,9 +58,6 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #' @param E1 numerator interval
 #' @param E2 denominator interval
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
-
-  #E1 <- mysortE(E1)
-  #E2 <- mysortE(E2)
   E1 <- sortE(E1)
   E2 <- sortE(E2)
 

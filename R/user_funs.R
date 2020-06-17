@@ -133,9 +133,9 @@ fullTreeInference <- function(tree, sigma_y) {
           bounds2 <- Intervals(as.matrix(phiBounds2)/(sigma_y*sqrt(sum(nu2^2))))
           CI2 <- computeCI(nu2,y,sigma_y, bounds2, 0.05)
 
-          if (mean(y1) < CI1[1] | mean(y1) > CI1[2]) {
-            print(splitText1)
-          }
+          #if (mean(y1) < CI1[1] | mean(y1) > CI1[2]) {
+          #  print(splitText1)
+          #}
           splitResults[k,] <- c(splitText1,p_split, mean(y1)-mean(y2), CI_split, mean(y1), CI1 , mean(y2), CI2)
           k <- k+1
         }
