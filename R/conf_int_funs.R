@@ -10,7 +10,6 @@
 #'     \eqn{X} to the set \eqn{E} is equivalent to conditioning on \eqn{{X \in E}}. So this function
 #'     returns \eqn{P(X \ge q | X \in E)}.
 #'
-#' @keywords internal
 #'
 #' @param q the quantile.
 #' @param mean the mean parameter
@@ -92,7 +91,6 @@ TNSurv <- function(q, mean, sd, E, approx = FALSE) {
 #' For \eqn{Z ~ N(0, 1)}, we have the approximation
 #'     \eqn{P(Z \ge z) \approx }\code{magicfun(z)*exp(-z^2/2)}.
 #'
-#' @keywords internal
 #'
 #' @param z, the number where the function is evaluated.
 #'
@@ -115,7 +113,6 @@ magicfun = function(z){
 #'    into a union of intervals with positive and \emph{finite} endpoints, while ensuring
 #'    the probability of a \eqn{N(0, 1)} falling into it numerically the same.
 #'
-#' @keywords internal
 #'
 #' @param E an "Intervals" object or a matrix where rows represents
 #'     a union of intervals with \emph{positive} but possibly infinite endpoints.
@@ -137,7 +134,6 @@ finiteE <- function(E) {
 #'     into a union of intervals with \emph{positive} endpoints, while ensuring
 #'    the probability of a \eqn{N(0, 1)} falling into it numerically the same.
 #'
-#' @keywords internal
 #'
 #' @param E an "Intervals" object or a matrix where rows represents
 #'     a union of intervals with \emph{positive} but possibly infinite endpoints.
