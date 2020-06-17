@@ -1,5 +1,7 @@
 #' Get CI for a terminal node
 #'
+#' @export
+#'
 #' @param tree an rpart object
 #' @param X the X data; as a matrix. names must match those
 #' @param y the y data
@@ -11,6 +13,8 @@ getNodeInterval <- function(tree, X,y,node, sigma_y) {
 
 
 #' Get a pvalue for a difference in means between two terminal nodes
+#'
+#' @export
 #'
 #' @param tree an rpart object
 #' @param X the X data; as a matrix. names must match those

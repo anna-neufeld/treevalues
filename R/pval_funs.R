@@ -53,6 +53,8 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #'
 #' Slight adaptation of the code from Outference
 #'
+#' @export
+#'
 #' @param E1 numerator interval
 #' @param E2 denominator interval
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
