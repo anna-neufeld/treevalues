@@ -55,7 +55,12 @@ splits <- getAncestors(base_tree, 4)
   ### In the first layer, nothing gets zeroed out
   nulled <- rep(1, n)
   C_prev <- rep(1,n)
-  H_prev <- diag(1,n) - C_prev%*%solve(t(C_prev)%*%C_prev)%*%t(C_prev)
+  
+  ### This has such a simple form. I should write it in this way. 
+  H_prev <- matrix(-1/n, nrow=n, ncol=n)
+  diag(H_prev) <- 1-1/n
+  #H_prev <- diag(1,n) - C_prev%*%solve(t(C_prev)%*%C_prev)%*%t(C_prev)
+  
   full_interval = Intervals(c(-Inf, Inf))
   
   for (i in 1:length(splits)) {
@@ -99,6 +104,12 @@ splits <- getAncestors(base_tree, 4)
     #### If this inversion is slow could use the rank 1 update!!!
     #### Update these things for next level.
     C_prev <- cbind(C_prev, cy)
+    
+    ### OH FIX THIS. DUH. LOW HANGING FRUIT. 
+    Hc <- H_prev%*%cy
+    #H_prev <- H_prev - ()
+      
+      
     H_prev <- diag(1,n) - C_prev%*%solve(t(C_prev)%*%C_prev)%*%t(C_prev)
     
     ### Shoot. If we want to set "nulled" in this way- we really need to be only working with a single brach of

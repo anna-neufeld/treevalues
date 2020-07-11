@@ -118,9 +118,6 @@ getInterval_FAST <- function(base_tree, nu, splits) {
   p <- NCOL(X)
 
   Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
-  C <- (Pi_perp%*%y)%*%t((Pi_perp%*%y))
-  B <- (Pi_perp%*%y%*%t(nu) + nu%*%t(y)%*%Pi_perp)/sum(nu^2)
-  A <- (nu%*%t(nu))/sum(nu^2)^2
 
   #### Overall Indicator Vars
   cs <- matrix(NA, nrow=n*p, ncol=n)
@@ -156,6 +153,9 @@ getInterval_FAST <- function(base_tree, nu, splits) {
     Hminus <- Hy-Hyproj
 
     cy<- eval(parse(text = splits[i]))*nulled
+
+    Hcy <- cy - (sapply(1:max(regions), function(u) mean(cy[regions==u])))[regions]
+
 
     c_now <- t(apply(cs, 1, function(u) u*nulled))
     c_now <- c_now[rowSums(c_now)!=0,]
@@ -218,7 +218,10 @@ getInterval_FAST <- function(base_tree, nu, splits) {
     #### If this inversion is slow could use the rank 1 update!!!
     #### Update these things for next level.
     C_prev <- cbind(C_prev, cy)
-    H_prev <- diag(1,n) - C_prev%*%solve(t(C_prev)%*%C_prev)%*%t(C_prev)
+
+
+    H_prev <- H_prev - Hcy%*%t(Hcy)/sum(Hcy[cy==1])
+
     leafSize <- sum(cy)
     ### Shoot. If we want to set "nulled" in this way- we really need to be only working with a single brach of
     ### tree. Cannot condition on extra branches.
