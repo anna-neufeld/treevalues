@@ -6,7 +6,7 @@
 #' Add warnings to ensure that their base_tree was build properly!!!
 #' Would be a lot nicer if people only ha to pass dat. Or, better yet, only base_tree,
 #' because they will use model=TRUE
-getInterval <- function(base_tree, nu, splits) {
+getInterval_OLD <- function(base_tree, nu, splits) {
 
   ### rpart orderes things nicely YAY
   dat <- base_tree$model
@@ -108,7 +108,7 @@ getInterval <- function(base_tree, nu, splits) {
 #' Add warnings to ensure that their base_tree was build properly!!!
 #' Would be a lot nicer if people only ha to pass dat. Or, better yet, only base_tree,
 #' because they will use model=TRUE
-getInterval_FAST <- function(base_tree, nu, splits) {
+getInterval <- function(base_tree, nu, splits) {
 
   ### rpart orderes things nicely YAY
   dat <- base_tree$model
