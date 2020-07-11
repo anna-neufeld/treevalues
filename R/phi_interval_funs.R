@@ -117,9 +117,10 @@ getInterval <- function(base_tree, nu, splits) {
   n <- nrow(X)
   p <- NCOL(X)
 
-  Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
+  #Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
 
   #### Overall Indicator Vars
+  ### NOTE TO SELF. This is not instantaneous. Better way??
   cs <- matrix(NA, nrow=n*p, ncol=n)
   for (j in 1:p) {
     cs[((j-1)*n+1):(j*n),] <- sapply(X[,j], function(u) (u <= X[,j]))
@@ -157,6 +158,7 @@ getInterval <- function(base_tree, nu, splits) {
     Hcy <- cy - (sapply(1:max(regions), function(u) mean(cy[regions==u])))[regions]
 
 
+    ### THIS IS STILL SLOW. What a dumb thing to spend time on, right??
     c_now <- t(apply(cs, 1, function(u) u*nulled))
     c_now <- c_now[rowSums(c_now)!=0,]
     c_now <- c_now[rowSums(c_now)!=sum(nulled),]
@@ -175,10 +177,12 @@ getInterval <- function(base_tree, nu, splits) {
 
     ### Faster version
     other_As <- apply(c_now, 1, function(u) sum(Hnu[u==1])^2/norm_nu^2)
-    other_Bs <- apply(c_now, 1, function(u) 2*(sum(Hy[u==1])%*%t(u)%*%Hnu)/
-                        norm_nu
-         - 2*((t(u)%*%Hnu)^2%*%nut_y)/
+
+    other_Bs <- apply(c_now, 1, function(u) 2*sum(Hy[u==1])*sum(Hnu[u==1])/
+                       norm_nu
+         - 2*(sum(Hnu[u==1])^2%*%nut_y)/
                         norm_nu^2)
+
     other_Cs <- apply(c_now, 1, function(u) sum(Hminus[u==1])^2)
 
     #bvec <- apply(c_now, 1, function(u) colSums(u*(hBh%*%u)))/denoms - partialB
