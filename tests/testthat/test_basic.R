@@ -66,6 +66,7 @@ test_that("Basic Hypothesis Tests; Null Model", {
 
 
 test_that("Full Inference", {
+  set.seed(1)
   n <- 200
   p <- 10
   sigma_y <- 5

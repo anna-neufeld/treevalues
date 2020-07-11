@@ -1,5 +1,10 @@
+#' A plotting function.
+#'
+#' @export
+#'
+#' @param tree An rpart tree
+#' @param inferenceMatrix the corrsponding inference matrix.
 treeval.plot <- function(tree, inferenceMatrix) {
-  #tree$frame$yval <- round(tree$frame$yval, 6)
   inferenceMatrix$pval <- as.numeric(inferenceMatrix$pval)
 
   tree$splits <- cbind(tree$splits, inferenceMatrix$pval)
@@ -14,6 +19,13 @@ treeval.plot <- function(tree, inferenceMatrix) {
                             round(fullMean + 1.96*sigma_y/sqrt(fulln),4), ")",
                             sep="")
 
+  indices <- which(inferenceMatrix$pval < 1e-6)
+  if (length(indices)>0) {
+  inferenceMatrix[-indices,]$pval <- paste("=", round(inferenceMatrix[-indices,]$pval, 6))
+  inferenceMatrix[indices,]$pval <- "<1e-6"
+  } else {
+    inferenceMatrix$pval <- paste("=", round(inferenceMatrix$pval, 6))
+  }
 
   for (row in 2:NROW(tree$frame)) {
     y <- tree$frame[row,]$yval

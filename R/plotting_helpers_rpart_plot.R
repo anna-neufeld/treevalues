@@ -1244,7 +1244,7 @@ paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
     newline <- "\n\n"
 
     labs  <- paste0(split.prefix, left.names[parent], lsplit[parent], split.suffix,
-                    newline, "pval=", round(frame$pval, 6))
+                    newline, "pval", frame$pval)
 
     labs[is.right] <- paste0(right.split.prefix,
                              right.names[parent],
