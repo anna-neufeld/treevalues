@@ -28,7 +28,12 @@ splits <- getAncestors(base_tree, locTest[1])
 nu <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1]) -  (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
 
 
-print(all.equal(getInterval(base_tree, nu, splits),getInterval_OLD(base_tree, nu, splits)))
-print(system.time(getInterval_OLD(base_tree, nu, splits)))
+#getInterval(base_tree, nu, splits)
+#getInterval_FASTER(base_tree, nu, splits)
+#getInterval_EXPERIMENT(base_tree, nu, splits)
+
+
+print(all.equal(getInterval(base_tree, nu, splits),getInterval_EXPERIMENT(base_tree, nu, splits)))
+print(system.time(getInterval_EXPERIMENT(base_tree, nu, splits)))
 print(system.time(getInterval(base_tree, nu, splits)))
 
