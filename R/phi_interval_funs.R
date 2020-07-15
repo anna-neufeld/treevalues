@@ -1,7 +1,7 @@
 getInterval <- function(base_tree, nu, splits) {
-
   ### rpart orderes things nicely YAY
   dat <- base_tree$model
+  ### Add an error condition reminding people to call rpart with model=TRUE
   y <- dat[,1]
   X <- dat[,-1]
   n <- nrow(X)
@@ -10,29 +10,48 @@ getInterval <- function(base_tree, nu, splits) {
 
   ### In the first layer, nothing gets zeroed out
   nulled <- rep(TRUE, n)
-  C_prev <- rep(1,n)
-  H_prev <- diag(1,n,n) - matrix(1/n,n,n)
+  #H_prev <- diag(1,n,n) - matrix(1/n,n,n)
   full_interval = Intervals(c(-Inf, Inf))
   leafSize=n
 
   ### O(n^2*p) work up front to get the inequalities??
   ### Because for each of n*p possible splits, it is O(n) work to fill up the vector.
-  ### So far, now way to avoid this work.
-  ### This takes actual time
+  ### Consider optimizing this
+  ### If you made the C vecs as you went using an ordered version of the Xs, this might be faster
+  #OH yeah DUH. If you sort the Xs first, the cs have a predictable form
+  # This work is likely avoidable
   cs<- array(NA, c(p,n,n))
   for (j in 1:p) {
     cs[j,,]  <-  sapply(X[,j], function(u) (u <= X[,j]))
   }
 
-  #norm_nu <- sum(nu^2)
-  norm_nu <-  norm(nu, type="2")^2
-  ## This is also o(n^2) up front.
-  ## nu has at most 3 distinct entries- so we probably should be able to get this down to O(n)
+  # O(n)
+  norm_nu <- sum(nu^2)
+
+  # O(n)
   nut_y <- sum(nu*y)
 
   ### We did O(n^2) work but there are only 4 total entries.
-  nunu <- nu%*%t(nu)/norm_nu
-  y_proj <- nunu%*%y
+  ### And its pretty sparse.
+  # nunu <- matrix(0,n,n)
+  # nu_entries <- sort(unique(nu))
+  # if (length(nu_entries) == 3) {
+  #  nunu[nu==nu_entries[1], nu==nu_entries[1]] <- nu_entries[1]^2
+  #  nunu[nu==nu_entries[3], nu==nu_entries[3]] <- nu_entries[3]^2
+  #  nunu[nu==nu_entries[1], nu==nu_entries[3]] <- nu_entries[1]*nu_entries[3]
+  #  nunu[nu==nu_entries[3], nu==nu_entries[1]] <- nu_entries[1]*nu_entries[3]
+  # } else {
+  #  nunu[nu==nu_entries[2], nu==nu_entries[2]] <- nu_entries[2]^2
+  # }
+  # nunu <- nunu/norm_nu
+
+  #nunu <- nu%*%t(nu)/norm_nu
+  y_proj <-nu*(nut_y/norm_nu)
+
+  #yproj2 <-
+
+
+  #sum(nunu==nunu2)/n
 
   regions <- rep(1,n)
 
@@ -70,7 +89,7 @@ getInterval <- function(base_tree, nu, splits) {
 
     indices <- which(cy==1)
     partialA <- (sum(Hnu[indices])^2/norm_nu^2)/denom
-    partialB <- as.numeric((2*sum(Hy[indices])*(t(nu)%*%H_prev%*%cy)/
+    partialB <- as.numeric((2*sum(Hy[indices])*(t(nu)%*%Hcy)/
                               norm_nu - 2*(t(cy)%*%Hnu)^2%*%nut_y/
                               norm_nu^2)/denom)
     partialC <- (sum(Hminus[indices]))^2/denom
@@ -89,7 +108,7 @@ getInterval <- function(base_tree, nu, splits) {
 
 
 
-
+      ### These should be O(n)
       unus <- cumsum(Hnu2[sorted])[1:(sum(nulled)-1)]
       uys <- cumsum(Hy2[sorted])[1:(sum(nulled)-1)]
       umin <- cumsum(Hminus2[sorted])[1:(sum(nulled)-1)]
@@ -116,7 +135,7 @@ getInterval <- function(base_tree, nu, splits) {
     #### If this inversion is slow could use the rank 1 update!!!
     #### Update these things for next level.
     regions <- regions+cy
-    H_prev <- H_prev - Hcy%*%t(Hcy)/sum(Hcy[cy==1])
+    #H_prev <- H_prev - Hcy%*%t(Hcy)/sum(Hcy[cy==1])
     leafSize <- sum(cy)
     nulled <- cy==1 ## requires that we are testing SIBLING nodes.
 

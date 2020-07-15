@@ -32,8 +32,10 @@ if(locTest[2] != locTest[1]+1) {
 }
 splits <- getAncestors(base_tree, locTest[1])
 nu <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1]) -  (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
+nu2 <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1])
 
-if (all.equal(getInterval(base_tree, nu, splits),getInterval_EXPERIMENT(base_tree, nu, splits))==TRUE) {
+all.equal(getInterval(base_tree, nu, splits),getInterval_EXPERIMENT(base_tree, nu, splits))
+all.equal(getInterval(base_tree, nu2, splits),getInterval_EXPERIMENT(base_tree, nu2, splits))
 print(i)
   } else {
     print(getInterval(base_tree, nu, splits))

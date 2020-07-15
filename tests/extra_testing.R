@@ -1,6 +1,6 @@
 set.seed(5000)
-n <- 2000
-p <- 20
+n <- 5000
+p <- 10
 depth <- 3
 sigma_y=5
 X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))
@@ -32,6 +32,8 @@ if(locTest[2] != locTest[1]+1) {
 splits <- getAncestors(base_tree, locTest[1])
 nu <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1]) -  (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
 
-getInterval_EXPERIMENT(base_tree, nu, splits)
-print(system.time(getInterval_EXPERIMENT(base_tree, nu, splits)))
+print(system.time(getInterval(base_tree, nu, splits)))
+print(getInterval(base_tree, nu, splits))
+print(system.time(getInterval_MEDIUM_OLD(base_tree, nu, splits)))
+print(getInterval_MEDIUM_OLD(base_tree, nu, splits))
 
