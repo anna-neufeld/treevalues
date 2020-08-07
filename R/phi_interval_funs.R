@@ -31,20 +31,6 @@ getInterval <- function(base_tree, nu, splits) {
   # O(n)
   nut_y <- sum(nu*y)
 
-  ### We did O(n^2) work but there are only 4 total entries.
-  ### And its pretty sparse.
-  # nunu <- matrix(0,n,n)
-  # nu_entries <- sort(unique(nu))
-  # if (length(nu_entries) == 3) {
-  #  nunu[nu==nu_entries[1], nu==nu_entries[1]] <- nu_entries[1]^2
-  #  nunu[nu==nu_entries[3], nu==nu_entries[3]] <- nu_entries[3]^2
-  #  nunu[nu==nu_entries[1], nu==nu_entries[3]] <- nu_entries[1]*nu_entries[3]
-  #  nunu[nu==nu_entries[3], nu==nu_entries[1]] <- nu_entries[1]*nu_entries[3]
-  # } else {
-  #  nunu[nu==nu_entries[2], nu==nu_entries[2]] <- nu_entries[2]^2
-  # }
-  # nunu <- nunu/norm_nu
-
   #nunu <- nu%*%t(nu)/norm_nu
   y_proj <-nu*(nut_y/norm_nu)
 
@@ -79,6 +65,14 @@ getInterval <- function(base_tree, nu, splits) {
     Hminus2 <- Hminus[nulled]
 
     cy<- eval(parse(text = splits[l]))*nulled
+
+    ### This is an interesting choice.
+    ### If the region could have been formed with only one split instead of two,
+    ### say that no interval is possible??
+    if (sum(cy)==sum(leafSize)) {
+      coeffs_full[cur:(cur+1),] <- c(1,1,1)
+      break
+    }
 
     Hcy <- cy - (sapply(1:max(regions), function(u) mean(cy[regions==u])))[regions]
 
@@ -158,11 +152,11 @@ getInterval <- function(base_tree, nu, splits) {
   ### OUTSIDE INTERVALS
   ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))
   intersection2 <- interval_complement(interval_union(ints_outside))
-  if(length(intersection1)==0) {
-    res1 <- intersection2
-  } else {
-    res1 <- suppressWarnings(interval_intersection(intersection1, intersection2))
-  }
+  #if(length(intersection1)==0) {
+    #res1 <- intersection2
+  #} else {
+  res1 <- suppressWarnings(interval_intersection(intersection1, intersection2))
+  #}
 
   return(res1)
 }
@@ -359,16 +353,22 @@ getAncestors_ALT <- function(tree, node, name)
 #'
 #' @param vec stores a,b,c coeffs of a quadratic equation
 getBounds <- function(vec) {
+
+  #vec[abs(vec) < 1e-15] <- 0
   a <- vec[1]
   b <- vec[2]
   c <- vec[3]
-  tol <- 10*10^(-10)
+  tol <- 1*10^(-10)
   if (abs(a) < tol & abs(b) < tol & abs(c) < tol) {
     return(c(-Inf,Inf, 1))
   }
 
   ## If we just have a straight line
   if (abs(a) < tol) {
+    if (abs(b) < tol) {
+      if (c < 0) {return(c(-Inf,Inf, 1))
+        } else {return(c(-Inf, Inf, 0))}
+    }
     root = -c/b
     if (b>0) {
       return(c(-Inf,root,1))
@@ -381,7 +381,7 @@ getBounds <- function(vec) {
   if (det < 0) {
     if (a > 0) {
       #return(simpleError("STOP! EMPTY INTERVAL"))
-      return(c(0,0,0)) ## TO AVOID ERRORS FOR NOW PLZ CHANGE LATER
+      return(c(-Inf,Inf,0)) ## TO AVOID ERRORS FOR NOW PLZ CHANGE LATER
     }
     return(c(-Inf, Inf, 1))
   }

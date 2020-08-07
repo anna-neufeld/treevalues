@@ -8,6 +8,9 @@
 #' @param y the response data y
 #' @param sigma the (assumed known) noise standard deviation
 correctPVal <- function(phiInterval, nu, y, sigma) {
+  ### DID I AT SOME POINT REMOVE A CALL TO SORTE?????
+
+
   delta1 <- phiInterval
   delta2 <- interval_complement(Intervals(c(-abs(t(nu)%*%y), abs(t(nu)%*%y))))
   numerator_region <- suppressWarnings(interval_intersection(delta1, delta2))
@@ -58,8 +61,8 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #' @param E1 numerator interval
 #' @param E2 denominator interval
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
-  E1 <- sortE(E1)
-  E2 <- sortE(E2)
+  E1 <- mySortE(E1)
+  E2 <- mySortE(E2)
 
   #### If scale not provided, try a bunch until you find something OK.
   if (is.null(scale)) {

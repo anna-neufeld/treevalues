@@ -4,7 +4,7 @@
 #'
 #' @param tree An rpart tree
 #' @param inferenceMatrix the corrsponding inference matrix.
-treeval.plot <- function(tree, inferenceMatrix) {
+treeval.plot <- function(tree, inferenceMatrix, sigma_y) {
   inferenceMatrix$pval <- as.numeric(inferenceMatrix$pval)
 
   tree$splits <- cbind(tree$splits, inferenceMatrix$pval)

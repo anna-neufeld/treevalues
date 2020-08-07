@@ -4,8 +4,6 @@
 #' Also make this play nice with other people's real data
 #'
 #' Add warnings to ensure that their base_tree was build properly!!!
-#' Would be a lot nicer if people only ha to pass dat. Or, better yet, only base_tree,
-#' because they will use model=TRUE
 getInterval_OLD <- function(base_tree, nu, splits) {
 
   ### rpart orderes things nicely YAY
@@ -78,11 +76,11 @@ getInterval_OLD <- function(base_tree, nu, splits) {
     ### OUTSIDE INTERVALS
     ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))
     intersection2 <- interval_complement(interval_union(ints_outside))
-    if(length(intersection1)==0) {
-      res1 <- intersection2
-    } else {
-      res1 <- suppressWarnings(interval_intersection(intersection1, intersection2))
-    }
+    #if(length(intersection1)==0) {
+    #  res1 <- intersection2
+    #} else {
+    res1 <- suppressWarnings(interval_intersection(intersection1, intersection2))
+    #}
 
     #### SOMEHOW COMBINE THIS RES WITH PREVIOUS RES.
 
@@ -97,6 +95,12 @@ getInterval_OLD <- function(base_tree, nu, splits) {
     ### tree. Cannot condition on extra branches.
     nulled <- cy
   }
+
+  #test <- suppressWarnings(Intervals(c(t(nu)%*%y, t(nu)%*%y)))
+  #check <- suppressWarnings(interval_intersection(test, full_interval))
+  #if (length(check)==0) {
+  #  stop("THIS IS AN ERROR")
+  #}
 
   return(full_interval)
 }

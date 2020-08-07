@@ -32,6 +32,27 @@ if(locTest[2] != locTest[1]+1) {
 }
 splits <- getAncestors(base_tree, locTest[1])
 nu <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1]) -  (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
+
+Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
+phi <- 2456
+yphi <- Pi_perp %*% y + nu*phi/sum(nu^2)
+
+
+sum((y - predict(base_tree))^2)
+
+tree2 <-  rpart::rpart(yphi~X,model=TRUE,
+                       control=rpart.control(maxdepth = depth,
+                                             minsplit=2, minbucket=1,
+                                             cp=-1, maxcompete=0,maxsurrogate=0))
+sum((yphi - predict(tree2))^2)
+
+
+
+
+
+
+
+
 nu2 <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1])
 
 all.equal(getInterval(base_tree, nu, splits),getInterval_EXPERIMENT(base_tree, nu, splits))
