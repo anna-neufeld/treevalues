@@ -120,8 +120,9 @@ getInterval <- function(base_tree, nu, splits) {
       cvec <- other_Cs/denomsSORT-partialC
 
       num_coeffs <- length(avec[ denomsSORT != 0])
-
+      if (num_coeffs != 0) {
       coeffs_full[cur:(cur+num_coeffs-1),] <- cbind(avec,bvec,cvec)[ denomsSORT != 0,]
+      }
       cur <- cur+num_coeffs
 
     }
@@ -328,6 +329,29 @@ getAncestors <- function(tree, node)
   }
 }
 
+### Get all the ancestor splits of a certain node.
+### You need this to be able to call phibounds
+### TREE MUST HAVE BEEN BUILT WITH MODEL=TRUE
+### So we can access the data.
+getAncestors_ROUND <- function(tree, node, altsplits)
+{
+  tree$splits[,4] <- altsplits
+  try1 <- try({
+    object <- partykit::as.party(tree)
+    rules <- partykit:::.list.rules.party(object)
+    relevantRules <- rules[[as.character(node)]]
+    relevantRules <- strsplit(relevantRules, '&')[[1]]
+    relevantRules <- sapply(relevantRules, trimws)
+    relevantRules <- sapply(relevantRules, function(u) substr(u,1,11))
+  })
+  if (class(try1)=="try-error") {
+    return(errorCondition("Could not Parse Rule Set"))
+  } else {
+    return(relevantRules)
+  }
+}
+
+
 
 ### This is when we want a specific name attached
 getAncestors_ALT <- function(tree, node, name)
@@ -398,3 +422,8 @@ getBounds <- function(vec) {
     return(c(min(root1, root2), max(root2,root1), 0))
   }
 }
+
+
+#### A certain phi gives u the same region.
+#### But if u had started with that phi, the first split to win would not have matched
+### the first split that we wanted to win. Need to draw a pic of this.

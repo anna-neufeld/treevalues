@@ -34,6 +34,14 @@ getSplitPval <- function(tree, locTest, sigma_y) {
   return(correctPVal(phi_bounds, nu, y, sigma_y))
 }
 
+getSplitPval_CATEGORICAL <- function(tree, locTest, sigma_y) {
+  splits <- getAncestors(tree, locTest[1])
+  nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
+  phi_bounds <- getInterval_CATEGORICAL(tree,nu, splits)
+  y <- tree$model[,1]
+  return(correctPVal(phi_bounds, nu, y, sigma_y))
+}
+
 getSplitPval_OLD <- function(tree, locTest, sigma_y) {
   splits <- getAncestors(tree, locTest[1])
   nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
