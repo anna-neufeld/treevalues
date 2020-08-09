@@ -1,4 +1,4 @@
-getInterval_CATEGORICAL <- function(base_tree, nu, splits) {
+getInterval <- function(base_tree, nu, splits) {
   ### rpart orderes things nicely YAY
   dat <- base_tree$model
   ### Add an error condition reminding people to call rpart with model=TRUE
