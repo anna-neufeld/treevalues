@@ -1,22 +1,27 @@
-#' A plotting function.
+#' This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
+#' labeled with confidence intervals.
 #'
 #' @export
 #'
-#' @param tree An rpart tree
-#' @param inferenceMatrix the corrsponding inference matrix.
-treeval.plot <- function(tree, inferenceMatrix, sigma_y) {
+#' @param tree An rpart tree.
+#' @param inferenceMatrix The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.
+treeval.plot <- function(tree, inferenceMatrix) {
   inferenceMatrix$pval <- as.numeric(inferenceMatrix$pval)
 
-  tree$splits <- cbind(tree$splits, inferenceMatrix$pval)
+  tree$splits <- cbind(tree$splits, inferenceMatrix$pval[-1])
   colnames(tree$splits)[6] <- "pvalue"
 
   tree$frame <- cbind(tree$frame, NA,NA)
   names(tree$frame)[9:10] <- c("CI","pval")
 
-  fullMean <- tree$frame[1,]$yval
-  fulln <- tree$frame[1,]$n
-  tree$frame[1,]$CI <-paste("(",  round(fullMean - 1.96*sigma_y/sqrt(fulln), 4), ", ",
-                            round(fullMean + 1.96*sigma_y/sqrt(fulln),4), ")",
+  #fullMean <- tree$frame[1,]$yval
+  #fulln <- tree$frame[1,]$n
+
+  rootLower <- inferenceMatrix[1,4]
+  rootUpper <- inferenceMatrix[1,5]
+
+  tree$frame[1,]$CI <-paste("(",  round(  rootLower, 4), ", ",
+                            round(  rootUpper,4), ")",
                             sep="")
 
   indices <- which(inferenceMatrix$pval < 1e-6)

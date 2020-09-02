@@ -48,40 +48,6 @@ getSplitPval <- function(tree, locTest, sigma_y) {
   return(correctPVal(phi_bounds, nu, y, sigma_y))
 }
 
-#' Get a pvalue for a difference in means between two terminal nodes
-#'
-#' @export
-#'
-#' @param tree an rpart object
-#' @param X the X data; as a matrix. names must match those
-#' @param y the y data
-#' @param locTest identify the pair of nodes that you are testing for
-#' @param sigma_y enter the known noise SD (for now)
-getSplitPval_minBuck <- function(tree, locTest, sigma_y) {
-  splits <- getAncestors(tree, locTest[1])
-  nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
-  phi_bounds <- getInterval_minBUCKET_FAST(tree,nu, splits)
-  y <- tree$model[,1]
-  return(correctPVal(phi_bounds, nu, y, sigma_y))
-}
-
-#' Get a pvalue for a difference in means between two terminal nodes
-#'
-#' @export
-#'
-#' @param tree an rpart object
-#' @param X the X data; as a matrix. names must match those
-#' @param y the y data
-#' @param locTest identify the pair of nodes that you are testing for
-#' @param sigma_y enter the known noise SD (for now)
-getSplitPval_CAT <- function(tree, locTest, sigma_y) {
-  splits <- getAncestors(tree, locTest[1])
-  nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
-  phi_bounds <- getInterval_CAT(tree,nu, splits)
-  y <- tree$model[,1]
-  return(correctPVal(phi_bounds, nu, y, sigma_y))
-}
-
 #' Get a pvalue for a difference in means between two terminal nodes that are not siblings
 #'
 #' @export
@@ -121,22 +87,15 @@ getSplitPval_nonSibs <- function(tree, locTest, sigma_y) {
 
 
 
-#getSplitPval_OLD <- function(tree, locTest, sigma_y) {
-#  splits <- getAncestors(tree, locTest[1])
-#  nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
-#  phi_bounds <- getInterval_OLD(tree,nu, splits)
-#  y <- tree$model[,1]
-#  return(correctPVal(phi_bounds, nu, y, sigma_y))
-#}
-
-
-
 #' Full process including building tree and CI/pval for every split
 #' MAKE SURE YOU BUILD YOUR TREE WITH MODEL=TRUE
+#' You mainly need this to be able to make a nice plot!!
 #'
 fullTreeInference <- function(tree, sigma_y) {
 
-  ### Add a warning to make sure they build their tree right!!!
+  if (is.null(tree$model)) {
+    stop('Must build rpart object with parameter model=TRUE')
+  }
 
   ## This is unfortunately necessary to make sure I can read the splits correctly
   ## out of the R output
@@ -146,20 +105,18 @@ fullTreeInference <- function(tree, sigma_y) {
   p <- NCOL(X)
   n <- NROW(X)
 
-  #nameX <- sapply(1:p, function(u) paste0("X",u))
-  #names(dat) = c("y", nameX)
-
-  #tree$model <- dat
-
-
   terminalNodes <- sort(unique(tree$where))
   splitResults <- data.frame(split = NA, pval = NA,
                              effectSize = NA, lower = NA, upper=NA,
                              branch1mean=NA,  branch1lower=NA, branch1upper=NA,
                              branch2mean=NA,branch2lower=NA, branch2upper=NA)
 
+  fullMean <- mean(y)
+  splitResults[1,] <- c(" ", NA, NA, fullMean - 1.96*sigma_y/sqrt(n),
+                        fullMean + 1.96*sigma_y/sqrt(n), NA, NA,NA,NA, NA, NA)
+
   j <- 1
-  k <- 1
+  k <- 2
 
   #### DO THE TOP LAYER (only once).
   splits <- getAncestors(tree, terminalNodes[1])
@@ -256,6 +213,7 @@ fullTreeInference <- function(tree, sigma_y) {
     }
   }
   splitResults[,2:11] <- apply(splitResults[,2:11],2,as.numeric)
+
   return(splitResults)
 }
 
