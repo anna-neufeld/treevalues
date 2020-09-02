@@ -1,7 +1,5 @@
-### NOTE THAT EVERYTHING HERE CAME FROM OUTFERENCE
-
 # ----- Truncated Normal Distribution -----
-#' Survival function of truncated normal distribution
+#' Survival function of truncated normal distribution. This comes directly from the Outference Package.
 #'
 #' This function returns the upper tail probability of a truncated normal distribution
 #'     at quantile \code{q}.
@@ -88,6 +86,7 @@ TNSurv <- function(q, mean, sd, E, approx = FALSE) {
 
 
 #' A helper function for approximating normal tail probabilities
+#' This comes directly from the Outference Package
 #'
 #' For \eqn{Z ~ N(0, 1)}, we have the approximation
 #'     \eqn{P(Z \ge z) \approx }\code{magicfun(z)*exp(-z^2/2)}.
@@ -283,15 +282,27 @@ isSameIntervals <- function(int1, int2) {
 #'
 #' @keywords internal
 #'
-#' @param v, the contrast vector.
-#' @param y, the response.
-#' @param sigma, the noise level \eqn{\sigma}.
-#' @param truncation, the truncation set for the \eqn{Z}-statistic.
+#' @param truncation, the truncation set for the statistic v'y.
+#' Computes a confidence interval for the mean of a truncated normal distribution.
+#' @param v the contrast vector that defines the parameter of interest
+#' @param y the observed response vector
+#' @param sigma The known noise standard deviation. If unknown, we recommend a conservative estimate. If it
+#' is left blank, we automatically use a conservative estimate.
 #' @param alpha, the significance level.
 #'
 #' @return This function returns a vector of lower and upper confidence limits.
 #'
-computeCI <- function(v, y, sigma, truncation, alpha) {
+computeCI <- function(v, y, sigma=NULL, truncation, alpha) {
+  ### Conservative guess
+  if (is.null(sigma)) {
+    sigma <- sd(y)
+  }
+
+  ### Standardization expected.
+  truncation <- Intervals(as.matrix(truncation)/(sigma*sqrt(sum(v^2))))
+
+
+
   #browser()
   vTv <- sum(v*v)
   scale <- sigma * sqrt(vTv)

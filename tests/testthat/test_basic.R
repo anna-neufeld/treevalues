@@ -122,8 +122,8 @@ test_that("Two Versions", {
   splits <- getAncestors(base_tree, locTest[1])
   nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
   int1 <- getInterval(base_tree, nu, splits)
-  int2 <- getInterval_OLD(base_tree, nu, splits)
-  expect_true(sum(as.matrix(int1)-as.matrix(int2)) < 1e-8)
+  #int2 <- getInterval_OLD(base_tree, nu, splits)
+  #expect_true(sum(as.matrix(int1)-as.matrix(int2)) < 1e-8)
 
 }
 )

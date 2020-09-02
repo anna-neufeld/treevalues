@@ -1,5 +1,6 @@
 # This code is taken from plot.rpart package
-# Originally written byderived from the rpart code by written by
+# Originally written by Stephen Milborrow and
+# derived from the rpart code by written by
 #   Terry M Therneau and Beth Atkinson:
 #   http://mayoresearch.mayo.edu/mayo/research/biostat/splusfunctions.cfm
 # and the R port and modifications of that code by Brian Ripley:

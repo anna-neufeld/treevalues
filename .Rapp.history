@@ -1,0 +1,797 @@
+library(MASS)
+X <- mvrnorm(n, mu=1:p, Sigma = 4*diag(rep(1,p)))#
+y <- rnorm(n, mean=0, sd=6)
+getIntervalTwo <- function(base_tree, X, y, locTest) {#
+  ### We define the nu vector using tree$where.#
+  nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])#
+  n <- nrow(X)#
+  p <- NCOL(X)#
+  ### Get setup with some definitions#
+  ### A and B and C do not depend on the SPLITS#
+  ### they only depend on the null hypothesis and Y. #
+  ### Only compute once#
+  Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)#
+  C <- (Pi_perp%*%y)%*%t((Pi_perp%*%y))#
+  B <- (Pi_perp%*%y%*%t(nu) + nu%*%t(y)%*%Pi_perp)/sum(nu^2)#
+  A <- (nu%*%t(nu))/sum(nu^2)^2#
+  l1_var <- rownames(base_tree$splits)[1]#
+  l1_split <- base_tree$splits[1,4]#
+  X <- data.frame(X)#
+  tau_1t1 <- (X[[l1_var]] <= l1_split)#/sqrt(sum((X[[l1_var]] <= l1_split)))#
+  if (base_tree$splits[1,2]==1) {#
+    tau_1t1 <- !tau_1t1#
+  }#
+  nulled <- tau_1t1!=0#
+  l2_var <- rownames(base_tree$splits)[2]#
+  l2_split <- base_tree$splits[2,4]#
+  tau_2t1 <- (X[[l2_var]] <= l2_split)*nulled#
+  tau_2t2 <- (!tau_2t1)*nulled#
+#
+  ### This type of thing must be computed once per level#
+  ### Uses the information about what the given tree split on at this level. #
+  partialA1 <- colSums(tau_1t1*(A%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(A%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialB1 <- colSums(tau_1t1*(B%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(B%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialC1 <- colSums(tau_1t1*(C%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(C%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialA2 <- colSums(tau_2t1*(A%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(A%*%(tau_2t2)))/sum(tau_2t1)#
+  partialB2 <- colSums(tau_2t1*(B%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(B%*%(tau_2t2)))/sum(tau_2t1)#
+  partialC2 <- colSums(tau_2t1*(C%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(C%*%(tau_2t2)))/sum(tau_2t1)#
+  ### This is where the n*p work starts #
+  tau1s <- matrix(NA, nrow=n*p, ncol=n)#
+  for (j in 1:p) {#
+    tau1s[((j-1)*n+1):(j*n),] <- sapply(X[,j], function(u) (u <= X[,j]))#
+  }#
+  tau1s <- tau1s[rowSums(tau1s)!=n,]#
+  tau2s <- apply(tau1s, 1, function(u) u*nulled)#
+  tau2s <- tau2s[rowSums(tau2s)!=0,]#
+  tau2sc <- apply(tau2s, 1, function(u) (!u)*nulled)#
+  tau2sc <- taus2c[rowSums(tau2c) !=0,]#
+  ### Faster version #
+  avec <- apply(tau1s, 1, function(u) colSums(u*(A%*%u))/sum(u) + colSums((!u)*(A%*%(!u)))/sum(!u)) - partialA1#
+  bvec <- apply(tau1s, 1, function(u) colSums(u*(B%*%u))/sum(u) + colSums((!u)*(B%*%(!u)))/sum(!u))- partialB1#
+  cvec <- apply(tau1s, 1, function(u) colSums(u*(C%*%u))/sum(u) + colSums((!u)*(C%*%(!u)))/sum(!u))- partialC1#
+  avec2 <- apply(tau2s, 1, function(u) colSums(u*(A%*%u))/sum(u)) +apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialA2#
+  bvec2 <- apply(tau2s, 1, function(u) colSums(u*(B%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialB2#
+  cvec2 <- apply(tau2s, 1, function(u) colSums(u*(C%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialC2#
+  coeffs <- rbind(cbind(avec,bvec,cvec),cbind(avec2,bvec2,cvec2))#
+  phi_bounds <-  t(apply(coeffs, 1, getBounds))#
+  ### INSIDE INTERVALS#
+  ints_inside <- Intervals(phi_bounds[phi_bounds[,3]==1,1:2], closed=c(TRUE,TRUE))#
+  ### OUTSIDE INTERVALS#
+  ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))#
+  intersection1 <- interval_intersection(ints_inside)#
+  intersection2 <- interval_complement(interval_union(ints_outside))#
+  if(length(intersection1)==0) {#
+    return(intersection2)#
+  } else {#
+    return(suppressWarnings(interval_intersection(intersection1, intersection2)))#
+  }#
+}
+locTest = c(3,4)
+base_tree <- rpart(y~X, control=rpart.control(maxdepth = 2, minsplit=1, minbucket = 1,#
+                                              cp=-1))
+base_tree
+getIntervalTwo(base_tree, X, y, c(3,4))
+warnings()
+getIntervalTwo <- function(base_tree, X, y, locTest) {#
+  ### We define the nu vector using tree$where.#
+  nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])#
+  n <- nrow(X)#
+  p <- NCOL(X)#
+  ### Get setup with some definitions#
+  ### A and B and C do not depend on the SPLITS#
+  ### they only depend on the null hypothesis and Y. #
+  ### Only compute once#
+  Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)#
+  C <- (Pi_perp%*%y)%*%t((Pi_perp%*%y))#
+  B <- (Pi_perp%*%y%*%t(nu) + nu%*%t(y)%*%Pi_perp)/sum(nu^2)#
+  A <- (nu%*%t(nu))/sum(nu^2)^2#
+  l1_var <- rownames(base_tree$splits)[1]#
+  l1_split <- base_tree$splits[1,4]#
+  X <- data.frame(X)#
+  tau_1t1 <- (X[[l1_var]] <= l1_split)#/sqrt(sum((X[[l1_var]] <= l1_split)))#
+  if (base_tree$splits[1,2]==1) {#
+    tau_1t1 <- !tau_1t1#
+  }#
+  nulled <- tau_1t1!=0#
+  l2_var <- rownames(base_tree$splits)[2]#
+  l2_split <- base_tree$splits[2,4]#
+  tau_2t1 <- (X[[l2_var]] <= l2_split)*nulled#
+  tau_2t2 <- (!tau_2t1)*nulled#
+#
+  ### This type of thing must be computed once per level#
+  ### Uses the information about what the given tree split on at this level. #
+  partialA1 <- colSums(tau_1t1*(A%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(A%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialB1 <- colSums(tau_1t1*(B%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(B%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialC1 <- colSums(tau_1t1*(C%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(C%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialA2 <- colSums(tau_2t1*(A%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(A%*%(tau_2t2)))/sum(tau_2t1)#
+  partialB2 <- colSums(tau_2t1*(B%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(B%*%(tau_2t2)))/sum(tau_2t1)#
+  partialC2 <- colSums(tau_2t1*(C%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(C%*%(tau_2t2)))/sum(tau_2t1)#
+  ### This is where the n*p work starts #
+  tau1s <- matrix(NA, nrow=n*p, ncol=n)#
+  for (j in 1:p) {#
+    tau1s[((j-1)*n+1):(j*n),] <- sapply(X[,j], function(u) (u <= X[,j]))#
+  }#
+  tau1s <- tau1s[rowSums(tau1s)!=n,]#
+  tau2s <- apply(tau1s, 1, function(u) u*nulled)#
+  tau2s <- tau2s[rowSums(tau2s)!=0,]#
+  tau2sc <- apply(tau2s, 1, function(u) (!u)*nulled)#
+  tau2sc <- tau2sc[rowSums(tau2sc) !=0,]#
+  ### Faster version #
+  avec <- apply(tau1s, 1, function(u) colSums(u*(A%*%u))/sum(u) + colSums((!u)*(A%*%(!u)))/sum(!u)) - partialA1#
+  bvec <- apply(tau1s, 1, function(u) colSums(u*(B%*%u))/sum(u) + colSums((!u)*(B%*%(!u)))/sum(!u))- partialB1#
+  cvec <- apply(tau1s, 1, function(u) colSums(u*(C%*%u))/sum(u) + colSums((!u)*(C%*%(!u)))/sum(!u))- partialC1#
+  avec2 <- apply(tau2s, 1, function(u) colSums(u*(A%*%u))/sum(u)) +apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialA2#
+  bvec2 <- apply(tau2s, 1, function(u) colSums(u*(B%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialB2#
+  cvec2 <- apply(tau2s, 1, function(u) colSums(u*(C%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialC2#
+  coeffs <- rbind(cbind(avec,bvec,cvec),cbind(avec2,bvec2,cvec2))#
+  phi_bounds <-  t(apply(coeffs, 1, getBounds))#
+  ### INSIDE INTERVALS#
+  ints_inside <- Intervals(phi_bounds[phi_bounds[,3]==1,1:2], closed=c(TRUE,TRUE))#
+  ### OUTSIDE INTERVALS#
+  ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))#
+  intersection1 <- interval_intersection(ints_inside)#
+  intersection2 <- interval_complement(interval_union(ints_outside))#
+  if(length(intersection1)==0) {#
+    return(intersection2)#
+  } else {#
+    return(suppressWarnings(interval_intersection(intersection1, intersection2)))#
+  }#
+}
+getIntervalTwo(base_tree, X, y, c(3,4))
+warnings(0)
+getIntervalTwo <- function(base_tree, X, y, locTest) {#
+  ### We define the nu vector using tree$where.#
+  nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])#
+  n <- nrow(X)#
+  p <- NCOL(X)#
+  ### Get setup with some definitions#
+  ### A and B and C do not depend on the SPLITS#
+  ### they only depend on the null hypothesis and Y. #
+  ### Only compute once#
+  Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)#
+  C <- (Pi_perp%*%y)%*%t((Pi_perp%*%y))#
+  B <- (Pi_perp%*%y%*%t(nu) + nu%*%t(y)%*%Pi_perp)/sum(nu^2)#
+  A <- (nu%*%t(nu))/sum(nu^2)^2#
+  l1_var <- rownames(base_tree$splits)[1]#
+  l1_split <- base_tree$splits[1,4]#
+  X <- data.frame(X)#
+  tau_1t1 <- (X[[l1_var]] <= l1_split)#/sqrt(sum((X[[l1_var]] <= l1_split)))#
+  if (base_tree$splits[1,2]==1) {#
+    tau_1t1 <- !tau_1t1#
+  }#
+  nulled <- tau_1t1!=0#
+  l2_var <- rownames(base_tree$splits)[2]#
+  l2_split <- base_tree$splits[2,4]#
+  tau_2t1 <- (X[[l2_var]] <= l2_split)*nulled#
+  tau_2t2 <- (!tau_2t1)*nulled#
+#
+  ### This type of thing must be computed once per level#
+  ### Uses the information about what the given tree split on at this level. #
+  partialA1 <- colSums(tau_1t1*(A%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(A%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialB1 <- colSums(tau_1t1*(B%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(B%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialC1 <- colSums(tau_1t1*(C%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(C%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialA2 <- colSums(tau_2t1*(A%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(A%*%(tau_2t2)))/sum(tau_2t1)#
+  partialB2 <- colSums(tau_2t1*(B%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(B%*%(tau_2t2)))/sum(tau_2t1)#
+  partialC2 <- colSums(tau_2t1*(C%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(C%*%(tau_2t2)))/sum(tau_2t1)#
+  ### This is where the n*p work starts #
+  tau1s <- matrix(NA, nrow=n*p, ncol=n)#
+  for (j in 1:p) {#
+    tau1s[((j-1)*n+1):(j*n),] <- sapply(X[,j], function(u) (u <= X[,j]))#
+  }#
+  tau1s <- tau1s[rowSums(tau1s)!=n,]#
+  tau2s <- t(apply(tau1s, 1, function(u) u*nulled))#
+  tau2s <- tau2s[rowSums(tau2s)!=0,]#
+  tau2sc <- t(apply(tau2s, 1, function(u) (!u)*nulled))#
+  tau2sc <- tau2sc[rowSums(tau2sc) !=0,]#
+  ### Faster version #
+  avec <- apply(tau1s, 1, function(u) colSums(u*(A%*%u))/sum(u) + colSums((!u)*(A%*%(!u)))/sum(!u)) - partialA1#
+  bvec <- apply(tau1s, 1, function(u) colSums(u*(B%*%u))/sum(u) + colSums((!u)*(B%*%(!u)))/sum(!u))- partialB1#
+  cvec <- apply(tau1s, 1, function(u) colSums(u*(C%*%u))/sum(u) + colSums((!u)*(C%*%(!u)))/sum(!u))- partialC1#
+  avec2 <- apply(tau2s, 1, function(u) colSums(u*(A%*%u))/sum(u)) +apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialA2#
+  bvec2 <- apply(tau2s, 1, function(u) colSums(u*(B%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialB2#
+  cvec2 <- apply(tau2s, 1, function(u) colSums(u*(C%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialC2#
+  coeffs <- rbind(cbind(avec,bvec,cvec),cbind(avec2,bvec2,cvec2))#
+  phi_bounds <-  t(apply(coeffs, 1, getBounds))#
+  ### INSIDE INTERVALS#
+  ints_inside <- Intervals(phi_bounds[phi_bounds[,3]==1,1:2], closed=c(TRUE,TRUE))#
+  ### OUTSIDE INTERVALS#
+  ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))#
+  intersection1 <- interval_intersection(ints_inside)#
+  intersection2 <- interval_complement(interval_union(ints_outside))#
+  if(length(intersection1)==0) {#
+    return(intersection2)#
+  } else {#
+    return(suppressWarnings(interval_intersection(intersection1, intersection2)))#
+  }#
+}
+getIntervalTwo(base_tree, X, y, c(3,4))
+getBounds <- function(vec) {#
+  a <- vec[1]#
+  b <- vec[2]#
+  c <- vec[3]#
+  tol <- 1*10^(-10)#
+  if (abs(a) < tol & abs(b) < tol & abs(c) < tol) {#
+     return(c(-Inf,Inf, 1))#
+  }#
+  det <- b^2-4*a*c #
+  if (det < 0) {#
+    if (a > 0) {#
+      #return(simpleError("STOP! EMPTY INTERVAL"))#
+      return(c(0,0,0)) ## TO AVOID ERRORS FOR NOW PLZ CHANGE LATER#
+      }#
+    return(c(-Inf, Inf, 1))#
+  }#
+  if (det==0) {#
+    if (a > 0) {c(-b/(2*a), -b/(2*a), 1)}#
+    return(c(-Inf, Inf, 1))#
+  }#
+  ## Down here determinant is positive: 2 roots#
+  root1 <- (-b + sqrt(det))/(2*a)#
+  root2 <- (-b - sqrt(det))/(2*a)#
+  if (a > 0) {#
+    return(c(min(root1, root2), max(root1,root2), 1))#
+  } else {#
+    return(c(min(root1, root2), max(root2,root1), 0))#
+  }#
+}
+library(Intervals)
+library(intervals)
+getIntervalTwo(base_tree, X, y, c(3,4))
+getIntervalTwoLevel_Above <- function(base_tree, X, y, locTest) {#
+  ### We define the nu vector using tree$where.#
+  ### locTest is c(R1, R2): the regions we care about for hypothesis test. #
+  nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])#
+  n <- nrow(X)#
+  p <- NCOL(X)#
+  ### Get setup with some definitions#
+  ### Just realized it is actually really nice that A and B and C do not depend on the SPLITS#
+  ### they only depend on the null hypothesis and Y. #
+  Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)#
+  C <- (Pi_perp%*%y)%*%t((Pi_perp%*%y))#
+  B <- (Pi_perp%*%y%*%t(nu) + nu%*%t(y)%*%Pi_perp)/sum(nu^2)#
+  A <- (nu%*%t(nu))/sum(nu^2)^2#
+  ### GET CONSTRAINTS FROM LEVEL 1#
+  l1_var <- rownames(base_tree$splits)[1]#
+  l1_split <- base_tree$splits[1,4]#
+  X <- data.frame(X)#
+  tau_1t1 <- (X[[l1_var]] <= l1_split)/sqrt(sum((X[[l1_var]] <= l1_split)))#
+  tau_1t2 <-  (X[[l1_var]] > l1_split)/sqrt(sum((X[[l1_var]] > l1_split)))#
+  ### Need to flip if tree send the GREATER THANS to the right#
+  if (base_tree$splits[1,2]==1) {#
+   temp <- tau_1t1#
+   tau_1t1 <- tau_1t2#
+   tau_1t2 <- temp#
+  }#
+  partialA1 <- colSums(tau_1t1 * (A %*% tau_1t1)) + colSums(tau_1t2 * (A%*%tau_1t2))#
+  partialB1 <- colSums(tau_1t1 * (B %*% tau_1t1)) + colSums(tau_1t2 * (B%*%tau_1t2))#
+  partialC1 <- colSums(tau_1t1 * (C %*% tau_1t1)) + colSums(tau_1t2 * (C%*%tau_1t2))#
+  tau1s <- matrix(0, nrow=n*p, ncol=n)#
+  tau2s <- matrix(0, nrow=n*p, ncol=n)#
+  tau1s2 <- matrix(0, nrow=n*p, ncol=n)#
+  tau2s2 <- matrix(0, nrow=n*p, ncol=n)#
+  i=1#
+  nulled <- tau_1t1!=0#
+  ### FIRST LAYER CONSTRAINTS#
+  ### Second layer constraints are actually easy to add at same time!!!#
+  for (j in 1:p) {#
+    ### ROW 1 STORES an Indicator. Is XJ1 <= Xji for every i#
+    ### SO THE COLUMNS STORE WHAT WE ACTUALLY WANT. For each order stat, which us less#
+    tau_j1 <- t(sapply(X[,j], function(u) (u <= X[,j])))#
+    tau1s[i:(i+n-1),] <- t(apply(tau_j1, 2, function(u) u/sqrt(sum(u))))#
+    tau1s2[i:(i+n-1),] <- t(apply(tau_j1, 2, function(u) (u*nulled)/sqrt(sum(u*nulled))))#
+    tau_j2 <- t(sapply(X[,j], function(u) (u > X[,j])))#
+    tau2s[i:(i+n-1),] <- t(apply(tau_j2, 2, function(u) u/sqrt(sum(u))))#
+    tau2s2[i:(i+n-1),] <- t(apply(tau_j2, 2, function(u) (u*nulled)/sqrt(sum(u*nulled))))#
+    i <- i+n#
+  }#
+  tau2s[is.nan(tau2s)] <- 0#
+  ### splits where these was no-one over on this side! #
+  tau2s2 <- tau2s2[!is.nan(rowSums(tau1s2)),]#
+  tau1s2 <- tau1s2[!is.nan(rowSums(tau1s2)),]#
+  tau2s2[is.nan(tau2s2)] <- 0#
+  ### SECOND LATER CONSTRAINTS#
+  l2_var <- rownames(base_tree$splits)[2]#
+  l2_split <- base_tree$splits[2,4]#
+  tau_2t1 <- (X[[l2_var]] <= l2_split)/sqrt(sum(nulled*(X[[l2_var]] <= l2_split)))*nulled#
+  tau_2t2 <-  (X[[l2_var]] > l2_split)/sqrt(sum(nulled*(X[[l2_var]] > l2_split)))*nulled#
+  partialA2 <- colSums(tau_2t1 * (A %*% tau_2t1)) + colSums(tau_2t2 * (A%*%tau_2t2))#
+  partialB2 <- colSums(tau_2t1 * (B %*% tau_2t1)) + colSums(tau_2t2 * (B%*%tau_2t2))#
+  partialC2 <- colSums(tau_2t1 * (C %*% tau_2t1)) + colSums(tau_2t2 * (C%*%tau_2t2))#
+  ## This seems to be one of the slowest parts. What linear algebra am I missing here?#
+  avec <- apply(tau1s, 1, function(u) colSums(u*(A%*%u))) + apply(tau2s, 1, function(u) colSums(u*(A%*%u))) - partialA1#
+  bvec <- apply(tau1s, 1, function(u) colSums(u*(B%*%u))) + apply(tau2s, 1, function(u) colSums(u*(B%*%u)))- partialB1#
+  cvec <- apply(tau1s, 1, function(u) colSums(u*(C%*%u))) + apply(tau2s, 1, function(u) colSums(u*(C%*%u)))- partialC1#
+  avec2 <- apply(tau1s2, 1, function(u) colSums(u*(A%*%u))) + apply(tau2s2,1, function(u) colSums(u*(A%*%u))) - partialA2#
+  bvec2 <- apply(tau1s2, 1, function(u) colSums(u*(B%*%u))) + apply(tau2s2, 1, function(u) colSums(u*(B%*%u)))- partialB2#
+  cvec2 <- apply(tau1s2, 1, function(u) colSums(u*(C%*%u))) + apply(tau2s2, 1, function(u) colSums(u*(C%*%u)))- partialC2#
+  coeffs <- cbind(c(avec, avec2),c(bvec, bvec2),c(cvec, cvec2))#
+#
+  phi_bounds <- t(apply(coeffs, 1, getBounds))#
+  phi_bounds <- phi_bounds[!is.nan(rowSums(phi_bounds)),]#
+  numIn <- nrow(phi_bounds[phi_bounds[,3]==1,])#
+  inside_comp_mat <- matrix(c(-Inf, Inf), nrow=2*numIn, ncol=2, byrow=TRUE)#
+  inside_comp_mat[1:numIn,2] <- phi_bounds[phi_bounds[,3]==1,1]#
+  inside_comp_mat[(numIn+1):(2*numIn), 1] <- phi_bounds[phi_bounds[,3]==1,2]#
+  ints_comp_inside <- Intervals(inside_comp_mat, closed=c(TRUE, TRUE))#
+  interval1 <- interval_complement(interval_union(ints_comp_inside))#
+#
+  ### OUTSIDE INTERVALS#
+  ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))#
+  interval2 <- interval_complement(interval_union(ints_outside))#
+  return(suppressWarnings(interval_intersection(interval1, interval2)))#
+}
+getIntervalTwoLevel_Above(base_tree, X, y, c(3,4))
+base_tree
+X <- mvrnorm(n, mu=1:p, Sigma = 4*diag(rep(1,p)))#
+y <- rnorm(n, mean=0, sd=6)
+getIntervalTwoLevel_Above(base_tree, X, y, c(3,4))
+base_tree <- rpart(y~X, control=rpart.control(maxdepth = 2, minsplit=1, minbucket = 1,#
+                                              cp=-1))
+getIntervalTwoLevel_Above(base_tree, X, y, c(3,4))
+getIntervalTwo(base_tree, X, y, c(3,4))
+getIntervalTwo <- function(base_tree, X, y, locTest) {#
+  ### We define the nu vector using tree$where.#
+  nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])#
+  n <- nrow(X)#
+  p <- NCOL(X)#
+  ### Get setup with some definitions#
+  ### A and B and C do not depend on the SPLITS#
+  ### they only depend on the null hypothesis and Y. #
+  ### Only compute once#
+  Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)#
+  C <- (Pi_perp%*%y)%*%t((Pi_perp%*%y))#
+  B <- (Pi_perp%*%y%*%t(nu) + nu%*%t(y)%*%Pi_perp)/sum(nu^2)#
+  A <- (nu%*%t(nu))/sum(nu^2)^2#
+  l1_var <- rownames(base_tree$splits)[1]#
+  l1_split <- base_tree$splits[1,4]#
+  X <- data.frame(X)#
+  tau_1t1 <- (X[[l1_var]] <= l1_split)#/sqrt(sum((X[[l1_var]] <= l1_split)))#
+  if (base_tree$splits[1,2]==1) {#
+    tau_1t1 <- !tau_1t1#
+  }#
+  nulled <- tau_1t1!=0#
+  l2_var <- rownames(base_tree$splits)[2]#
+  l2_split <- base_tree$splits[2,4]#
+  tau_2t1 <- (X[[l2_var]] <= l2_split)*nulled#
+  tau_2t2 <- (!tau_2t1)*nulled#
+#
+  ### This type of thing must be computed once per level#
+  ### Uses the information about what the given tree split on at this level. #
+  partialA1 <- colSums(tau_1t1*(A%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(A%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialB1 <- colSums(tau_1t1*(B%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(B%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialC1 <- colSums(tau_1t1*(C%*%tau_1t1))/sum(tau_1t1) + colSums((!tau_1t1)*(C%*%(!tau_1t1)))/sum(!tau_1t1)#
+  partialA2 <- colSums(tau_2t1*(A%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(A%*%(tau_2t2)))/sum(tau_2t1)#
+  partialB2 <- colSums(tau_2t1*(B%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(B%*%(tau_2t2)))/sum(tau_2t1)#
+  partialC2 <- colSums(tau_2t1*(C%*%tau_2t1))/sum(tau_2t1) + colSums((tau_2t2)*(C%*%(tau_2t2)))/sum(tau_2t1)#
+  ### This is where the n*p work starts #
+  tau1s <- matrix(NA, nrow=n*p, ncol=n)#
+  for (j in 1:p) {#
+    tau1s[((j-1)*n+1):(j*n),] <- sapply(X[,j], function(u) (u <= X[,j]))#
+  }#
+  tau1s <- tau1s[rowSums(tau1s)!=n,]#
+  tau2s <- t(apply(tau1s, 1, function(u) u*nulled))#
+  tau2s <- tau2s[rowSums(tau2s)!=0,]#
+  tau2sc <- t(apply(tau2s, 1, function(u) (!u)*nulled))#
+  tau2sc <- tau2sc[rowSums(tau2sc) !=0,]#
+  ### Faster version #
+  avec <- apply(tau1s, 1, function(u) colSums(u*(A%*%u))/sum(u) + colSums((!u)*(A%*%(!u)))/sum(!u)) - partialA1#
+  bvec <- apply(tau1s, 1, function(u) colSums(u*(B%*%u))/sum(u) + colSums((!u)*(B%*%(!u)))/sum(!u))- partialB1#
+  cvec <- apply(tau1s, 1, function(u) colSums(u*(C%*%u))/sum(u) + colSums((!u)*(C%*%(!u)))/sum(!u))- partialC1#
+  avec2 <- apply(tau2s, 1, function(u) colSums(u*(A%*%u))/sum(u)) +apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialA2#
+  bvec2 <- apply(tau2s, 1, function(u) colSums(u*(B%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialB2#
+  cvec2 <- apply(tau2s, 1, function(u) colSums(u*(C%*%u))/sum(u)) + apply(tau2sc, 1, function(u) colSums(u*(A%*%u))/sum(u)) - partialC2#
+  coeffs <- rbind(cbind(avec,bvec,cvec),cbind(avec2,bvec2,cvec2))#
+  phi_bounds <-  t(apply(coeffs, 1, getBounds))#
+  phi_bounds <- phi_bounds[!is.nan(rowSums(phi_bounds)),]#
+  numIn <- nrow(phi_bounds[phi_bounds[,3]==1,])#
+  inside_comp_mat <- matrix(c(-Inf, Inf), nrow=2*numIn, ncol=2, byrow=TRUE)#
+  inside_comp_mat[1:numIn,2] <- phi_bounds[phi_bounds[,3]==1,1]#
+  inside_comp_mat[(numIn+1):(2*numIn), 1] <- phi_bounds[phi_bounds[,3]==1,2]#
+  ints_comp_inside <- Intervals(inside_comp_mat, closed=c(TRUE, TRUE))#
+  interval1 <- interval_complement(interval_union(ints_comp_inside))#
+  ### OUTSIDE INTERVALS#
+  ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))#
+  interval2 <- interval_complement(interval_union(ints_outside))#
+  ### INSIDE INTERVALS#
+  ints_inside <- Intervals(phi_bounds[phi_bounds[,3]==1,1:2], closed=c(TRUE,TRUE))#
+  ### OUTSIDE INTERVALS#
+  ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))#
+  intersection1 <- interval_intersection(ints_inside)#
+  intersection2 <- interval_complement(interval_union(ints_outside))#
+  return(suppressWarnings(interval_intersection(interval1, interval2)))#
+}
+getIntervalTwo(base_tree, X, y, c(3,4))
+getIntervalTwoLevel_Above(base_tree, X, y, c(3,4))
+K <- 1000#
+ts <- seq(0, 15, length.out=K)#
+delta=5#
+#
+### First we need an estimate of the covariance matrix#
+### We do this by actually simulating from a Weibull #
+### And using the influence function estimator. #
+Sigma= matrix(0, nrow=length(ts), ncol=length(ts))#
+n <- 1000#
+samp <- rweibull(n, 2, 10)#
+#
+### Estimators of P(X >= t+delta) and P(X >= t) for every t. #
+nums <- rowSums(sapply(samp, function(u) (u >= ts+delta)/n))#
+denoms <- rowSums(sapply(samp, function(u) (u >= ts)/n))#
+for (i in 1:n) {#
+  ### Evaluate the influence function at this datapoint. #
+  phi_i = (samp[i] >= ts+delta)/denoms - nums*(samp[i] >= ts)/(denoms^2) #
+  Sigma = Sigma + 1/n*phi_i%*%t(phi_i)#
+}
+myCov <- function(t1,t2) {
+psi1 = 1-pweibull(t2,2,10)
+psi2t2 = 1-pweibull(t2,2,10)
+psi2t1 = 1-pweibull(t1,2,10)
+psi1t1 = 1-pweibull(t1+5,2,10)
+psi1t2 = 1-pweibull(t2+5,2,10)
+if (t1 + 5 < t2) {return(0)}
+psi1t2/(psi2t1*psi2t2)*(1-psi1t1/psi2t2)
+}
+myCov(1,7)
+myCov(1,4)
+Sigma[ts==1, ts==4]
+which(ts==1)
+ts <- seq(0, 15, by=0.01)
+K = length(ts)
+Sigma= matrix(0, nrow=length(ts), ncol=length(ts))
+n <- 1000
+samp <- rweibull(n, 2, 10)
+nums <- rowSums(sapply(samp, function(u) (u >= ts+delta)/n))
+denoms <- rowSums(sapply(samp, function(u) (u >= ts)/n))
+for (i in 1:n) {#
++   ### Evaluate the influence function at this datapoint. #
++   phi_i = (samp[i] >= ts+delta)/denoms - nums*(samp[i] >= ts)/(denoms^2) #
++   Sigma = Sigma + 1/n*phi_i%*%t(phi_i)#
++ }
+for (i in 1:n) {#
+  ### Evaluate the influence function at this datapoint. #
+   phi_i = (samp[i] >= ts+delta)/denoms - nums*(samp[i] >= ts)/(denoms^2) #
+   Sigma = Sigma + 1/n*phi_i%*%t(phi_i)#
+ }
+Sigma[ts==1, ts==4]
+myCov(1,4)
+myCov(1,4.5)
+Sigma[ts==1, ts==4.5]
+myCov(1,19)
+myCov(13.5, 14.2)
+Sigma[ts==13.5, ts==14.2]
+Sigma[ts==13.5, ts==14]
+myCob(13.5, 14.2)
+myCov(13.5, 14.2)
+myCov(14, 14.9)
+Sigma[ts==14, ts==14.9]
+n <- 10000
+samp <- rweibull(n, 2, 10)
+nums <- rowSums(sapply(samp, function(u) (u >= ts+delta)/n))#
+ denoms <- rowSums(sapply(samp, function(u) (u >= ts)/n))
+for (i in 1:n) {#
+   ### Evaluate the influence function at this datapoint. #
+    phi_i = (samp[i] >= ts+delta)/denoms - nums*(samp[i] >= ts)/(denoms^2) #
+  Sigma = Sigma + 1/n*phi_i%*%t(phi_i)#
+  }
+Sigma[ts==13.5, ts==14.9]
+Sigma[ts==14, ts==14.9]
+myCov(14, 14.9)
+Sigma= matrix(0, nrow=length(ts), ncol=length(ts))
+for (i in 1:n) {#
+    ### Evaluate the influence function at this datapoint. #
+     phi_i = (samp[i] >= ts+delta)/denoms - nums*(samp[i] >= ts)/(denoms^2) #
+   Sigma = Sigma + 1/n*phi_i%*%t(phi_i)#
+   }
+x <- seq(0,1,by=0.01)
+x
+density <- dbeta(x, 1/2, 1/2)
+newx <- 1-(1-x)^6
+plot(newx, density, type='l')
+tryx <- rbeta(1000,1/2,1/2)
+p <- 1-(1-tryx)^6
+hist(p)
+tryx <- rbeta(1000,1,10)
+p <- 1-(1-tryx)^6
+hist(p)
+X <- mvrnorm(100, mu=rep(0,8), Sigma = diag(rep(1,7)))
+X <- MASS::mvrnorm(100, mu=rep(0,8), Sigma = diag(rep(1,7)))
+X <- MASS::mvrnorm(100, mu=rep(0,8), Sigma = diag(rep(1,8)))
+y <- rnorm(n, mean=0, sd=17)
+y <- rnorm(100, mean=0, sd=17)
+rpart::base_tree <- rpart(y~X, control=rpart.control(maxdepth = 2,#
+                                                minsplit=2, minbucket=1,#
+                                                cp=-1,#
+                                                maxsurrogate = 0,#
+                                                maxcompete=0))
+base_tree <- rpart::rpart(y~X, control=rpart.control(maxdepth = 2,#
+                                                minsplit=2, minbucket=1,#
+                                                cp=-1,#
+                                                maxsurrogate = 0,#
+                                                maxcompete=0))
+library(rpart)
+base_tree <- rpart::rpart(y~X, control=rpart.control(maxdepth = 2,#
+                                                minsplit=2, minbucket=1,#
+                                                cp=-1,#
+                                                maxsurrogate = 0,#
+                                                maxcompete=0))
+nu <- (base_tree$where==3)/sum((base_tree$where==3)) - (base_tree$where==4)/sum(base_tree$where==4)
+nu
+Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
+Pi_perp <- diag(rep(1,100)) - nu%*%t(nu)/sum(nu^2)
+mat1 <- Pi_perp%*%y%*%t(nu)
+mat1
+mat2 <- nu%*%t(y)%*%Pi_perp
+mat1==mat2
+mat1[1,]
+mat1[2,]
+all.equal(y%*%t(nu), nu%*%t(y))
+y%*%t(nu)
+all.equal(y%*%t(nu), t(nu%*%t(y)))
+dim(y%*%t(nu))
+dim(nu%*%t(y))
+(y%*%t(nu))[17,17]
+(nu%*%t(y))[17,17]
+(nu%*%t(y))[34,17]
+(y%*%t(nu))[34,17]
+(y%*%t(nu))[17,34]
+mat1
+mat1==t(mat2)
+mat1 <- Pi_perp%*%y%*%t(nu)
+mat2 <- nu%*%t(y)%*%Pi_perp
+mat1==t(mat2)
+Pi_perp==t(Pi_perp)
+cheese = y%*%t(nu)
+t(cheese)
+t(cheese) == nu%*%t(y)
+mat_1 <- Pi_perp%*%cheese
+mat_1 == t(cheese)%*%Pi_per
+mat_1 == t(cheese)%*%Pi_perp
+t(mat_1) == t(cheese)%*%Pi_perp
+t(mat_1) == mat2
+fullZ <- c(0.2, 0.5, 0.3)
+d=3
+tmp1 <- rgamma(3, 1/d+fullZ, 1)
+temp1
+tmp1
+tmp1 <- rep(rgamma(3, 1/d+fullZ, 1),10000)
+tmp1
+tmp1 <- matrix(gamma(30000, 1/d+fullZ, 1), ncol=3, byrow=T)
+tmp1 <- matrix(rgamma(30000, 1/d+fullZ, 1), ncol=3, byrow=T)
+tmp2 <- rdirichlet(1, 1/d+fullZ)
+library(truncnorm)
+ls
+qtruncnorm(1.96)
+qtruncnorm(0.975)
+ptruncnorm(2, a=1, b=3, mean=0)
+ptruncnorm(2, a=1.98, b=2.02, mean=0)
+ptruncnorm(2, a=1.98, b=2.02, mean=-1)
+ptruncnorm(2, a=1.98, b=2.02, mean=-2)
+ptruncnorm(2, a=1.98, b=2.02, mean=-3)
+ptruncnorm(2, a=1.98, b=2.02, mean=-4)
+ptruncnorm(2, a=1, b=3, mean=-1)
+ptruncnorm(2, a=1, b=3, mean=-2)
+ptruncnorm(2, a=1, b=3, mean=-3)
+ptruncnorm(2, a=1, b=3, mean=-4)
+res <- read.csv("Ordered_CI_res.csv", sep=" ", header=FALSE)
+res <- read.csv("~/Simple Sanity Checks/Ordered_CI_res.csv", sep=" ", header=FALSE)
+names(res) <- c("bound1", "bound2", "bound1c", "bound2c", "low1", "up1", "low2", "up2", "truth")
+head(res)
+res %>% mutate(success1 = low1 < truth & up1 > truth)
+library(tidyverse)
+res %>% mutate(success1 = low1 < truth & up1 > truth)
+res <- res %>% mutate(success1 = low1 < truth & up1 > truth, success2 = low2 < truth & up2 > truth)
+head(res)
+mean(res$success1)
+mean(res$success2)
+all.equal(res$success1, res$success2)
+mean(res$up1-res$low1)
+mean(res$up2-res$low2)
+res <- read.csv("~/Simple Sanity Checks/Ordered_CI_res.csv", sep=" ", header=FALSE)
+names(res) <- c("bound1", "bound2", "bound1c", "bound2c", "low1", "up1", "low2", "up2", "truth")
+res <- res %>% mutate(success1 = low1 < truth & up1 > truth, success2 = low2 < truth & up2 > truth)
+mean(res$success1)
+mean(res$success2)
+all.equal(res$success1, res$success2)
+mean(res$up2-res$low2)
+mean(res$up1-res$low1)
+median(res$bound1)
+median(res$bound2)
+max(res$up2-res$low2)
+max(res$up1-res$low1)
+res <- read.csv("~/Simple Sanity Checks/Ordered_CI_res.csv", sep=" ", header=FALSE)#
+names(res) <- c("bound1", "bound2", "bound1c", "bound2c", "low1", "up1", "low2", "up2", "truth")#
+res <- res %>% mutate(success1 = low1 < truth & up1 > truth, success2 = low2 < truth & up2 > truth)#
+mean(res$success1)#
+mean(res$success2)#
+all.equal(res$success1, res$success2)#
+ mean(res$up2-res$low2)#
+#
+ mean(res$up1-res$low1)#
+#
+ median(res$bound1)#
+#
+ median(res$bound2)#
+#
+ max(res$up2-res$low2)#
+#
+ max(res$up1-res$low1)
+setwd("~/treevalues/")#
+devtools::load_all()#
+setwd("~/Simple Sanity Checks/")#
+#
+n <- 200#
+p <- 10#
+sigma_y <- 5#
+set.seed(5)#
+mu_y <- rep(0,n)#
+X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))#
+y <- rnorm(n, mu_y, sigma_y)#
+### This turns out to be necessary to reading the split rules.#
+dat <- data.frame(y=y,X=X)#
+nameX <- sapply(1:p, function(u) paste0("X",u))#
+names(dat) = c("y", nameX)#
+### Build an rpart of depth d#
+base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 3,#
+                                                                 minsplit=1, minbucket=1,#
+                                                                 cp=-1, maxcompete=0,#
+                                                                 maxsurrogate=0), model=TRUE)#
+  terminalNodes <- sort(unique(base_tree$where))#
+locTest= terminalNodes[1:2]#
+splits1 <- getAncestors(base_tree, locTest[1])#
+splits2 <- getAncestors(base_tree, locTest[2])#
+nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1]))- (base_tree$where==locTest[2])/sum((base_tree$where==locTest[2]))#
+  Pi_perp <-  Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)#
+phi <- -300#
+yphi <- Pi_perp%*%y + nu/sum(nu^2)*phi#
+mean(y)#
+mean(yphi)#
+sum(y^2)#
+sum(yphi^2)
+sum((y-mean(y))^2)
+sum((yphi-mean(yphi))^2)
+locTest
+terminalNodes
+R1 <- base_tree$where %in% c(4,5,11,12)
+R2 <- !R1
+sum((y-mean(y))^2) - sum((y[R1]-mean(y[R1]))^2)  - sum((y[R2]-mean(y[R2]))^2)
+sum((yphi-mean(yphi))^2) - sum((yphi[R1]-mean(yphi[R1]))^2)  - sum((yphi[R2]-mean(yphi[R2]))^2)
+n1 <- sum(R1)
+n2 <- sum(R2)
+n1+n2
+-n*mean(y)^2 +n1* mean(y[R1])^2 +n2* mean(y[R2])^2
+-n*mean(yphi)^2 +n1* mean(yphi[R1])^2 +n2* mean(yphi[R2])^2
+mean(yphi[R1])
+mean(y[R1])
+4!
+4*3*2*1
+4^2
+4+12+8
+setwd("~/Simple Sanity Checks/")
+sedwd("~/treevalues/")
+setwd("~/treevalues/")
+load("power_sibs_compare.RData")
+head(results)
+res0 <- results %>% filter(beta==0)#
+ mean(res0$pslow < 0.05, na.rm=TRUE)#
+ mean(res0$pfast < 0.05, na.rm=TRUE)#
+ mean(res0$psplit < 0.05, na.rm=TRUE)
+results <- data.frame(results)
+res0 <- results %>% filter(beta==0)
+library(dplyr)
+res0 <- results %>% filter(beta==0)
+mean(res0$pslow < 0.05, na.rm=TRUE)
+mean(res0$pfast < 0.05, na.rm=TRUE)
+mean(res0$psplit < 0.05, na.rm=TRUE)
+hist(res0$pslow)
+hist(res0$pfast)
+qqsample <- sort(res0$pslow)#
+qqtheory <- qunif(seq(0,1,length.out=length(res0$pslow)))#
+ plot(qqsample, qqtheory)#
+ abline(0,1, col="red")
+qqsample <- sort(res0$pfast)#
+qqtheory <- qunif(seq(0,1,length.out=length(res0$pfast)))#
+ plot(qqsample, qqtheory)#
+ abline(0,1, col="red")
+qqsample <- sort(res0$pfast)#
+qqtheory <- qunif(seq(0,1,length.out=length(res0$pfast)))#
+ plot(qqsample, qqtheory)#
+ abline(0,1, col="red")
+ggplot(data=results %>% filter(!is.na(psplit)), aes(x=abs(truthsplit), y=as.numeric(psplit < 0.05), col="Sample Splitting")) + #
+ geom_smooth(method="loess") +#
+   geom_smooth(method="loess", aes(x=abs(truthslow), y=as.numeric(pslow < 0.05), col="Slower Method"))+#
+   geom_smooth(method="loess", aes(x=abs(truthfast), y=as.numeric(pfast < 0.05), col="Faster Method"))
+library(tidyvese)
+library(tidyverse)
+ggplot(data=results %>% filter(!is.na(psplit)), aes(x=abs(truthsplit), y=as.numeric(psplit < 0.05), col="Sample Splitting")) + #
+ geom_smooth(method="loess") +#
+   geom_smooth(method="loess", aes(x=abs(truthslow), y=as.numeric(pslow < 0.05), col="Slower Method"))+#
+   geom_smooth(method="loess", aes(x=abs(truthfast), y=as.numeric(pfast < 0.05), col="Faster Method"))
+ggplot(data=results %>% filter(!is.na(psplit)), aes(x=abs(truthsplit), y=as.numeric(psplit < 0.05), col="Sample Splitting")) + #
+ geom_smooth(method="loess") +#
+   geom_smooth(method="loess", aes(x=abs(truthslow), y=as.numeric(pslow < 0.05), col="Slower Method"))+#
+   geom_smooth(method="loess", span=0.2,aes(x=abs(truthfast), y=as.numeric(pfast < 0.05), col="Faster Method"))
+ggplot(data=results %>% filter(!is.na(psplit)), aes(x=abs(truthsplit), y=as.numeric(psplit < 0.05), col="Sample Splitting")) + #
+ geom_smooth(method="loess") +#
+   geom_smooth(method="loess", aes(x=abs(truthslow), y=as.numeric(pslow < 0.05), col="Slower Method"))+#
+   geom_smooth(method="loess", span=1,aes(x=abs(truthfast), y=as.numeric(pfast < 0.05), col="Faster Method"))
+hist(results$rand_split)
+hist(results$rand_slow)
+hist(results$rand_fast)
+setwd("~/treevalues/")#
+devtools::load_all()#
+n <- 200#
+p <- 10#
+sigma_y <- 5#
+nTrials <- 1000#
+results <- matrix(NA, nrow=nTrials, ncol= 5)#
+results <- data.frame(results)#
+names(results) <- c("seed", "beta", "depth", #
+                    "pslow", "pfast")#
+#
+depth=3#
+#
+pval_split <- 0#
+truth_split <- 0#
+sample_split <- 0#
+pvals <- rep(0, nTrials)#
+pvals2 <- rep(0, nTrials)#
+#
+for (i in 1:nTrials) {#
+  set.seed(i)#
+  if (i%%100 == 0) {print(i)}#
+  if (i%%1000 == 0) {#
+    save(results, file="power_sibs_compare_FIXED_RAND.RData")#
+  }#
+#
+  X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))#
+  beta = 0#
+  #beta=0#
+  mu_y_1 <- beta*I(X[,1] > 0)#
+  mu_y_2 <- mu_y_1 + 2*beta*(I(X[,1] > 0 & X[,2] > 0)) - 2*beta*(I(X[,1] < 0 & X[,2] > 0))#
+  mu_y <- mu_y_2 + beta*I(X[,3] > 0 & X[,2] > 0 & X[,1] > 0) - beta*I(X[,3] > 0 & X[,2] < 0 & X[,1] < 0)#
+  y <- rnorm(n, mu_y, sigma_y)#
+#
+  ### This turns out to be necessary to reading the split rules.#
+  dat <- data.frame(y=y,X=X)#
+  nameX <- sapply(1:p, function(u) paste0("X",u))#
+  names(dat) = c("y", nameX)#
+#
+  ### Build an rpart of depth d#
+  base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = depth,#
+                                                                 minsplit=1, minbucket=1,#
+                                                                 cp=-1, maxcompete=0,#
+                                                                 maxsurrogate=0), model=TRUE)#
+  terminalNodes <- sort(unique(base_tree$where))#
+  locTest = sample(terminalNodes, size=2)#
+  locTest2 <- terminalNodes[3:4]#
+  pvalslow <-   getSplitPval_Better(base_tree, locTest, sigma_y)#
+  pvalfast <- getSplitPval(base_tree, locTest2, sigma_y)#
+  results[i,] <- c(i, beta, depth, #
+                   pvalslow, pvalfast)#
+}#
+#
+hist(results$pvalslow)
+head(results)
+hist(results$pslow)
+hist(results$pfast)
+mean(results$pslow < 0.05)
+mean(results$pslow < 0.1)
+mean(results$pslow < 0.15)
+mean(results$pslow < 0.20)
+mean(results$pslow < 0.30)
+mean(results$pslow < 0.40)
+mean(results$pslow < 0.50)
+mean(results$pfast < 0.10)
+mean(results$pfast < 0.05)
+load("power_sibs_compare_FIXED_RAND.RData
+)
+")"
+")
+load("power_sibs_compare_FIXED_RAND.RData")
+hist(results$rand_slow)
+hist(results$rand_fast)
+hist(results$rand_split)
+hist(results$rand_fast)
+max(results$truth_slow)
+head(results$truthslow)
+summary(results$truthslow)
+summary(results$truthfast)

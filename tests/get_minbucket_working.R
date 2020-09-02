@@ -1,8 +1,10 @@
-set.seed(5000)
-n <- 5000
-p <- 10
-depth <- 3
-sigma_y=5
+for (i in 1:200) {
+
+set.seed(i)
+n <- sample(50:500, size=1)
+p <- sample(3:21, size=1)
+depth <- sample(2:4, size=1)
+sigma_y= sample(3:7, size=1)
 X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))
 beta <- 5
 
@@ -21,19 +23,26 @@ names(dat) = c("y", nameX)
 
 base_tree <- rpart::rpart(y~., data=dat, model=TRUE,
                           control=rpart.control(maxdepth = depth,
-                                                minsplit=2, minbucket=1,
+                                                minsplit=1, minbucket=1,
                                                 cp=-1, maxcompete=0,maxsurrogate=0))
 
 terminalNodes <- sort(unique(base_tree$where))
 locTest <- terminalNodes[1:2]
 if(locTest[2] != locTest[1]+1) {
-  next
+  print("stop")
 }
 splits <- getAncestors(base_tree, locTest[1])
 nu <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1]) -  (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
 
-print(system.time(getInterval(base_tree, nu, splits)))
-print(getInterval(base_tree, nu, splits))
-print(system.time(getInterval_MEDIUM_OLD(base_tree, nu, splits)))
-print(getInterval_MEDIUM_OLD(base_tree, nu, splits))
+Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
+
+nu2 <- (base_tree$where ==locTest[1])/sum(base_tree$where==locTest[1])
+
+print(i)
+print(all.equal(as.matrix(getInterval(base_tree, nu, splits)),as.matrix(getInterval_minBUCKET_FAST(base_tree, nu, splits))))
+print(all.equal(as.matrix(getInterval(base_tree, nu2, splits)),as.matrix(getInterval_minBUCKET_FAST(base_tree, nu2, splits))))
+
+
+
+}
 
