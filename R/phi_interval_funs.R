@@ -273,6 +273,14 @@ getBounds <- function(vec) {
 #' @export
 getInterval <- function(base_tree = NULL, nu, splits, X=NULL, y=NULL,
                                        minbucket = base_tree$call$control$minbucket) {
+
+  if (is.null(minbucket)) {
+    if (is.null(base_tree$call$control$minsplit)) {
+    minbucket = round(20/3)
+    } else {
+      minbucket = round(base_tree$call$control$minsplit/3)
+    }
+  }
   ### rpart orderes things nicely YAY
   if (!is.null(base_tree$model)) {
     dat <- base_tree$model

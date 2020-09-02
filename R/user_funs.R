@@ -18,23 +18,6 @@ getNodeInterval <- function(tree, node, sigma_y=NULL, alpha=0.05) {
   return(CI)
 }
 
-#getNodeInterval_better_internal <- function(tree, node, sigma_y, alpha=0.05) {
-#  splits <- getAncestors(tree, node)
-#  nu <- (tree$where==node)/sum((tree$where==node))#
-
- # list1 <- combinat::permn(splits)
-#  allbounds1 <- sapply(list1, function(u) getInterval(tree, nu, u), simplify=FALSE)
-#  phi_bounds <- allbounds1[[1]]
-#  if (length(allbounds1) > 1) {
-#    for (l in 2:length(allbounds1)) {
-#      phi_bounds <- interval_union(phi_bounds, allbounds1[[l]])
-#    }
-#  }
-#  y <- tree$model[,1]
-#  CI <- computeCI(nu,y,sigma_y, phi_bounds, alpha)
-#  return(CI)
-#}
-
 getInterval_permutation <- function(tree, nu, splits) {
   list1 <- combinat::permn(splits)
   allbounds1 <- sapply(list1, function(u) getInterval(tree, nu, u), simplify=FALSE)
@@ -46,24 +29,6 @@ getInterval_permutation <- function(tree, nu, splits) {
   }
   return(phi_bounds)
 }
-
-
-#getNodeInterval_better <- function(tree, node, sigma_y, alpha=0.05) {
-#  splits <- getAncestors(tree, node)
-#  nu <- (tree$where==node)/sum((tree$where==node))#
-
- # list1 <- combinat::permn(splits)
-#  allbounds1 <- sapply(list1, function(u) getInterval(tree, nu, u), simplify=FALSE)
-#  phi_bounds <- allbounds1[[1]]
-#  if (length(allbounds1) > 1) {
-#    for (l in 2:length(allbounds1)) {
-#      phi_bounds <- interval_union(phi_bounds, allbounds1[[l]])
-#    }
-#  }
-#  y <- tree$model[,1]
-#  CI <- computeCI(nu,y,sigma_y, phi_bounds, alpha)
-#  return(CI)
-#}
 
 
 #' Get a pvalue for a difference in means between two terminal nodes
@@ -96,6 +61,23 @@ getSplitPval_minBuck <- function(tree, locTest, sigma_y) {
   splits <- getAncestors(tree, locTest[1])
   nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
   phi_bounds <- getInterval_minBUCKET_FAST(tree,nu, splits)
+  y <- tree$model[,1]
+  return(correctPVal(phi_bounds, nu, y, sigma_y))
+}
+
+#' Get a pvalue for a difference in means between two terminal nodes
+#'
+#' @export
+#'
+#' @param tree an rpart object
+#' @param X the X data; as a matrix. names must match those
+#' @param y the y data
+#' @param locTest identify the pair of nodes that you are testing for
+#' @param sigma_y enter the known noise SD (for now)
+getSplitPval_CAT <- function(tree, locTest, sigma_y) {
+  splits <- getAncestors(tree, locTest[1])
+  nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
+  phi_bounds <- getInterval_CAT(tree,nu, splits)
   y <- tree$model[,1]
   return(correctPVal(phi_bounds, nu, y, sigma_y))
 }

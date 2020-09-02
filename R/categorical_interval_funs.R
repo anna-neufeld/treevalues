@@ -1,6 +1,6 @@
-getInterval_TEMP <- function(base_tree, nu, splits) {
+getInterval_CAT <- function(base_tree, nu, splits) {
   ### rpart orderes things nicely YAY
-  minbucket <- base_tree$control$minbucket - 1
+  minbucket <- base_tree$control$minbucket
 
   dat <- base_tree$model
   ### Add an error condition reminding people to call rpart with model=TRUE
@@ -98,6 +98,7 @@ getInterval_TEMP <- function(base_tree, nu, splits) {
       len <- length(sorted)
 
       denomsSORT <- (num1sSORT*(leafSize-num1sSORT)/leafSize)
+      minDenomSORT <- ((minbucket-1)*(leafSize-(minbucket-1))/leafSize)
 
       ### These should be O(n)
       unus <- cumsum(Hnu2[sorted])[1:(sum(nulled)-1)]
@@ -116,20 +117,17 @@ getInterval_TEMP <- function(base_tree, nu, splits) {
       bvec <- other_Bs/denomsSORT-partialB
       cvec <- other_Cs/denomsSORT-partialC
 
-      #### FIND ONLY THE UNIQUE ONES. SHIT DIDN"T WE SORT?? SO THIS WON"T WORK??
-      ### OH wai no the sorting is PERF.
-      ### Need to make sure that this didn't break my usual simulations.
 
       ### SHOOT THIS IS GOOD FOR CATEGORICAL. BUT SOMEHOW NOT FOR REGULAR???
       #### PUT BACK SOON
-      #uniqueindices <- c(cumsum(table(hardwork$x)))[1:(length(unique(hardwork$x))-1)]
-      #uniqueindices <- uniqueindices[denomsSORT[uniqueindices]!=0]
+      uniqueindices <- c(cumsum(table(hardwork$x)))[1:(length(unique(hardwork$x))-1)]
+      uniqueindices <- uniqueindices[denomsSORT[uniqueindices] > minDenomSORT]
 
       ###### NOTE TO SELD: PUT BACK IN!!!
       #uniqueindices <- uniqueindices[num1sSORT[uniqueindices] >= minbucket &
        #                                (leafSize - num1sSORT[uniqueindices]) >= minbucket]
 
-      uniqueindices <- (1:length(denomsSORT))[denomsSORT !=0]
+      #uniqueindices <- (1:length(denomsSORT))[denomsSORT !=0]
 
       #print(uniqueindices)
       #print(which(denomsSORT==0))
