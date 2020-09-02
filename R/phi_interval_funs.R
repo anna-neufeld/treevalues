@@ -1,6 +1,4 @@
-##### THE CURRENT VERSION.
-##### I THINK IT WORKS FOR MINBUCKET OR CATEGORICAL X, but I could be proven wrong.
-#' Workhorse function for compiting conditioning sets.
+#' Workhorse function for computing conditioning sets.
 #'
 #' Returns the interval for \phi such that Tree(y'(phi)) (where the definition of y'(phi) depends on nu)
 #' contains the series of splits "splits".Either base_tree with model=TRUE or X and y must be provided, not both.
@@ -14,7 +12,6 @@
 #' @return an object of class Interval that defines the set S.
 #' @export
 getInterval <- function(base_tree, nu, splits) {
-  ### rpart orderes things nicely YAY
   minbucket <- base_tree$control$minbucket
 
   dat <- base_tree$model
