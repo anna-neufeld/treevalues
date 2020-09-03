@@ -3,7 +3,7 @@ devtools::load_all()
 n <- 100
 p <- 10
 sigma_y <- 5
-nTrials <- 3000
+nTrials <- 1000
 pvals <- rep(0, nTrials)
 
 for (i in 1:nTrials) {
@@ -27,8 +27,8 @@ for (i in 1:nTrials) {
 
   ### Build an rpart of depth d
   base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 1,
-                                                                 minsplit=1, minbucket=0,
-                                                                 cp=0.001, maxcompete=0,
+                                                                 minsplit=1, minbucket=10,
+                                                                 cp=-1, maxcompete=0,
                                                                  maxsurrogate=0), model=TRUE)
   
 
