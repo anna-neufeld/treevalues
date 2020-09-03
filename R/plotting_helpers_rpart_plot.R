@@ -23,6 +23,8 @@ TYPE5.varname.in.node <- 5
 #' A copy of the workhorse function from rpart.plot that has been modified.
 #' @keywords internal
 #' @noRd
+#' @importFrom rpart.plot get.branches
+#' @importFrom rpart.plot get.class.labs
 inner.plot <- function(x=stop("no 'x' arg"),
     type=2, extra="auto", under=FALSE, fallen.leaves=TRUE,
     digits=2, varlen=0, faclen=0, roundint=TRUE,
@@ -1341,37 +1343,37 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
     labs <-
         if(x$method == "anova")
             get.anova.labs(x, extra, under, digits, xsep, varlen, under.percent)
-    else if(x$method == "class")
-        get.class.labs(x, extra, under, digits, xsep, varlen,
-                       class.stats, under.percent)
-    else if(x$method == "poisson" || x$method == "exp")
-        get.poisson.labs(x, extra, under, digits, xsep, varlen, under.percent)
-    else if(x$method == "mrt")
-        get.mvpart.labs(x, extra, under, digits, xsep, varlen)
+    #else if(x$method == "class")
+    #    get.class.labs(x, extra, under, digits, xsep, varlen,
+    #                   class.stats, under.percent)
+    #else if(x$method == "poisson" || x$method == "exp")
+    #    get.poisson.labs(x, extra, under, digits, xsep, varlen, under.percent)
+    #else if(x$method == "mrt")
+    #    get.mvpart.labs(x, extra, under, digits, xsep, varlen)
     else {
         if(is.numeric.response(x)) {
             warning0("Unrecognized rpart object: treating as a numeric response model")
             if(x$method == "user")
                 x$method = "user.with.numeric.response" # used only in err msgs
             get.anova.labs(x, extra, under, digits, xsep, varlen, under.percent)
-        } else if(is.class.response(x)) {
-            warning0("Unrecognized rpart object: treating as a class response model")
-            if(x$method == "user")
-                x$method = "user.with.class.response" # used only in err msgs
-            get.class.labs(x, extra, under, digits, xsep, varlen,
-                           class.stats, under.percent)
+        #} else if(is.class.response(x)) {
+        #    warning0("Unrecognized rpart object: treating as a class response model")
+        #    if(x$method == "user")
+        #        x$method = "user.with.class.response" # used only in err msgs
+        #    get.class.labs(x, extra, under, digits, xsep, varlen,
+        #                   class.stats, under.percent)
         } else {
-            warning0("Unrecognized rpart object")
-            rpart.plot:::check.func.args(x$functions$text, "x$functions$text",
-                            function(yval, dev, wt, ylevel, digits, n, use.n) NA)
-            labs <- x$functions$text(
-                yval=if(is.null(frame$yval2)) frame$yval else frame$yval2,
-                dev=frame$dev, wt=frame$wt, ylevel=attr(x, "ylevels"),
-                digits=abs(digits), n=frame$n, use.n=extra)
-            rpart.plot:::check.returned.labs(x, labs, "x$functions$text()")
-            if(under)
-                labs <- sub("\n", "\n\n", labs) # replace \n with \n\n
-            labs
+           stop("Unrecognized rpart object")
+            #rpart.plot:::check.func.args(x$functions$text, "x$functions$text",
+            #                function(yval, dev, wt, ylevel, digits, n, use.n) NA)
+            #labs <- x$functions$text(
+            ##    yval=if(is.null(frame$yval2)) frame$yval else frame$yval2,
+            #    dev=frame$dev, wt=frame$wt, ylevel=attr(x, "ylevels"),
+            #    digits=abs(digits), n=frame$n, use.n=extra)
+          #  rpart.plot:::check.returned.labs(x, labs, "x$functions$text()")
+          #  if(under)
+          #      labs <- sub("\n", "\n\n", labs) # replace \n with \n\n
+          #  labs
         }
     }
     if(!is.null(node.fun)) {
