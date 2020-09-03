@@ -18,6 +18,14 @@ getNodeInterval <- function(tree, node, sigma_y=NULL, alpha=0.05) {
   return(CI)
 }
 
+#' Compute the conditioning set for a region
+#'
+#' @param tree the tree
+#' @param nu the contrast vector
+#' @param splits the original set of splits describing the region.
+#'
+#' @return An object of class Intervals describing the conditioning set
+#' @export
 getInterval_permutation <- function(tree, nu, splits) {
   list1 <- combinat::permn(splits)
   allbounds1 <- sapply(list1, function(u) getInterval(tree, nu, u), simplify=FALSE)
@@ -87,11 +95,15 @@ getSplitPval_nonSibs <- function(tree, locTest, sigma_y) {
 
 
 
-#' Full process including building tree and CI/pval for every split
-#' MAKE SURE YOU BUILD YOUR TREE WITH MODEL=TRUE
-#' You mainly need this to be able to make a nice plot!!
+#' Constructs a large matrix storing a pvalue for every split and a CI for every node.
+#' Used as a precursor to plotting.
 #'
-fullTreeInference <- function(tree, sigma_y) {
+#' @param tree An rpart object. Must have been built with rpart arguement "model=TRUE".
+#' @param sigma_y The known error variance. If not provided, is estimated with a conservative guess.
+#'
+#' @return A large matrix storing lots of pvalues and confidence intervals.
+fullTreeInference <- function(tree, sigma_y =
+                               sd(var(tree$model[,1]))) {
 
   if (is.null(tree$model)) {
     stop('Must build rpart object with parameter model=TRUE')

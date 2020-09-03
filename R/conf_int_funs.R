@@ -1,5 +1,6 @@
 # ----- Truncated Normal Distribution -----
 #' Survival function of truncated normal distribution. This comes directly from the Outference Package.
+#' The code and the documentation can be found at https://github.com/shuxiaoc/outference.
 #'
 #' This function returns the upper tail probability of a truncated normal distribution
 #'     at quantile \code{q}.
@@ -547,8 +548,8 @@ computeCI_Asym <- function(v, y, sigma, truncation, alpha1, alpha2) {
 
 
 
-# return selective ci for v^T mu (i.e. a single parameter)
-
+#' return selective ci for v^T mu (i.e. a single parameter)
+#' This is taken directly from Outference
 #' compute selective confidence intervals
 #'
 #' This function computes the selective confidence intervals.

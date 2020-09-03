@@ -5,7 +5,14 @@
 #'
 #' @param tree An rpart tree.
 #' @param inferenceMatrix The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.
-treeval.plot <- function(tree, inferenceMatrix) {
+treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL) {
+  if (is.null(inferenceMatrix) & is.null(sigma_y)) {
+    stop('Must provide either inference matrix or noise variance')
+  }
+  if (is.null(inferenceMatrix)) {
+    inferenceMatrix = fullTreeInference(tree, sigma_y)
+  }
+
   inferenceMatrix$pval <- as.numeric(inferenceMatrix$pval)
 
   tree$splits <- cbind(tree$splits, inferenceMatrix$pval[-1])

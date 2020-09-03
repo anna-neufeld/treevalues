@@ -1,12 +1,14 @@
-# This code is taken from plot.rpart package
-# Originally written by Stephen Milborrow and
+# This code is taken from rpart.plot package
+# Originally written by Stephen Milborrow (2010) and
 # derived from the rpart code by written by
 #   Terry M Therneau and Beth Atkinson:
 #   http://mayoresearch.mayo.edu/mayo/research/biostat/splusfunctions.cfm
 # and the R port and modifications of that code by Brian Ripley:
 #   www.stats.ox.ac.uk/~ripley/
 #
-# Stephen Milborrow, Gardens, Dec 2010
+# The functions were modified by Anna Neufeld in 9/2020.
+# The only changes from the rpart.plot package are that pvalues and confidence intervals
+# are now printed.
 #------------------------------------------------------------------------------
 
 # allowable values of prp's type argument

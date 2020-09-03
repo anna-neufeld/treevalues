@@ -1,22 +1,20 @@
 #' Get a valid pvalue for a test
 #'
 #' Based on the similar function from the Outference package,
-#' which accomplishes a similar task.
+#' which accomplishes a similar task. Code modified from code found at
+#' https://github.com/shuxiaoc/outference
 #'
 #' @param phiInterval the selective inference interval
 #' @param nu the contrast vector for the hypothesis test
 #' @param y the response data y
 #' @param sigma the (assumed known) noise standard deviation
+#' @return a p-value.
 correctPVal <- function(phiInterval, nu, y, sigma) {
-  ### DID I AT SOME POINT REMOVE A CALL TO SORTE?????
-
-
   delta1 <- phiInterval
   delta2 <- interval_complement(Intervals(c(-abs(t(nu)%*%y), abs(t(nu)%*%y))))
   numerator_region <- suppressWarnings(interval_intersection(delta1, delta2))
 
-  ## This really should never happen, because delta1 should always contain
-  ## nu^T y
+
   if(nrow(numerator_region)==0) {return(0)}
 
   # try exact calculation
@@ -54,7 +52,8 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 
 #' Approximate the survival function of a truncated normal
 #'
-#' Slight adaptation of the code from Outference
+#' Slight adaptation of the code from the Outference package. Code modified from code found at
+#' https://github.com/shuxiaoc/outference.
 #'
 #' @export
 #'
@@ -97,24 +96,10 @@ myTNRatioApprox <- function(E1, E2, scale = NULL) {
   return(res)
 }
 
-#' Approximate a normal density for the purpose of taking ratios
-#'
-#' Add a nice citation like they have in Outference.
-
-magicfun = function(z){
-  z2 <- z*z
-  z3 <- z*z*z
-  temp <- (z2 + 5.575192695 * z + 12.77436324) /
-    (sqrt(2*pi) * z3 + 14.38718147*z2 + 31.53531977*z + 2*12.77436324)
-  return(temp)
-}
-
-
-#' normalCDF
-#'
-#' I think this is also from outference and I'm not convinced that I need it
-#'
-#' Hi!!!!
+#' normalCDF helper function.
+#' Code take from https://github.com/shuxiaoc/outference
+#' @keywords internal
+#' @noRd
 myGetNormProb <- function(lo, up,sd) {
   if (up == Inf) {
     return(stats::pnorm(lo, 0, sd, lower.tail = FALSE))
@@ -129,6 +114,34 @@ myGetNormProb <- function(lo, up,sd) {
   try2 <- stats::pnorm(up, 0, sd, lower.tail = TRUE) - stats::pnorm(lo, 0, sd, lower.tail = TRUE)
   return(try2)
 }
+
+
+#' Sorts an interval. Taken from the outference package
+#' Makes intervals ready to call the magic fun approximation
+#' Taken from https://github.com/shuxiaoc/outference
+#' @param E an object of class Intervals
+#' @return an object of class Intervals
+#' @noRd
+#' @keywords Int
+mySortE <- function(E) {
+  E.mySortEd <- lapply(1:nrow(E), function(i){
+    temp <- as.numeric(E[i, ])
+    if (temp[1] <= 0 & temp[2] <= 0) {
+      return(sort(-temp))
+    }
+    if (temp[1] >= 0 & temp[2] >= 0) {
+      return(sort(temp))
+    }
+    # we know temp[1] < 0, temp[2] > 0 OR temp[1] > 0, temp[2] < 0
+    temp <- abs(temp)
+    return(rbind(c(0, temp[1]), c(0, temp[2])))
+  })
+  E.mySortEd <- do.call(rbind, E.mySortEd)
+  # in order to use the approximation, we translate Inf to a large number
+  return((E.mySortEd))
+}
+
+
 
 
 
