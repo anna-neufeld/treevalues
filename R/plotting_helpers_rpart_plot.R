@@ -20,7 +20,9 @@ TYPE4.fancy.all       <- 4
 TYPE5.varname.in.node <- 5
 
 
-#### MAIN PLOTTING FUNCTION FROM RPART.PLOT
+#' A copy of the workhorse function from rpart.plot that has been modified.
+#' @keywords internal
+#' @noRd
 inner.plot <- function(x=stop("no 'x' arg"),
     type=2, extra="auto", under=FALSE, fallen.leaves=TRUE,
     digits=2, varlen=0, faclen=0, roundint=TRUE,
@@ -650,6 +652,10 @@ prp <- function(x=stop("no 'x' arg"),
 
     invisible(ret)
 }
+
+#' Another rpart.plot function
+#' @keywords internal
+#' @noRd
 init.plot <- function(x, y,
                       Margin, xflip, yflip, main, sub,
                       col.main, cex.main, col.sub, cex.sub,
@@ -700,6 +706,8 @@ init.plot <- function(x, y,
         text((usr[1] + usr[2]) / 2, usr[4], "usr", col=col, xpd=NA)
     }
 }
+
+#' This is the type of thing I think I can probably delete.
 process.digits.arg <- function(digits)
 {
     digits <- rpart.plot:::check.integer.scalar(digits, min=-22, max=22, logical.ok=FALSE)

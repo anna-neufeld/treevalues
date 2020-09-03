@@ -430,7 +430,8 @@ computeCI <- function(v, y, sigma=NULL, truncation, alpha) {
 #' @param y, the response.
 #' @param sigma, the noise level \eqn{\sigma}.
 #' @param truncation, the truncation set for the \eqn{Z}-statistic.
-#' @param alpha, the significance level.
+#' @param alpha1, the left tail area
+#' @param alpha2 the right tail area.
 #'
 #' @return This function returns a vector of lower and upper confidence limits.
 #'
@@ -520,139 +521,6 @@ computeCI_Asym <- function(v, y, sigma, truncation, alpha1, alpha2) {
     #f1 = value[ind1]
     # want min x2: fun(x2) >= 1-alpha/2
     ind2 <- which(value >= alpha2)[1]
-    x2 <- grid[ind2]
-    #f2 = value[ind2]
-  }
-
-  # if the above fails, then either x1, x2 = NA, so uniroot() will throw error,
-  # in which case we set (-Inf, Inf) as the CI
-
-  # we know the functions are increasing
-
-  L <- tryCatch({
-    stats::uniroot(fun.L, c(x1, x2), extendInt = "upX", tol = 1e-5)$root
-  }, error = function(e) {
-    -Inf
-  })
-
-
-  U <- tryCatch({
-    stats::uniroot(fun.U, c(x1, x2), extendInt = "upX", tol = 1e-5)$root
-  }, error = function(e) {
-    Inf
-  })
-
-  return(c(L, U))
-}
-
-
-
-
-#' return selective ci for v^T mu (i.e. a single parameter)
-#' This is taken directly from Outference
-#' compute selective confidence intervals
-#'
-#' This function computes the selective confidence intervals.
-#'
-#' @keywords internal
-#'
-#' @param v, the contrast vector.
-#' @param y, the response.
-#' @param sigma, the noise level \eqn{\sigma}.
-#' @param truncation, the truncation set for the \eqn{Z}-statistic.
-#' @param alpha, the significance level.
-#'
-#' @return This function returns a vector of lower and upper confidence limits.
-#'
-computeCI_SHORT <- function(v, y, sigma, truncation, alpha) {
-  #browser()
-  vTv <- sum(v*v)
-  scale <- sigma * sqrt(vTv)
-  q <- sum(v*y) / scale
-
-  fun <- function(x) {
-    return(TNSurv(q, x/scale, 1, truncation))
-  }
-
-  fun.L.U <- function(l,u) {
-    return(fun(l) - fun(u) - (1-alpha))
-  }
-  # L: fun.L(L) = 0
-  fun.L <- function(x) {
-    return(fun(x) - alpha1)
-  }
-  # U: fun.U(U) = 0
-  fun.U <- function(x) {
-    return(fun(x) - alpha2)
-  }
-
-  # find the starting point (x1, x2) such that
-  # fun.L(x1), fun.U(x1) <= 0 AND fun.L(x2), fun.U(x2) >= 0.
-  # i.e. fun(x1) <= alpha/2 AND fun(x2) >= 1-alpha/2.
-
-  # find x1 s.t. fun(x1) <= alpha/2
-  # what we know:
-  # fun is monotone incresing;
-  # fun(x) = NaN if x too small;
-  # fun(x) > alpha/2 if x too big.
-  # so we can do a modified bisection search to find x1.
-  step <- 0
-  x1.up <- q * scale + scale
-  x1 <- q * scale - 10 * scale
-  f1 <- fun(x1)
-  while(step <= 20) {
-    if (is.na(f1)) { # x1 is too small
-      x1 <- (x1 + x1.up) / 2
-      f1 <- fun(x1)
-    }
-    else if (f1 > alpha/2) { # x1 is too big
-      x1.up <- x1
-      x1 <- x1 - 10 * 1.4^step
-      f1 <- fun(x1)
-      step <- step + 1
-    }
-    else { # fun(x1) <= alpha/2, excited!
-      break
-    }
-  }
-
-  # find x2 s.t. fun(x2) <= 1 - alpha/2
-  # what we know:
-  # fun is monotone incresing;
-  # fun(x) = NaN if x too big;
-  # fun(x) < 1 - alpha/2 if x too small.
-  # again can do a modified bisection search to find x2.
-  step <- 0
-  x2 = q * scale + 10 * scale
-  x2.lo = q * scale - scale
-  f2 = fun(x2)
-  while(step <= 20) {
-    if (is.na(f2)) { # x2 is too big
-      x2 <- (x2 + x2.lo) / 2
-      f2 <- fun(x2)
-    }
-    else if (f2 < 1 - alpha/2) { # x2 is too small
-      x2.lo <- x2
-      x2 <- x2 + 10 * 1.4^step
-      f2 <- fun(x2)
-      step <- step + 1
-    }
-    else { # fun(x2) >= 1 - alpha/2, excited!
-      break
-    }
-  }
-
-  # if the above search does not work, set up a grid search
-  # for starting points
-  if (is.na(f1)||(f1 > alpha/2)||is.na(f2)||(f2 < 1-alpha/2)) {
-    grid <- seq(from = q * scale - 1000*scale, to = q*scale + 1000*scale)
-    value <- sapply(grid, fun)
-    # want max x1: fun(x1) <= alpha/2
-    ind1 <- rev(which(value <= alpha/2))[1]
-    x1 <- grid[ind1]
-    #f1 = value[ind1]
-    # want min x2: fun(x2) >= 1-alpha/2
-    ind2 <- which(value >= 1 - alpha/2)[1]
     x2 <- grid[ind2]
     #f2 = value[ind2]
   }

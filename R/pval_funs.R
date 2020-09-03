@@ -60,8 +60,8 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #' @param E1 numerator interval
 #' @param E2 denominator interval
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
-  E1 <- mySortE(E1)
-  E2 <- mySortE(E2)
+  E1 <- sortE(E1)
+  E2 <- sortE(E2)
 
   #### If scale not provided, try a bunch until you find something OK.
   if (is.null(scale)) {
@@ -114,36 +114,3 @@ myGetNormProb <- function(lo, up,sd) {
   try2 <- stats::pnorm(up, 0, sd, lower.tail = TRUE) - stats::pnorm(lo, 0, sd, lower.tail = TRUE)
   return(try2)
 }
-
-
-#' #' Sorts an interval. Taken from the outference package
-#' #' Makes intervals ready to call the magic fun approximation
-#' #' Taken from https://github.com/shuxiaoc/outference
-#' #' @param E an object of class Intervals
-#' #' @return an object of class Intervals
-#' #' @noRd
-#' #' @keywords Int
-mySortE <- function(E) {
-  E.mySortEd <- lapply(1:nrow(E), function(i){
-    temp <- as.numeric(E[i, ])
-    if (temp[1] <= 0 & temp[2] <= 0) {
-      return(sort(-temp))
-    }
-    if (temp[1] >= 0 & temp[2] >= 0) {
-      return(sort(temp))
-    }
-    # we know temp[1] < 0, temp[2] > 0 OR temp[1] > 0, temp[2] < 0
-    temp <- abs(temp)
-    return(rbind(c(0, temp[1]), c(0, temp[2])))
-  })
-  E.mySortEd <- do.call(rbind, E.mySortEd)
-  # in order to use the approximation, we translate Inf to a large number
-  return((E.mySortEd))
-}
-
-
-
-
-
-
-

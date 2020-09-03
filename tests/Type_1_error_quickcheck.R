@@ -9,7 +9,7 @@ pvals2 <- rep(0, nTrials)
 
 for (i in 1:nTrials) {
   set.seed(i)
-  print(i)
+  #print(i)
 
   X <- MASS::mvrnorm(n, mu=rep(0,p), Sigma=diag(1, nrow=p, ncol=p))
   beta = 0
@@ -37,10 +37,8 @@ for (i in 1:nTrials) {
   locTest <- terminalNodes[1:2]
   if (locTest[2] == locTest[1]+1) {
     pvals[i] <- getSplitPval(base_tree, locTest, sigma_y)
-    pvals2[i] <- getSplitPval_CAT(base_tree, locTest, sigma_y)
   } else {
   pvals[i] <- NA
-  pvals2[i] <- NA
   }
 }
 
@@ -52,8 +50,8 @@ qqtheory <- qunif(seq(0,1,length.out=length(pvals[!is.na(pvals)])))
 plot(qqsample, qqtheory)
 abline(0,1, col="red")
 
-qqsample2 <- sort(pvals2[!is.na(pvals2)])
-qqtheory2 <- qunif(seq(0,1,length.out=length(pvals2[!is.na(pvals2)])))
-plot(qqsample2, qqtheory2)
-abline(0,1, col="red")
+#qqsample2 <- sort(pvals2[!is.na(pvals2)])
+#qqtheory2 <- qunif(seq(0,1,length.out=length(pvals2[!is.na(pvals2)])))
+#plot(qqsample2, qqtheory2)
+#abline(0,1, col="red")
 

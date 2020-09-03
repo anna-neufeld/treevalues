@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Anna Neufeld
 Maintainer: Anna Neufeld <aneufeld@uw.edu>
 Description: Uses selective inference to obtain valid p-values and confidence intervals for means of of nodes of regression trees built with rpart.  
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
