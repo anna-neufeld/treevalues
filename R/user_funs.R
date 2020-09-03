@@ -43,9 +43,7 @@ getInterval_permutation <- function(tree, nu, splits) {
 #'
 #' @export
 #'
-#' @param tree an rpart object
-#' @param X the X data; as a matrix. names must match those
-#' @param y the y data
+#' @param tree an rpart object. Must have been built with model=TRUE.
 #' @param locTest identify the pair of nodes that you are testing for
 #' @param sigma_y enter the known noise SD (for now)
 getSplitPval <- function(tree, locTest, sigma_y) {
