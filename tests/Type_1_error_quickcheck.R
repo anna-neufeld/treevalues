@@ -1,6 +1,6 @@
 setwd("~/treevalues/")
 devtools::load_all()
-n <- 100
+n <- 200
 p <- 10
 sigma_y <- 5
 nTrials <- 1000
@@ -26,15 +26,15 @@ for (i in 1:nTrials) {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 1,
-                                                                 minsplit=1, minbucket=10,
+  base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 3,
+                                                                 minsplit=1, minbucket=8,
                                                                  cp=-1, maxcompete=0,
                                                                  maxsurrogate=0), model=TRUE)
   
 
   terminalNodes <- sort(unique(base_tree$where))
-  if (length(terminalNodes) > 1) {
-    locTest = terminalNodes[1:2]
+  locTest <- terminalNodes[1:2]
+  if (locTest[2] == locTest[1]+1) {
     pvals[i] <- getSplitPval(base_tree, locTest, sigma_y)
   } else {
   pvals[i] <- NA

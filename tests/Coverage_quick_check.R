@@ -3,7 +3,7 @@ devtools::load_all()
 n <- 100
 p <- 10
 sigma_y <- 5
-nTrials <- 3000
+nTrials <- 500
 pvals <- rep(0, nTrials)
 
 for (i in 1:nTrials) {
