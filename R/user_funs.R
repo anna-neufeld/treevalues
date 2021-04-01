@@ -18,11 +18,8 @@
 nodeInference <- function(tree, node, sigma_y=NULL, alpha=0.05) {
   splits <- getAncestors(tree, node)
   nu <- (tree$where==node)/sum((tree$where==node))
-  if (permutations) {
-    phi_bounds <- getInterval_permutation(tree,nu, splits)
-  } else {
-    phi_bounds <- getInterval_full(tree,nu, splits)
-  }
+  phi_bounds <- getInterval_full(tree,nu, splits)
+
   y <- tree$model[,1]
   if (is.null(sigma_y)) {
     sigma_y <- sum((y-mean(y))^2)
