@@ -37,7 +37,7 @@ for (i in 1:nTrials) {
   if (length(terminalNodes) > 1) {
   node <- sample(terminalNodes, 1)
   #splits <- getAncestors(base_tree, node)
-  CIs[i,] <- getNodeInterval(base_tree, node, sigma_y)
+  CIs[i,] <- nodeInference(base_tree, node, sigma_y)$confint
   truths[i] <- mean(mu_y[base_tree$where==node])
   }
 

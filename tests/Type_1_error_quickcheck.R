@@ -37,7 +37,7 @@ for (i in 1:nTrials) {
   terminalNodes <- sort(unique(base_tree$where))
   locTest <- terminalNodes[1:2]
   if (locTest[2] == locTest[1]+1) {
-    pvals[i] <- getSplitPval(base_tree, locTest, sigma_y)
+    pvals[i] <- splitInference(base_tree, locTest, sigma_y)$pval
   } else {
   pvals[i] <- NA
   }
