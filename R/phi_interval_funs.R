@@ -6,10 +6,11 @@
 #' @param base_tree An rpart object. Must have been built with model=TRUE arguement unless X and y are provided separately
 #' @param nu The contrast vector that defines the parameter.
 #' @param splits A vector of strings specifying the splits.
+#' @param sibs does nu have the form nu_sib? If so, we can do some computational speedups!!!
 #'
 #' @return an object of class Interval that defines the set S.
 #' @export
-getInterval_build <- function(base_tree, nu, splits) {
+getInterval_grow <- function(base_tree, nu, splits,sibs=FALSE) {
   minbucket <- base_tree$control$minbucket
 
   dat <- base_tree$model
