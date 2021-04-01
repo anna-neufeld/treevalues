@@ -23,8 +23,6 @@ TYPE5.varname.in.node <- 5
 #' A copy of the workhorse function from rpart.plot that has been modified.
 #' @keywords internal
 #' @noRd
-#' @importFrom rpart.plot get.branches
-#' @importFrom rpart.plot get.class.labs
 inner.plot <- function(x=stop("no 'x' arg"),
     type=2, extra="auto", under=FALSE, fallen.leaves=TRUE,
     digits=2, varlen=0, faclen=0, roundint=TRUE,
@@ -34,7 +32,7 @@ inner.plot <- function(x=stop("no 'x' arg"),
     box.palette="auto", shadow.col=0,
     ...)
 {
-    if(!inherits(x, "rpart"))
+ if(!inherits(x, "rpart"))
         stop("Not an rpart object")
     # We have to get "trace" for get.modelframe.info, but I don't want to
     # add trace to the rpart.plot arg list, hence the following bit of
@@ -71,7 +69,8 @@ rpart.plot.version1 <- function(x=stop("no 'x' arg"),
     trace <- 0
     if(!is.null(dots$trace))
         trace <- eval(dots$trace)
-    x$varinfo <- get.modelframe.info(x, roundint=FALSE, trace,
+    ## prepared to fixin 1 min
+    x$varinfo <- rpart.plot:::get.modelframe.info(x, roundint=FALSE, trace,
                                      parent.frame(), "rpart.plot.version1")
     prp(x,
         type=type, extra=extra,
@@ -83,7 +82,7 @@ rpart.plot.version1 <- function(x=stop("no 'x' arg"),
         ...)
 }
 
-### IMPORTANT
+#' @importFrom graphics axis grid par plot rect text
 prp <- function(x=stop("no 'x' arg"),
     type=0, extra=0, under=FALSE, fallen.leaves=FALSE,
     nn=FALSE, ni=FALSE, yesno=TRUE,
@@ -159,11 +158,11 @@ prp <- function(x=stop("no 'x' arg"),
             if(any(is.na(pmatch))) {
                 # report the first illegal arg
                 ibad <- (1:length(dots))[is.na(pmatch)]
-                stop0("prp: illegal argument \"", names[ibad][1], "\"")
+                stop("prp: illegal argument \"", names[ibad][1], "\"")
             }
             duplicated <- duplicated(pmatch)
             if(any(duplicated))
-                stop0("prp: duplicated argument \"", names[duplicated][1], "\"")
+                stop("prp: duplicated argument \"", names[duplicated][1], "\"")
         }
     }
     merge1 <- function(vec, split.vec)
@@ -190,7 +189,7 @@ prp <- function(x=stop("no 'x' arg"),
                 if(make.space.for.shadows)
                     height <- 1.4 * height
                 if(draw.shadows1)
-                    draw.shadow(x - 1.2 * width, y - height,
+                    rpart.plot:::draw.shadow(x - 1.2 * width, y - height,
                          x + 1.2 * width, y + height,
                          xlim, ylim, 0, shadow.col, shadow.offset)
                 else {
@@ -218,7 +217,7 @@ prp <- function(x=stop("no 'x' arg"),
             # For debugging: make get.boxes expand the boxes to include
             # what would normally be the gap between the boxes.
             # With optimum cex, at least one pair of boxes will just touch.
-            printf("boxes.include.gap is TRUE\n")
+            print("boxes.include.gap is TRUE\n")
             split.space <- split.space + gap/2
             split.yspace <- split.yspace + ygap/2
             space <- space + gap/2
@@ -361,8 +360,8 @@ prp <- function(x=stop("no 'x' arg"),
     if(is.null(split.adj))   split.adj   <- adj
 
     class.stats <- NULL
-    if(obj$method == "class" || is.class.response(obj))
-        class.stats <- get.class.stats(obj)
+    #if(obj$method == "class" || is.class.response(obj))
+    #    class.stats <- get.class.stats(obj)
 
     # The idea with the following  argument checking is to catch user
     # errors here where possible before they cause an obscure message
@@ -371,7 +370,7 @@ prp <- function(x=stop("no 'x' arg"),
     trace <- as.numeric(rpart.plot:::check.numeric.scalar(trace, logical.ok=TRUE))
     type <- rpart.plot:::check.integer.scalar(type, logical.ok=FALSE)
     if(type < TYPE0.default || type > TYPE5.varname.in.node)
-        stop0("type must be ", TYPE0.default, "...",
+        stop("type must be ", TYPE0.default, "...",
               TYPE5.varname.in.node, ", you have type=", type)
 
     under <- rpart.plot:::check.boolean(under)
@@ -382,7 +381,7 @@ prp <- function(x=stop("no 'x' arg"),
     stopifnot((is.numeric(yesno) || is.logical(yesno)) &&
               length(yesno) == 1 && floor(yesno) == yesno)
     if(yesno < 0 || yesno > 2)
-        stop0("yesno must be 0, 1, or 2.  You have yesno=", yesno)
+        stop("yesno must be 0, 1, or 2.  You have yesno=", yesno)
     stopifnot(is.character(yes.text) && length(yes.text) == 1)
     stopifnot(is.character(no.text) && length(no.text) == 1)
     fallen.leaves <-rpart.plot:::check.boolean(fallen.leaves)
@@ -414,8 +413,8 @@ prp <- function(x=stop("no 'x' arg"),
     if(!is.null(snip.fun))
         rpart.plot:::check.func.args(snip.fun, "snip.fun", function(tree) NULL)
     if(length(family) != 1 || length(split.family) != 1 || length(nn.family) != 1)
-        stop0("prp: family argument must be length 1 (family cannot be vectorized)")
-    digits   <- process.digits.arg(digits)
+        stop("prp: family argument must be length 1 (family cannot be vectorized)")
+    digits   <- rpart.plot:::process.digits.arg(digits)
     varlen   <- rpart.plot:::check.integer.scalar(varlen, logical.ok=FALSE)
     faclen   <- rpart.plot:::check.integer.scalar(faclen, logical.ok=FALSE)
     roundint <- rpart.plot:::check.boolean(roundint)
@@ -435,7 +434,7 @@ prp <- function(x=stop("no 'x' arg"),
     # terms(obj) because that gives the wrong environment if rpart called
     # from within a function.
     if(is.null(obj$varinfo)) # this "if" prevents duplicate warnings
-        obj$varinfo <- get.modelframe.info(obj, roundint, trace,
+        obj$varinfo <- rpart.plot:::get.modelframe.info(obj, roundint, trace,
                                            parent.frame(), "prp")
     if(!rpart.plot:::is.na.or.zero(branch.type)) {
         branch <- if(branch > .5) 1 else 0
@@ -451,7 +450,7 @@ prp <- function(x=stop("no 'x' arg"),
     if(fallen.leaves)
         compress <- FALSE
     if(!is.null(obj$frame$splits))
-        stop0("Old-style rpart object?  (frame$splits is NULL)")
+        stop("Old-style rpart object?  (frame$splits is NULL)")
     frame <- obj$frame
     is.leaf <- rpart.plot:::is.leaf(frame)
     nodes <- as.numeric(row.names(frame))
@@ -477,7 +476,7 @@ prp <- function(x=stop("no 'x' arg"),
         col[!is.leaf] <- split.col
         border.col <- rpart.plot:::recycle(border.col, is.leaf)
         border.col[!is.leaf] <-
-            if(is.specified(split.border.col)) split.border.col else 1
+            if(rpart.plot:::is.specified(split.border.col)) split.border.col else 1
     }
     split.labs <- split.labs.wrapper(obj, split.fun,
                 deparse(substitute(split.fun)),
@@ -511,7 +510,7 @@ prp <- function(x=stop("no 'x' arg"),
         right.split.labs <- split.labs[match(2 * nodes+1, nodes)]
         split.labs <- split.labs[match(2 * nodes, nodes)]
         if(!left) # TODO msg uses hard coded TYPE3.fancy, TYPE4.fancy.all, TYPE5.varname.in.node
-            stop0("left=FALSE is not yet supported with type=3 or 4 or 5")
+            stop("left=FALSE is not yet supported with type=3 or 4 or 5")
     } else {
         if(left != xflip)   # default, set right labs to NA
             split.labs <- split.labs[match(2 * nodes, nodes)]
@@ -585,7 +584,7 @@ prp <- function(x=stop("no 'x' arg"),
                cex[1], tweak.msg, xlim[1], xlim[2], ylim[1], ylim[2])
     }
     if(!auto.cex && tweak != 1)
-        warning0("cex and tweak both specified, applying both")
+        warning("cex and tweak both specified, applying both")
     cex <- tweak * cex
     all.cex <- merge1(cex, split.cex * cex)
 
@@ -636,12 +635,12 @@ prp <- function(x=stop("no 'x' arg"),
         split.boxes <- ret$split.boxes
     }
     snipped.nodes <- NULL
-    if(snip) {
-        ret <- do.snip(obj, nodes, split.labs, node.xy, branch.xy,
-                       branch.lwd, xlim, ylim, digits, snip.fun, cex)
-        obj <- ret$obj
-        snipped.nodes <- ret$snipped.nodes
-    }
+    #if(snip) {
+    #    ret <- do.snip(obj, nodes, split.labs, node.xy, branch.xy,
+    #                   branch.lwd, xlim, ylim, digits, snip.fun, cex)
+    #    obj <- ret$obj
+    #    snipped.nodes <- ret$snipped.nodes
+    #}
     ret <- list(obj=obj, snipped.nodes=snipped.nodes,
                 xlim=xlim, ylim=ylim,
                 x=node.xy$x, y=node.xy$y,
@@ -658,6 +657,7 @@ prp <- function(x=stop("no 'x' arg"),
 #' Another rpart.plot function
 #' @keywords internal
 #' @noRd
+#' @importFrom graphics axis grid par plot rect text
 init.plot <- function(x, y,
                       Margin, xflip, yflip, main, sub,
                       col.main, cex.main, col.sub, cex.sub,
@@ -710,27 +710,31 @@ init.plot <- function(x, y,
 }
 
 #' This is the type of thing I think I can probably delete.
-process.digits.arg <- function(digits)
-{
-    digits <- rpart.plot:::check.integer.scalar(digits, min=-22, max=22, logical.ok=FALSE)
-    if(digits == 0)
-        digits <- getOption("digits")
-    if(digits > 8)  # silently reduce digits because of verysmall in tweak.splits
-        digits <- 8
-    else if(digits < -8)
-        digits <- -8
-    digits
-}
+#process.digits.arg <- function(digits)
+#{
+#    digits <- rpart.plot:::check.integer.scalar(digits, min=-22, max=22, logical.ok=FALSE)
+#    if(digits == 0)
+#        digits <- getOption("digits")
+#    if(digits > 8)  # silently reduce digits because of verysmall in tweak.splits
+#        digits <- 8
+#    else if(digits < -8)
+#        digits <- -8
+#    digits
+#}
+
+
+
 get.default.extra <- function(obj, class.stats)
 {
-    if(obj$method == "class" || is.class.response(obj)) {
-        if(class.stats$nlev > 2)
-            104 # multiclass response
-        else
-            106 # binomial model (two class response)
-    } else if(obj$method == "poisson" || obj$method == "exp")
-        101
-    else
+    #if(obj$method == "class" || is.class.response(obj)) {
+     #   if(class.stats$nlev > 2)
+       #     104 # multiclass response
+      #  else
+       #     106 # binomial model (two class response)
+    #} else
+  #if(obj$method == "poisson" || obj$method == "exp")
+  #      101
+  #  else
         100
 }
 get.yshift <- function(type, nodes, is.leaf,
@@ -820,7 +824,7 @@ get.node.coords <- function(obj, uniform, branch, compress,
         nspace <- -1    # magic value for rpartco meaning no compression
     if(is.null(nspace))
         nspace <- branch
-    xy <- my.rpartco(obj, uniform, nspace, minbranch)
+    xy <- rpart.plot:::my.rpartco(obj, uniform, nspace, minbranch)
     x <- xy$x
     y <- xy$y
 
@@ -928,7 +932,7 @@ get.boxes <- function(boxtype,  # one of "default", "left", "right", "undersplit
         }
         if(boxtype == "left" || boxtype == "right") {
             # adjust x coords so labels are centered on the branch lines
-            branch.xy <- get.branches(xy.to.calc.xshift$x, xy.to.calc.xshift$y, nodes, branch)
+            branch.xy <- rpart.plot:::get.branches(xy.to.calc.xshift$x, xy.to.calc.xshift$y, nodes, branch)
             x <- branch.xy$x[, child]
             y <- branch.xy$y[, child]
             xshift <- (x[2, ] - x[3, ]) + # 1.3 below to exaggerate the separation, looks better
@@ -970,8 +974,8 @@ draw.boxes <- function(fancy.style, draw.shadow, labs, xy,
     if(!draw.shadow)
         rpart.plot:::rounded.rect(new.box$x1, new.box$y1, new.box$x2, new.box$y2,
                      xlim, ylim, r, box.col, border.col, lty, lwd)
-    else if(!is.invisible(shadow.col, bg))
-        draw.shadow(new.box$x1, new.box$y1, new.box$x2, new.box$y2,
+    else if(!rpart.plot:::is.invisible(shadow.col, bg))
+        rpart.plot:::draw.shadow(new.box$x1, new.box$y1, new.box$x2, new.box$y2,
                     xlim, ylim, r, shadow.col, shadow.offset)
     box
 }
@@ -1285,46 +1289,46 @@ EX9.PROB.ACROSS.ALL                 <- 9
 EX10.PROB.ACROSS.ALL.2ND.CLASS      <- 10
 EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT <- 11
 
-extra.help <- function()
-{
-    cat0(
-        "\n",
-        "The 'extra' argument:\n",
-        "    0  No extra information\n",
-        "    1  Number of observations in the node\n",
-        "    2  Class models: Classification rate (ncorrect/nobservations)\n",
-        "       Poisson and exp models: number of events\n",
-        "    3  Class models: Misclassification rate\n",
-        "    4  Class models: Probability per class\n",
-        "    5  Class models: Like 4 but don't display the fitted class\n",
-        "    6  Class models: Probability of second class only\n",
-        "    7  Class models: Like 6 but don't display the fitted class\n",
-        "    8  Class models: Probability of the fitted class\n",
-        "    9  Class models: Probability relative to all observations\n",
-        "    10 Class models: like 9 but display the probability of the second class only\n",
-        "\n",
-        "    Add 100 to also display the percentage of observations in the node\n",
-        "\n")
-}
+#extra.help <- function()
+#{
+#    cat0(
+#        "\n",
+#        "The 'extra' argument:\n",
+#        "    0  No extra information\n",
+#        "    1  Number of observations in the node\n",
+#        "    2  Class models: Classification rate (ncorrect/nobservations)\n",
+#        "       Poisson and exp models: number of events\n",
+#        "    3  Class models: Misclassification rate\n",
+#        "    4  Class models: Probability per class\n",
+#        "    5  Class models: Like 4 but don't display the fitted class\n",
+#        "    6  Class models: Probability of second class only\n",
+#        "    7  Class models: Like 6 but don't display the fitted class\n",
+#        "    8  Class models: Probability of the fitted class\n",
+#        "    9  Class models: Probability relative to all observations\n",
+#        "    10 Class models: like 9 but display the probability of the second class only\n",
+#        "\n",
+#        "    Add 100 to also display the percentage of observations in the node\n",
+#        "\n")
+#}
 is.vec <- function(x) {
     (NROW(x) == 1 || NCOL(x) == 1) && NROW(x) * NCOL(x) > 0
 }
-is.numeric.response <- function(obj) {
+#is.numeric.response <- function(obj) {
     # see if we have the fields necessary for
     # get.anova.labs (but not get.class.labs)
-    is.vec(obj$frame$yval) && is.null(obj$frame$yval2)
-}
-is.class.response <- function(obj) {
+#    is.vec(obj$frame$yval) && is.null(obj$frame$yval2)
+#}
+#is.class.response <- function(obj) {
     # check that we have the fields necessary for get.class.labs
-    yval2 <- obj$frame$yval2
-    NCOL(yval2) >= 5 &&
-        colnames(yval2)[length(colnames(yval2))] == "nodeprob" &&
-        is.vec(obj$frame$n) &&
-        is.vec(obj$frame$wt)
-}
-is.multiclass.response <- function(obj) {
-    is.class.response(obj) && NCOL(obj$frame$yval2) > 6
-}
+#    yval2 <- obj$frame$yval2
+#    NCOL(yval2) >= 5 &&
+#        colnames(yval2)[length(colnames(yval2))] == "nodeprob" &&
+#        is.vec(obj$frame$n) &&
+#        is.vec(obj$frame$wt)
+#}
+#is.multiclass.response <- function(obj) {
+#    is.class.response(obj) && NCOL(obj$frame$yval2) > 6
+#}
 # call node.fun or obj$functions$text, and check its args and returned value
 internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
                                under, xsep, digits, varlen,
@@ -1334,8 +1338,8 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
     stopifnot(length(extra) == 1)
     ex <- if(extra < 100) extra else extra - 100
     if(ex < 0 || floor(ex) != ex) {
-        extra.help()
-        stop0("extra=", extra, " is illegal")
+        #extra.help()
+        stop("extra=", extra, " is illegal")
     }
     stopifnot(extra >= 0)
     stopifnot(is.character(x$method) && length(x$method) == 1) # sanity check
@@ -1351,18 +1355,18 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
     #else if(x$method == "mrt")
     #    get.mvpart.labs(x, extra, under, digits, xsep, varlen)
     else {
-        if(is.numeric.response(x)) {
-            warning0("Unrecognized rpart object: treating as a numeric response model")
-            if(x$method == "user")
-                x$method = "user.with.numeric.response" # used only in err msgs
-            get.anova.labs(x, extra, under, digits, xsep, varlen, under.percent)
+       # if(is.numeric.response(x)) {
+      #      warning0("Unrecognized rpart object: treating as a numeric response model")
+       #     if(x$method == "user")
+      #          x$method = "user.with.numeric.response" # used only in err msgs
+      #      get.anova.labs(x, extra, under, digits, xsep, varlen, under.percent)
         #} else if(is.class.response(x)) {
         #    warning0("Unrecognized rpart object: treating as a class response model")
         #    if(x$method == "user")
         #        x$method = "user.with.class.response" # used only in err msgs
         #    get.class.labs(x, extra, under, digits, xsep, varlen,
         #                   class.stats, under.percent)
-        } else {
+        #} else {
            stop("Unrecognized rpart object")
             #rpart.plot:::check.func.args(x$functions$text, "x$functions$text",
             #                function(yval, dev, wt, ylevel, digits, n, use.n) NA)
@@ -1374,7 +1378,7 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
           #  if(under)
           #      labs <- sub("\n", "\n\n", labs) # replace \n with \n\n
           #  labs
-        }
+       # }
     }
     if(!is.null(node.fun)) {
         # call user's node.fun
@@ -1389,11 +1393,15 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
         labs[!is.leaf] <- NA # no labels for internal nodes
     else if(type == TYPE5.varname.in.node) { # use split variable in interior nodes
         splits <- as.character(frame$var[!is.leaf])
-        splits <- my.abbreviate(splits, varlen)
+        splits <- rpart.plot:::my.abbreviate(splits, varlen)
         labs[!is.leaf] <- splits
     }
     labs
 }
+
+#' This function is actually important and I actually modified it.
+#' @keywords internal
+#' @noRd
 get.anova.labs <- function(x, extra, under, digits, xsep, varlen, under.percent)
 {
     frame <- x$frame
@@ -1406,16 +1414,16 @@ get.anova.labs <- function(x, extra, under, digits, xsep, varlen, under.percent)
     else if(ex == EX1.NOBS) # add n?
         rpart.plot:::sprint("%s%sn=%s", fitted, newline, rpart.plot:::format0(frame$n, digits))
     else if (ex == EX2.CLASS.RATE) {
-        extra.help()
-        stop0("extra=", extra,
+        #extra.help()
+        stop("extra=", extra,
               ' is legal only for "class", "poisson" and "exp" models (you have an "anova" model)')
     }
     else if (ex > EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT) {
-        extra.help()
-        stop0("extra=", extra, " is illegal")
+        #extra.help()
+        stop("extra=", extra, " is illegal")
     } else { # ex >= EX3.MISCLASS.RATE && ex <= EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT
-        extra.help()
-        stop0("extra=", extra,
+        #extra.help()
+        stop("extra=", extra,
               ' is legal only for "class" models (you have an "anova" model)')
     }
 
@@ -1439,47 +1447,3 @@ get.anova.labs <- function(x, extra, under, digits, xsep, varlen, under.percent)
     }
     labs
 }
-get.class.stats <- function(x)
-{
-    # columns of yval2 for e.g. a two-level response are: fitted n1 n2 prob1 prob2
-    yval2 <- x$frame$yval2
-    if(NCOL(yval2) < 5)
-        stop0("is.class.response(x) yet frame$yval2 is not ",
-              "a matrix with five or more columns")
-    fitted <- yval2[, 1] # fitted level as an integer
-    if(NCOL(yval2) %% 2 == 0) { # new style yval2?
-        stopifnot(colnames(yval2)[length(colnames(yval2))] == "nodeprob")
-        nlev <- (ncol(yval2) - 2) / 2
-    } else # old style yval2
-        nlev <- (ncol(yval2) - 1) / 2
-    stopifnot(nlev > 1)
-    stopifnot(floor(nlev) == nlev)
-    n.per.lev <- yval2[, 1 + (1:nlev), drop=FALSE]
-    # aug 2012: commented out the following check because it
-    # incorrectly fails when cases weights are used in the rpart model
-    # stopifnot(sum(n.per.lev[1,]) == ntotal) # sanity check
-    prob.per.lev <- yval2[, 1 + nlev + (1:nlev), drop=FALSE]
-    # dec 2012: loosened following check to allow for numerical error
-    stopifnot(abs(sum(prob.per.lev[1,]) - 1) < 1e-8) # sanity check
-    list(yval2=yval2,
-         fitted=fitted,
-         nlev=nlev,
-         # Aug 2019: ylevels is necessary for the multiclass model legend when
-         # the last level in the response is unused in the training data and thus
-         # does't appear in yval2 e.g. see "unusedlev" in the rpart.plot tests
-         ylevels=attr(x, "ylevels"),
-         n.per.lev=n.per.lev,
-         prob.per.lev=prob.per.lev)
-}
-rescale.prob.across.all <- function(class.stats, scale, ntotal)
-{
-    scale <- matrix(rep(rowSums(class.stats$n.per.lev), each=class.stats$nlev),
-                    ncol=class.stats$nlev, byrow=TRUE)
-    class.stats$prob.per.lev * scale / ntotal
-}
-
-
-
-
-
-

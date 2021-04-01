@@ -1,23 +1,23 @@
-setwd("~/treevalues/")
-devtools::load_all()
+library(treevalues)
+library(rpart)
 n <- 100
 p <- 10
 sigma_y <- 5
-nTrials <- 300
+nTrials <- 3
 pvals <- rep(0, nTrials)
 
-CIs <- matrix(0, nrow=nTrials, ncol=2)
-truths <- rep(0, nTrials)
+CIs <- matrix(NA, nrow=nTrials, ncol=2)
+truths <- rep(NA, nTrials)
 
 for (i in 1:nTrials) {
   set.seed(i)
   print(i)
 
   X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))
-  beta = 2
-  mu_y_1 <- beta*I(X[,1] > 0)
-  mu_y_2 <- mu_y_1 + 2*beta*(I(X[,1] > 0 & X[,2] > 0)) - 2*beta*(I(X[,1] < 0 & X[,2] > 0))
-  mu_y <- mu_y_2 + beta*I(X[,3] > 0 & X[,2] > 0 & X[,1] > 0) - beta*I(X[,3] > 0 & X[,2] < 0 & X[,1] < 0)
+  beta = 10
+  mu_y <- beta*I(X[,1] > 0)
+  #mu_y_2 <- mu_y_1 + 2*beta*(I(X[,1] > 0 & X[,2] > 0)) - 2*beta*(I(X[,1] < 0 & X[,2] > 0))
+  #mu_y <- mu_y_2 + beta*I(X[,3] > 0 & X[,2] > 0 & X[,1] > 0) - beta*I(X[,3] > 0 & X[,2] < 0 & X[,1] < 0)
 
   y <- rnorm(n, mu_y, sigma_y)
 
@@ -27,8 +27,8 @@ for (i in 1:nTrials) {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 3,
-                                                                 minsplit=1, minbucket=10,
+  base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 1,
+                                                                 minsplit=1, minbucket=1,
                                                                  cp=0.15, maxcompete=0,
                                                                  maxsurrogate=0), model=TRUE)
 

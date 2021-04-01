@@ -13,4 +13,10 @@ Imports:
     intervals,
     partykit,
     rpart,
-    rpart.plot
+    rpart.plot,
+    combinat
+RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

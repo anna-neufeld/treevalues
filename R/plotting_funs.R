@@ -5,6 +5,7 @@
 #'
 #' @param tree An rpart tree.
 #' @param inferenceMatrix The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.
+#' @param sigma_y Need to provide this if you are not providing inference matrix.
 treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL) {
   if (is.null(inferenceMatrix) & is.null(sigma_y)) {
     stop('Must provide either inference matrix or noise variance')

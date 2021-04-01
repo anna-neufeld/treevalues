@@ -1,21 +1,19 @@
 #' Workhorse function for computing conditioning sets.
 #'
-#' Returns the interval for \phi such that Tree(y'(phi)) (where the definition of y'(phi) depends on nu)
+#' Returns the interval for phi such that Tree(y'(phi)) (where the definition of y'(phi) depends on nu)
 #' contains the series of splits "splits".Either base_tree with model=TRUE or X and y must be provided, not both.
 #'
 #' @param base_tree An rpart object. Must have been built with model=TRUE arguement unless X and y are provided separately
 #' @param nu The contrast vector that defines the parameter.
 #' @param splits A vector of strings specifying the splits.
-#' @param X the covariate matrix for the tree.
-#' @param y the response vector for the tree.
 #'
 #' @return an object of class Interval that defines the set S.
 #' @export
-getInterval <- function(base_tree, nu, splits) {
+getInterval_build <- function(base_tree, nu, splits) {
   minbucket <- base_tree$control$minbucket
 
   dat <- base_tree$model
-  ### Add an error condition reminding people to call rpart with model=TRUE
+  if (is.null(dat)) {stop("Must build rpart tree with parameter model=TRUE")}
   y <- dat[,1]
   X <- dat[,-1]
   n <- nrow(X)
@@ -76,6 +74,10 @@ getInterval <- function(base_tree, nu, splits) {
     Hminus2 <- Hminus[nulled]
 
     cy<- eval(parse(text = splits[l]))*nulled
+    if (sum(cy) < minbucket | sum(cy) > (leafSize-minbucket)) {
+      coeffs_full[cur:(cur+1),] <- c(1,1,1)
+      break
+    }
 
     ### This is an interesting choice.
     ### If the region could have been formed with only one split instead of two,

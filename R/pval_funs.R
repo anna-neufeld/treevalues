@@ -55,10 +55,12 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #' Slight adaptation of the code from the Outference package. Code modified from code found at
 #' https://github.com/shuxiaoc/outference.
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 #'
 #' @param E1 numerator interval
 #' @param E2 denominator interval
+#' @param scale determines the grid search
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
   E1 <- sortE(E1)
   E2 <- sortE(E2)
