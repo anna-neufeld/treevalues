@@ -34,7 +34,7 @@ fullTreeInference <- function(tree, sigma_y =
 
   j=2
   if (length(terminalNodes) > 1) {
-    splitList <- getAllTests_rpart(tree)
+    splitList <- getAllBranches(tree)
     i=1
     while (i < length(splitList)) {
       #print(i)
@@ -74,12 +74,13 @@ fullTreeInference <- function(tree, sigma_y =
     return(splitResults)
   }
 
-getAllTests_rpart <- function(base_tree) {
-  allNodes <- sort(as.numeric(as.character(unique(rpart.utils::rpart.rules.table(base_tree)$Rule)[-1])))
-  ruleTab <- rpart.utils::rpart.rules.table(base_tree)[-1,]
-  ruleTab$Subrule <- factor(ruleTab$Subrule) #levels=levels(ruleTab$Subrule)[-1])
-  #ruleTab$Subrule <- factor(ruleTab$Subrule, levels=levels(ruleTab$Subrule)[-1])
-  subruleTab <-  rpart.utils::rpart.subrules.table(base_tree)
+
+getAllBranches <- function(tree) {
+  allNodes <- sort(as.numeric(as.character(unique(rpart.utils::rpart.rules.table(tree)$Rule)[-1])))
+  ruleTab <- rpart.utils::rpart.rules.table(tree)[-1,]
+  ruleTab$Subrule <- factor(ruleTab$Subrule)
+
+  subruleTab <-  rpart.utils::rpart.subrules.table(tree)
 
   allSplits <- list()
   index <- 1

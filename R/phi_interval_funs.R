@@ -199,7 +199,7 @@ getInterval_grow <- function(base_tree, nu, splits,sibs=FALSE) {
 #'
 #' @return A vector of strings describing the splits that define the node in the tree.
 #' @export
-getAncestors <- function(tree, node)
+getBranch <- function(tree, node)
 {
   try1 <- try({
     object <- partykit::as.party(tree)
@@ -217,29 +217,6 @@ getAncestors <- function(tree, node)
   }
 }
 
-
-#' An internal function that was just just used for some simulations.
-#'
-#' It is the same as getAncestors but you can paste a different name onto the inequalities
-#' for parsing purposes.
-#' @keywords internal
-#' @noRd
-getAncestors_ALT <- function(tree, node, name)
-{
-  try1 <- try({
-    object <- partykit::as.party(tree)
-    rules <- partykit:::.list.rules.party(object)
-    relevantRules <- rules[[as.character(node)]]
-    relevantRules <- strsplit(relevantRules, '&')[[1]]
-    relevantRules <- sapply(relevantRules, trimws)
-    relevantRules <- sapply(relevantRules, function(u) paste0(name, "$", u))
-  })
-  if (class(try1)=="try-error") {
-    return(errorCondition("Could not Parse Rule Set"))
-  } else {
-    return(relevantRules)
-  }
-}
 
 
 
