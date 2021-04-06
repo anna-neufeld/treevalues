@@ -22,7 +22,7 @@ nodeInference <- function(tree, node, sigma_y=NULL, alpha=0.05) {
 
   y <- tree$model[,1]
   if (is.null(sigma_y)) {
-    sigma_y <- sum((y-mean(y))^2)
+    sigma_y <- sum((y-mean(y))^2)/(length(y)-1)
   }
   CI <- computeCI(nu,y,sigma_y, phi_bounds, alpha)
   pval <- correctPVal(phi_bounds, nu, y, sigma_y)
@@ -49,6 +49,9 @@ splitInference <- function(tree, locTest, sigma_y = NULL, alpha=0.05) {
   nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
   phi_bounds <- getInterval_full(tree,nu, splits)
   y <- tree$model[,1]
+  if (is.null(sigma_y)) {
+    sigma_y <- sum((y-mean(y))^2)/(length(y)-1)
+  }
   pval <- correctPVal(phi_bounds, nu, y, sigma_y)
   CI <- computeCI(nu,y,sigma_y, phi_bounds, alpha)
   results <- list(confint = CI, pval = pval, condset = phi_bounds)
