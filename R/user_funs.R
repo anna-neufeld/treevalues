@@ -26,7 +26,7 @@ nodeInference <- function(tree, node, sigma_y=NULL, alpha=0.05) {
   }
   CI <- computeCI(nu,y,sigma_y, phi_bounds, alpha)
   pval <- correctPVal(phi_bounds, nu, y, sigma_y)
-  results <- list(confint = CI, pval = pval, condset = phi_bounds)
+  results <- list(confint = CI, pval = pval, samplemean = t(nu)%*%y, condset = phi_bounds)
   return(results)
 }
 
@@ -54,7 +54,7 @@ splitInference <- function(tree, locTest, sigma_y = NULL, alpha=0.05) {
   }
   pval <- correctPVal(phi_bounds, nu, y, sigma_y)
   CI <- computeCI(nu,y,sigma_y, phi_bounds, alpha)
-  results <- list(confint = CI, pval = pval, condset = phi_bounds)
+  results <- list(confint = CI, pval = pval, samplemean = t(nu)%*%y, condset = phi_bounds)
   return(results)
 }
 

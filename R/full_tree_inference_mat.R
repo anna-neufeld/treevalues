@@ -25,8 +25,8 @@ fullTreeInference <- function(tree, sigma_y =
   terminalNodes <- sort(unique(tree$where))
   splitResults <- data.frame(split = NA, pval = NA,
                              effectSize = NA, lower = NA, upper=NA,
-                             branch1mean=NA,  branch1lower=NA, branch1upper=NA,
-                             branch2mean=NA,branch2lower=NA, branch2upper=NA)
+                             child1mean=NA,  child1lower=NA, child1upper=NA,
+                             child2mean=NA,child2lower=NA, child2upper=NA)
 
   fullMean <- mean(y)
   splitResults[1,] <- c(" ", NA, NA, fullMean - 1.96*sigma_y/sqrt(n),

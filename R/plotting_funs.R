@@ -32,26 +32,26 @@ treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL) {
                             round(  rootUpper,4), ")",
                             sep="")
 
-  indices <- which(inferenceMatrix$pval < 1e-6)
+  indices <- which(inferenceMatrix$pval < 1e-3)
   if (length(indices)>0) {
-  inferenceMatrix[-indices,]$pval <- paste("=", round(inferenceMatrix[-indices,]$pval, 6))
-  inferenceMatrix[indices,]$pval <- "<1e-6"
+  inferenceMatrix[-indices,]$pval <- paste("=", round(inferenceMatrix[-indices,]$pval, 3))
+  inferenceMatrix[indices,]$pval <- "<1e-3"
   } else {
-    inferenceMatrix$pval <- paste("=", round(inferenceMatrix$pval, 6))
+    inferenceMatrix$pval <- paste("=", round(inferenceMatrix$pval, 3))
   }
 
   for (row in 2:NROW(tree$frame)) {
     y <- tree$frame[row,]$yval
-    child1 <- which(abs(inferenceMatrix$branch1mean-y) < 1e-6)
-    child2 <- which(abs(inferenceMatrix$branch2mean-y) < 1e-6)
+    child1 <- which(abs(inferenceMatrix$child1mean-y) < 1e-6)
+    child2 <- which(abs(inferenceMatrix$child2mean-y) < 1e-6)
 
     if (length(child1) > 0) {
-      tree$frame[row,]$CI <- paste("(", round(inferenceMatrix[child1,]$branch1lower,4), ", ", round(inferenceMatrix[child1,]$branch1upper,4), ")",
+      tree$frame[row,]$CI <- paste("(", round(inferenceMatrix[child1,]$child1lower,3), ", ", round(inferenceMatrix[child1,]$child1upper,3), ")",
                                    sep="")
       tree$frame[row,]$pval <- inferenceMatrix[child1,]$pval
     }
     if (length(child2) > 0) {
-      tree$frame[row,]$CI <- paste("(", round(inferenceMatrix[child2,]$branch2lower,4), ", ", round(inferenceMatrix[child2,]$branch2upper,4), ")",
+      tree$frame[row,]$CI <- paste("(", round(inferenceMatrix[child2,]$child2lower,4), ", ", round(inferenceMatrix[child2,]$child2upper,4), ")",
                                    sep="")
       tree$frame[row,]$pval <- inferenceMatrix[child2,]$pval
     }

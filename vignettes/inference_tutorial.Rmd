@@ -31,6 +31,8 @@ Unfortunately, rpart's method of identifying nodes in a tree is a little confusi
 
 # Inference on a single terminal node
 
+Really easy- just get the node number and then run ``
+
 
 
 # Inference on a pair of sibling terminal nodes
