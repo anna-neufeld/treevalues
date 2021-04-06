@@ -23,16 +23,11 @@ test_that("Region: do different methods match??", {
   CI1 <- nodeInference(base_tree,node,sigma_y)$confint
   length1 <- CI1[2]-CI1[1]
 
-  splits <- getAncestors(base_tree, node)
+  splits <- getBranch(base_tree, node)
   y1 <- y[base_tree$where==node]
   nu <- (base_tree$where==node)/sum((base_tree$where==node))
   true_signal <- abs(t(nu)%*%mu_y)
   phi_bounds_direct <- getInterval_full(base_tree,nu, splits)
-  phi_bounds_indirect <- suppressWarnings(interval_intersection(
-    getInterval_build(base_tree,nu, splits),
-    phi_bounds_prune <- getInterval_prune(base_tree,nu, splits)
-  ))
-  expect_true(all.equal(phi_bounds_direct,phi_bounds_indirect))
   }
 )
 
@@ -62,16 +57,12 @@ test_that("Basic Hypothesis Tests; Null Model", {
 
 
   locTest = c(terminalNodes[1], terminalNodes[2])
-  splits <- getAncestors(base_tree, locTest[1])
+  splits <- getBranch(base_tree, locTest[1])
   y1 <- y[base_tree$where==locTest[1]]
   y2 <- y[base_tree$where==locTest[2]]
   nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
   true_signal <- abs(t(nu)%*%mu_y)
   phi_bounds1 <- getInterval_full(base_tree,nu, splits)
-  phi_bounds2 <- suppressWarnings(interval_intersection(
-    getInterval_build(base_tree,nu, splits),
-    getInterval_prune(base_tree,nu, splits)
-  ))
   pTree <- splitInference(base_tree, locTest, sigma_y)$pval
   expect_true((pTree-0.8460218)<1e-6)
   expect_true(pTree==correctPVal(phi_bounds1, nu, y, sigma_y))

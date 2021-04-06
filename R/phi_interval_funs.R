@@ -191,31 +191,6 @@ getInterval_grow <- function(base_tree, nu, splits,sibs=FALSE) {
   return(res1)
 }
 
-#' Obtain the list of splits that refine a certain region.
-#' Necessary precursor to calling "getInterval"
-#'
-#' @param tree An rpart object. Must have been built with model=TRUE
-#' @param node A number identifying the region that you want the ancestors of. Numbers correspond to elements in tree$where.
-#'
-#' @return A vector of strings describing the splits that define the node in the tree.
-#' @export
-getBranch <- function(tree, node)
-{
-  try1 <- try({
-    object <- partykit::as.party(tree)
-    rules <- partykit:::.list.rules.party(object)
-    relevantRules <- rules[[as.character(node)]]
-    relevantRules <- strsplit(relevantRules, '&')[[1]]
-    relevantRules <- sapply(relevantRules, trimws)
-    relevantRules <- sapply(relevantRules, function(u) paste0("dat$", u))
-  })
-  if (class(try1)=="try-error") {
-    return(errorCondition("Could not obtain splits from tree. Make sure that the rpart tree
-                          was built with model=TRUE parameter."))
-  } else {
-    return(relevantRules)
-  }
-}
 
 
 
