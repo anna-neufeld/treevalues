@@ -16,7 +16,7 @@
 #' @importFrom intervals interval_intersection
 #' @importFrom intervals size
 nodeInference <- function(tree, node, sigma_y=NULL, alpha=0.05) {
-  splits <- getAncestors(tree, node)
+  splits <- getBranch(tree, node)
   nu <- (tree$where==node)/sum((tree$where==node))
   phi_bounds <- getInterval_full(tree,nu, splits)
 
@@ -45,7 +45,7 @@ nodeInference <- function(tree, node, sigma_y=NULL, alpha=0.05) {
 #' @importFrom intervals interval_union
 #' @importFrom intervals interval_intersection
 splitInference <- function(tree, locTest, sigma_y = NULL, alpha=0.05) {
-  splits <- getAncestors(tree, locTest[1])
+  splits <- getBranch(tree, locTest[1])
   nu <- (tree$where==locTest[1])/sum((tree$where==locTest[1])) - (tree$where==locTest[2])/sum(tree$where==locTest[2])
   phi_bounds <- getInterval_full(tree,nu, splits)
   y <- tree$model[,1]
