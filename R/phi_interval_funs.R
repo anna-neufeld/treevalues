@@ -139,15 +139,6 @@ getInterval_grow <- function(base_tree, nu, splits,sibs=FALSE) {
       uniqueindices <- uniqueindices[denomsSORT[uniqueindices] > minDenomSORT]
 
       ###### NOTE TO SELD: PUT BACK IN!!!
-      #uniqueindices <- uniqueindices[num1sSORT[uniqueindices] >= minbucket &
-      #                                (leafSize - num1sSORT[uniqueindices]) >= minbucket]
-
-      #uniqueindices <- (1:length(denomsSORT))[denomsSORT !=0]
-
-      #print(uniqueindices)
-      #print(which(denomsSORT==0))
-      #print("---------")
-
       num_coeffs <- length(avec[uniqueindices])
       if (num_coeffs !=0 & !is.na(uniqueindices[1])) {
         coeffs_full[cur:(cur+num_coeffs-1),] <- cbind(avec,bvec,cvec)[uniqueindices,]
