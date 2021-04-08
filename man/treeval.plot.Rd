@@ -5,7 +5,13 @@
 \title{This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
 labeled with confidence intervals.}
 \usage{
-treeval.plot(tree, inferenceMatrix = NULL, sigma_y = NULL)
+treeval.plot(
+  tree,
+  inferenceMatrix = NULL,
+  sigma_y = NULL,
+  inference = TRUE,
+  ...
+)
 }
 \arguments{
 \item{tree}{An rpart tree.}

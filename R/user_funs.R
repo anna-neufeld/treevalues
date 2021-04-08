@@ -6,14 +6,17 @@
 #' @param alpha The significance level forthe confidence interval
 #' @param sigma_y the error variance.Assumed known but if not we'll use the sample variance.
 #'
-#' @return A vector of strings describing the splits that define the node in the tree.
+#' @return A fitted object!! With summary info
 #' @export
-branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL) {
+#' @importFrom intervals Intervals
+branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=0) {
   dat <- tree$model
   y <- dat[,1]
   if (is.null(sigma_y)) {
     sigma_y <- sd(dat[,1])
   }
+
+  branch <- paste("dat$", branch)
 
   if (type=="reg") {
     splitText <- paste(branch, collapse=" & ")
@@ -23,6 +26,9 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL) {
     sample_signal <- t(nu)%*%y
     phiBounds <- getInterval_full(tree, nu, branch)
     CI <- computeCI(nu,y,sigma_y, phiBounds, alpha)
+    if (c!=0) {
+      print("error: not yet implemented")
+    }
     pval <- correctPVal(phiBounds,nu,y,sigma_y)
   }
 
@@ -36,14 +42,17 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL) {
     where <- node1+node2
     nu <- (where==1)/sum(where==1) - (where==2)/sum(where==2)
     sample_signal <- t(nu)%*%y
-    phi_bounds <- getInterval_full(tree, nu,branch)
-    pval <- correctPVal(phi_bounds, nu, y, sigma_y)
-    CI <- computeCI(nu,y,sigma_y, phi_bounds, alpha)
+    phiBounds <- getInterval_full(tree, nu,branch)
+    pval <- correctPVal(phiBounds, nu, y, sigma_y)
+    CI <- computeCI(nu,y,sigma_y, phiBounds, alpha)
   }
 
-
-  results <- list(confint = CI, pval = pval, samplemean = t(nu)%*%y, condset = phi_bounds)
-  return(results)
+  out <- list(
+    confint = CI, pval = pval, samplemean = t(nu)%*%y, condset = phiBounds, type=type,
+    branch=branch,c=c,alpha=alpha
+  )
+  class(out) <- "branch_inference"
+  return(out)
 }
 
 
@@ -72,17 +81,17 @@ getAllBranches <- function(tree) {
     if (NROW(subRules)==1) {
       split <- subRules
       if (is.na(split[4])) {
-        splits <- c(splits, paste("dat$", split$Variable, " >=", split$Greater))
+        splits <- c(splits, paste(split$Variable, " >=", split$Greater))
       } else {
-        splits <- c(splits, paste("dat$", split$Variable, " <", split$Less))
+        splits <- c(splits, paste(split$Variable, " <", split$Less))
       }
     } else{
       for (j in 1:NROW(subRules)) {
         split <- subRules[j,]
         if (is.na(split[4])) {
-          splits <- c(splits, paste("dat$", split$Variable, " >=", split$Greater))
+          splits <- c(splits, paste(split$Variable, " >=", split$Greater))
         } else {
-          splits <- c(splits, paste("dat$", split$Variable, " <", split$Less))
+          splits <- c(splits, paste(split$Variable, " <", split$Less))
         }
       }
     }
@@ -90,7 +99,19 @@ getAllBranches <- function(tree) {
     allSplits[[index]] <- splits
     index <- index+1
   }
+
+  possibleNames <- rownames(tree$frame)[-1]
+
+  names(allSplits) <- as.character(sort(as.numeric(possibleNames)))
+
   return(allSplits)
+}
+
+
+getBranch <- function(tree, nn) {
+  branches <- getAllBranches(tree)
+  if (as.numeric(nn)) {nn <- as.character(nn)}
+  return(branches$nn)
 }
 
 

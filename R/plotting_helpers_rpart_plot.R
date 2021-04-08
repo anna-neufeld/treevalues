@@ -296,7 +296,7 @@ prp <- function(x=stop("no 'x' arg"),
                     nn.border.col, nn.lty, nn.round, bg)
 
         if(nn || ni)
-            draw.node.numbers(nn, ni, draw.shadows1, type, branch,
+            rpart.plot:::draw.node.numbers(nn, ni, draw.shadows1, type, branch,
                     Margin, xflip, yflip, cex,
                     main, sub, col.main, cex.main, col.sub, cex.sub,
                     xlim, ylim, node.xy, is.leaf, nodes,
