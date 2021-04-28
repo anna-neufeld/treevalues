@@ -2,11 +2,16 @@ context("basic testing")
 library(treevalues)
 
 test_that("Region: do different methods match??", {
+  #library(rpart)
+  #library(intervals)
+  #library(rpart.plot)
+  #library(partykit)
+
   n <- 150
   p <- 8
   sigma_y <- 5
   X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))
-  mu_y <- 5*(X[,1] <= 0) + 2*(X[,2]>0)
+  mu_y <- 0
   y <- rnorm(n, mu_y, sigma_y)
 
   dat <- data.frame(y=y,X=X)
@@ -14,20 +19,25 @@ test_that("Region: do different methods match??", {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 3,
-                                                                 minsplit=2, minbucket=1,
-                                                                 cp=0.03, maxcompete=0,
-                                                                 maxsurrogate=0))
+  base_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.05, maxcompete=0,maxsurrogate=0))
+  unpruned_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.0, maxcompete=0,maxsurrogate=0))
 
-  node <- base_tree$where[1]
-  CI1 <- nodeInference(base_tree,node,sigma_y)$confint
-  length1 <- CI1[2]-CI1[1]
+  region <- sample(row.names(base_tree$frame)[-1],size=1)
+  splits <- getBranch(base_tree, region)
+  membership <-  getRegion(base_tree,region)
+  nu <- (as.numeric(membership))/sum(membership)
 
-  splits <- getBranch(base_tree, node)
-  y1 <- y[base_tree$where==node]
-  nu <- (base_tree$where==node)/sum((base_tree$where==node))
-  true_signal <- abs(t(nu)%*%mu_y)
-  phi_bounds_direct <- getInterval_full(base_tree,nu, splits)
+  fullInt <- getInterval_full(base_tree,nu, splits,grow=FALSE)
+  growInt <- getInterval_full(base_tree,nu, splits,grow=TRUE)
+
+  growInt2 <- getInterval_full(unpruned_tree,nu, splits,grow=FALSE)
+
+  pruneInt <- suppressWarnings(interval_difference(growInt,fullInt))
+
+  expect_true(length(suppressWarnings(interval_difference(fullInt,growInt)))==0)
+  expect_true(length(suppressWarnings(interval_difference(growInt2,growInt)))==0)
+  expect_true(length(suppressWarnings(interval_difference(growInt,growInt2)))==0)
+
   }
 )
 

@@ -10,7 +10,8 @@ branchInference(
   type = "reg",
   alpha = 0.05,
   sigma_y = NULL,
-  c = 0
+  c = 0,
+  computeCI = TRUE
 )
 }
 \arguments{

@@ -44,7 +44,8 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
     where <- node1+node2
     nu <- (where==1)/sum(where==1) - (where==2)/sum(where==2)
     sample_signal <- t(nu)%*%y
-    phiBounds <- getInterval_full(tree, nu,branch,sib=TRUE)
+    ### SWITCH TO SIB=TRUE for computation later!!!
+    phiBounds <- getInterval_full(tree, nu,branch,sib=FALSE)
     pval <- correctPVal(phiBounds, nu, y, sigma_y)
     if (computeCI) {
       CI <- computeCI(nu,y,sigma_y, phiBounds, alpha)
@@ -59,7 +60,10 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
   return(out)
 }
 
-
+#' Get a list of branches in tree to easily find out what you want to do inferenceon
+#'
+#' @param tree An rpart object. Must have been built with model=TRUE
+#' @export
 getAllBranches <- function(tree) {
   if (length(unique(tree$where))==1) {return(NA)}
   allNodes <- sort(as.numeric(as.character(unique(rpart.utils::rpart.rules.table(tree)$Rule)[-1])))
@@ -112,6 +116,11 @@ getAllBranches <- function(tree) {
   return(allSplits)
 }
 
+#' Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
+#'
+#' @param tree An rpart object. Must have been built with model=TRUE
+#' @param nn A node number!! As a string or as an integer is fine
+#' @export
 getBranch <- function(tree, nn) {
   branches <- getAllBranches(tree)
   if (as.numeric(nn)) {nn <- as.character(nn)}
@@ -119,17 +128,17 @@ getBranch <- function(tree, nn) {
 }
 
 
-getRegion <- function(tree, nn,data=FALSE){
+#' Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
+#'
+#' @param tree An rpart object. Must have been built with model=TRUE
+#' @param nn A node number!! As a string or as an integer is fine
+#' @export
+getRegion <- function(tree, nn){
   rule <- path.rpart(tree, nn,print.it=FALSE)
   dat <- tree$model
   rule_2 <- sapply(rule[[1]][-1], function(x) strsplit(x, '(?<=[><=])(?=[^><=])|(?<=[^><=])(?=[><=])', perl = TRUE))
   ind <- apply(do.call(cbind, lapply(rule_2, function(x) eval(call(x[2], dat[,x[1]], as.numeric(x[3]))))), 1, all)
-
-  if(data) {
-    subset<- dat[ind,]
-    return(subset)
-  }
-  else {return(ind)}
+  return(ind)
 }
 
 
