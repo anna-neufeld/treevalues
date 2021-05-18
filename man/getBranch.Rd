@@ -2,15 +2,24 @@
 % Please edit documentation in R/user_funs.R
 \name{getBranch}
 \alias{getBranch}
-\title{Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)}
+\title{Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart. 
+If no node numbers are passed in, a list of all branches in the tree will be returned. 
+Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)}
 \usage{
-getBranch(tree, nn)
+getBranch(tree, nn = NULL)
 }
 \arguments{
-\item{tree}{An rpart object. Must have been built with model=TRUE}
+\item{tree}{An rpart object.}
 
-\item{nn}{A node number!! As a string or as an integer is fine}
+\item{nn}{A node number that corresponds to a valid node in \texttt{tree}. The list of valid node numbers can be obtained with
+\texttt{row.names(tree$frame)} or by plotting \texttt{tree} with \texttt{treeval.plot} and \texttt{nn=TRUE}. The node number can be passed in as
+either a character string or an integer.}
+}
+\value{
+Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 }
 \description{
+Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart. 
+If no node numbers are passed in, a list of all branches in the tree will be returned. 
 Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
 }

@@ -3,7 +3,7 @@
 #' Returns the interval for phi such that Tree(y'(phi)) (where the definition of y'(phi) depends on nu)
 #' contains the series of branch "branch". An rpart object build with model=TRUE must be provided.
 #'
-#' @param tree An rpart object. Must have been built with model=TRUE arguement unless X and y are provided separately
+#' @param tree An rpart object. Must have been built with model=TRUE arguement.
 #' @param nu The contrast vector that defines the parameter.
 #' @param branch A vector of strings specifying the branch.
 #' @param sib If you are doing inference and nu=nu_sib, this takes advantage of some computational speedups!
@@ -12,7 +12,7 @@
 #' @return an object of class Interval that defines the set S.
 #' @importFrom stats predict
 #' @export
-getInterval_full <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) {
+getInterval <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) {
 
   branch <- paste("dat$", branch)
   minbucket <- tree$control$minbucket
@@ -30,7 +30,7 @@ getInterval_full <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) 
 
   # Go through and compute the h() and g() function for the subtrees that don't depend on phi!!!
   # This work isonly needed for s_prune.
-  if (length(branch) > 1) {
+  if (length(branch) > 1 & !grow) {
 
     vecChildren <- eval(parse(text = paste(branch, collapse=" & ")))
     childrenGains <-   sum((y[as.logical(vecChildren)]-mean(y[as.logical(vecChildren)]))^2)  - sum((y[as.logical(vecChildren)]-predict(tree)[as.logical(vecChildren)])^2)
@@ -64,7 +64,7 @@ getInterval_full <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) 
     sizeZ <- apply(off_subgroup_membership, 1, numbranch)
     sizeZfull <- cumsum(sizeZ[length(sizeZ):1])
   } else {
-
+if (!grow) {
     off_subgroup_membership <- !eval(parse(text = branch))
     vec <- off_subgroup_membership
     gainZfull <-   sum((y[as.logical(vec)]-mean(y[as.logical(vec)]))^2)  - sum((y[as.logical(vec)]-predict(tree)[as.logical(vec)])^2)
@@ -73,7 +73,7 @@ getInterval_full <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) 
     vecChildren <- eval(parse(text = branch))
     childrenGains <-   sum((y[as.logical(vecChildren)]-mean(y[as.logical(vecChildren)]))^2)  - sum((y[as.logical(vecChildren)]-predict(tree)[as.logical(vecChildren)])^2)
     childrenSize <- length(unique(tree$where[as.logical(vecChildren)])) - 1 ### DO I MINUS 1???? no, right?? NOT AGAIN???
-
+}
   }
 
   cp_cutoff <- cp*(sum((y-mean(y))^2))

@@ -1,12 +1,21 @@
-#' Pass in a branch!!!
+#' This is the main function for carrying out inference on an \texttt{rpart} regression tree. This function can be used to
+#' carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.
 #'
-#' @param tree An rpart object. Must have been built with model=TRUE
-#' @param branch A vector of splits.
-#' @param type Pass in either "reg" or "sib"
-#' @param alpha The significance level forthe confidence interval
-#' @param sigma_y the error variance.Assumed known but if not we'll use the sample variance.
-#'
-#' @return A fitted object!! With summary info
+#' @param tree An \texttt{rpart} object corresponding to the tree that you wish to do inference on. This tree must have been built
+#' with \texttt{rpart} parameters \texttt{model=TRUE, maxcompete=0,maxsurrogate=0}.
+#' @param branch A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
+#' \texttt{getBranch()}. Must actually correspond to a branch in \texttt{tree}; otherwise, errors will occur.
+#' @param type A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
+#' inference on the mean of single region defined by the end of this branch ("reg"), or doing inference on the difference
+#' between this region and its subling.
+#' @param alpha The significance level for the confidence interval
+#' @param sigma_y The true error variance. If known, this should be passed in. Otherwise, the sample variance will be computed
+#' as a conservative estimate.
+#' @param c The p-value c
+#' @param computeCI Would you like a confidence interval to be computed? Confidence intervals are much slower to compute than
+#' p-values, and so if you are performing simulations it may be wise to set this to false.
+#' @return An object of class \texttt{branch_inference} that contains a confidence interval, a p-value,
+#' the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
 #' @export
 #' @importFrom intervals Intervals
 branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=0, computeCI=TRUE) {
@@ -24,7 +33,11 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
     nu <- (node1==1)/sum(node1==1)
 
     sample_signal <- t(nu)%*%y
-    phiBounds <- getInterval_full(tree, nu, branch)
+    phiBounds <- getInterval(tree, nu, branch)
+    if (sum(size(phiBounds))==0) {
+      pval <- 1
+      CI <- Intervals(c(-Inf,Inf))
+    } else {
     if (computeCI) {
     CI <- computeCI(nu,y,sigma_y, phiBounds, alpha)
     } else {CI=NA}
@@ -32,6 +45,7 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
       print("error: not yet implemented")
     }
     pval <- correctPVal(phiBounds,nu,y,sigma_y)
+    }
   }
 
   if (type=="sib") {
@@ -45,11 +59,16 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
     nu <- (where==1)/sum(where==1) - (where==2)/sum(where==2)
     sample_signal <- t(nu)%*%y
     ### SWITCH TO SIB=TRUE for computation later!!!
-    phiBounds <- getInterval_full(tree, nu,branch,sib=FALSE)
+    phiBounds <- getInterval(tree, nu,branch,sib=FALSE)
+    if (sum(size(phiBounds))==0) {
+      pval <- 1
+      CI <- Intervals(c(-Inf,Inf))
+    } else {
     pval <- correctPVal(phiBounds, nu, y, sigma_y)
     if (computeCI) {
       CI <- computeCI(nu,y,sigma_y, phiBounds, alpha)
     } else {CI=NA}
+    }
   }
 
   out <- list(
@@ -60,10 +79,9 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
   return(out)
 }
 
-#' Get a list of branches in tree to easily find out what you want to do inferenceon
+#' This function takes an rpart tree and
 #'
 #' @param tree An rpart object. Must have been built with model=TRUE
-#' @export
 getAllBranches <- function(tree) {
   if (length(unique(tree$where))==1) {return(NA)}
   allNodes <- sort(as.numeric(as.character(unique(rpart.utils::rpart.rules.table(tree)$Rule)[-1])))
@@ -116,13 +134,19 @@ getAllBranches <- function(tree) {
   return(allSplits)
 }
 
+#' Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
+#' If no node numbers are passed in, a list of all branches in the tree will be returned.
 #' Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
 #'
-#' @param tree An rpart object. Must have been built with model=TRUE
-#' @param nn A node number!! As a string or as an integer is fine
+#' @param tree An rpart object.
+#' @param nn A node number that corresponds to a valid node in \texttt{tree}. The list of valid node numbers can be obtained with
+#' \texttt{row.names(tree$frame)} or by plotting \texttt{tree} with \texttt{treeval.plot} and \texttt{nn=TRUE}. The node number can be passed in as
+#' either a character string or an integer.
+#' @return Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 #' @export
-getBranch <- function(tree, nn) {
+getBranch <- function(tree, nn=NULL) {
   branches <- getAllBranches(tree)
+  if (is.null(nn)) {return(branches)}
   if (as.numeric(nn)) {nn <- as.character(nn)}
   return(branches[[nn]])
 }
@@ -132,6 +156,7 @@ getBranch <- function(tree, nn) {
 #'
 #' @param tree An rpart object. Must have been built with model=TRUE
 #' @param nn A node number!! As a string or as an integer is fine
+#' @return The indices of data that belong to this region in the training set. The training set is stored in tree$model.
 #' @export
 getRegion <- function(tree, nn){
   rule <- path.rpart(tree, nn,print.it=FALSE)

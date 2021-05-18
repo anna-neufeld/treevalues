@@ -11,6 +11,9 @@ getRegion(tree, nn)
 
 \item{nn}{A node number!! As a string or as an integer is fine}
 }
+\value{
+The indices of data that belong to this region in the training set. The training set is stored in tree$model.
+}
 \description{
 Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
 }

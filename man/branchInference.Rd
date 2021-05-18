@@ -2,7 +2,8 @@
 % Please edit documentation in R/user_funs.R
 \name{branchInference}
 \alias{branchInference}
-\title{Pass in a branch!!!}
+\title{This is the main function for carrying out inference on an \texttt{rpart} regression tree. This function can be used to
+carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.}
 \usage{
 branchInference(
   tree,
@@ -15,19 +16,31 @@ branchInference(
 )
 }
 \arguments{
-\item{tree}{An rpart object. Must have been built with model=TRUE}
+\item{tree}{An \texttt{rpart} object corresponding to the tree that you wish to do inference on. This tree must have been built
+with \texttt{rpart} parameters \texttt{model=TRUE, maxcompete=0,maxsurrogate=0}.}
 
-\item{branch}{A vector of splits.}
+\item{branch}{A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
+\texttt{getBranch()}. Must actually correspond to a branch in \texttt{tree}; otherwise, errors will occur.}
 
-\item{type}{Pass in either "reg" or "sib"}
+\item{type}{A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
+inference on the mean of single region defined by the end of this branch ("reg"), or doing inference on the difference
+between this region and its subling.}
 
-\item{alpha}{The significance level forthe confidence interval}
+\item{alpha}{The significance level for the confidence interval}
 
-\item{sigma_y}{the error variance.Assumed known but if not we'll use the sample variance.}
+\item{sigma_y}{The true error variance. If known, this should be passed in. Otherwise, the sample variance will be computed
+as a conservative estimate.}
+
+\item{c}{The p-value c}
+
+\item{computeCI}{Would you like a confidence interval to be computed? Confidence intervals are much slower to compute than
+p-values, and so if you are performing simulations it may be wise to set this to false.}
 }
 \value{
-A fitted object!! With summary info
+An object of class \texttt{branch_inference} that contains a confidence interval, a p-value, 
+the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
 }
 \description{
-Pass in a branch!!!
+This is the main function for carrying out inference on an \texttt{rpart} regression tree. This function can be used to
+carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.
 }

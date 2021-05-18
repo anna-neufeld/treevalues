@@ -1,0 +1,88 @@
+---
+title: "Tutorial: using ``treevalues`` to perform inference on ``rpart`` trees"
+output: rmarkdown::html_vignette
+bibliography: tree_values.bib
+vignette: >
+  %\VignetteIndexEntry{inference_tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In this tutorial, we demonstrate how to use the ``treevalues`` package to perform inference on a CART (@breiman1984classification) tree fit using the ``rpart`` package (@therneau2015package). Throughout this tutorial, we work with an example tree fit to the Box Lunch Study dataset, which is provided in the ``visTree`` package. 
+
+We start by loading the two packages we will be working with, along with the dataset we will be using.
+
+```{r}
+#library(treevalues)
+#library(rpart)
+#data(blsdata, package="visTree")
+```
+
+# Building the tree
+
+The ``treevalues`` package is designed for use with the ``rpart`` package, and so all trees should be built using ``rpart``. All trees should be built with the parameter ``model=TRUE``, which simply saves a copy of the training data inside of the fitted rpart object (which is useful when carrying out inference). 
+
+```{r, tree}
+#bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
+```
+
+Note that the arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript, $\lambda = $``cp`` $\times \sum_{i=1}^n (y_i-\bar{y})^2$. \textbf{Note that the RPART documentation is wrong}. 
+
+We might first want to plot the tree. While this could be accomplished using ``plot()`` from the ``rpart`` package, or else using something more specialized like the ``rpart.plot`` package, we recommend that you use our internal ``treeval.plot()`` function. However, since we are just exploring our tree and have not yet decided to do inference, you can set ``inference=FALSE``.  
+
+```{r}
+#treeval.plot(bls.tree, inference=FALSE)
+```
+
+# Inference on a pair of sibling regions. 
+
+Suppose we are interested in the whether or not the bottom-right split on ``resteating >= 14`` is "statistically significant". This means that we want a p-value for the difference in means between the nodes labeled ``8`` and ``9`` in our plot above. From our manuscript, we know that inference on this difference in means comes down to conditioning on the event that the ``branch`` that led to this split appearing in the tree.
+
+```{r}
+#branch <- getBranch(bls.tree,8)
+#branch
+```
+
+We now pass this branch into ``branchInference``, which does inference conditional on the event that this branch appeared in the tree. We should specify if we want to do inference just on region 8, or on the difference between region 8 and its sibling, region 9. In this section, we do the latter.
+
+```{r}
+#result <- treevalues::branchInference(bls.tree, branch, type="sib")
+#result$confint
+#result$pval
+```
+
+Note that, by default, this is a 95% confidence interval, and the pvalue corresponds to testing the null hypothesis that $\nu_{sib}^T \mu = 0$. We can change the null hypothesis by specifiying a different constant $c$, and we can change the confidence interval by specifying $\alpha$. By default, $\alpha=0.05$, so the $CI$ is a $1-\alpha$ CI. 
+
+```{r}
+#result <- branchInference(bls.tree, branch, type="sib", alpha=0.1)
+#result$confint
+#result$pval
+```
+
+# Inference on a single region
+
+Suppose that we want
+
+# Inference for the entire tree
+
+We can also bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95%
+
+```{r}
+#treeval.plot(bls.tree,  inference=TRUE)
+```
+
+ 
+Or we can see it in a matrix. I need to work on my row and column names for this!!
+
+```{r}
+#mat <- fullTreeInference(bls.tree)
+#print(mat, ndigits=3)
+```
+

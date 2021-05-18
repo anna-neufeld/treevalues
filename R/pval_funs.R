@@ -9,6 +9,8 @@
 #' @param y the response data y
 #' @param sigma the (assumed known) noise standard deviation
 #' @return a p-value.
+#' @importFrom intervals interval_complement
+#' @importFrom intervals interval_intersection
 correctPVal <- function(phiInterval, nu, y, sigma) {
   delta1 <- phiInterval
   delta2 <- interval_complement(Intervals(c(-abs(t(nu)%*%y), abs(t(nu)%*%y))))

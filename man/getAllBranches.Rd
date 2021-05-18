@@ -2,7 +2,7 @@
 % Please edit documentation in R/user_funs.R
 \name{getAllBranches}
 \alias{getAllBranches}
-\title{Get a list of branches in tree to easily find out what you want to do inferenceon}
+\title{This function takes an rpart tree and}
 \usage{
 getAllBranches(tree)
 }
@@ -10,5 +10,5 @@ getAllBranches(tree)
 \item{tree}{An rpart object. Must have been built with model=TRUE}
 }
 \description{
-Get a list of branches in tree to easily find out what you want to do inferenceon
+This function takes an rpart tree and
 }

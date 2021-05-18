@@ -7,6 +7,8 @@
 #' @return A large matrix storing lots of pvalues and confidence intervals.
 #' @importFrom stats sd
 #' @importFrom stats var
+#' @importFrom intervals interval_union
+#' @importFrom intervals interval_complement
 fullTreeInference <- function(tree, sigma_y =
                                 sd(tree$model[,1])) {
 
@@ -35,6 +37,9 @@ fullTreeInference <- function(tree, sigma_y =
   j=2
   if (length(terminalNodes) > 1) {
     splitList <- getAllBranches(tree)
+    for (j in 1:length(splitList)) {
+      splitList[j][[1]] <- paste("dat$",   splitList[j][[1]])
+    }
     i=1
     while (i < length(splitList)) {
       #print(i)
@@ -50,15 +55,15 @@ fullTreeInference <- function(tree, sigma_y =
       nu <- (where==1)/sum(where==1) - (where==2)/sum(where==2)
 
       sample_signal <- t(nu)%*%y
-      phi_bounds_split <- getInterval_full(tree, nu,splits)
+      phi_bounds_split <- getInterval(tree, nu,splits)
       p_split <- correctPVal(phi_bounds_split, nu, y, sigma_y)
       CI_split <- computeCI(nu,y,sigma_y, phi_bounds_split, 0.05)
 
       nu1 <- (where==1)/sum(where==1)
       nu2 <- (where==2)/sum(where==2)
 
-      phiBounds1 <- getInterval_full(tree, nu1, splits)
-      phiBounds2 <- getInterval_full(tree, nu2, splits)
+      phiBounds1 <- getInterval(tree, nu1, splits)
+      phiBounds2 <- getInterval(tree, nu2, splits)
 
       CI1 <- computeCI(nu1,y,sigma_y, phiBounds1, 0.05)
       CI2 <- computeCI(nu2,y,sigma_y, phiBounds2, 0.05)
