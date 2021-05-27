@@ -14,11 +14,14 @@
 #' @param c The p-value c
 #' @param computeCI Would you like a confidence interval to be computed? Confidence intervals are much slower to compute than
 #' p-values, and so if you are performing simulations it may be wise to set this to false.
+#' @param permute If you are doing type="reg", do you want to consider all possible permutations of the branch? This leads to the highest power
+#' for region inference, but is computationally inefficient.
 #' @return An object of class \texttt{branch_inference} that contains a confidence interval, a p-value,
 #' the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
 #' @export
 #' @importFrom intervals Intervals
-branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=0, computeCI=TRUE) {
+branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=0, computeCI=TRUE,
+                            permute=FALSE) {
   dat <- tree$model
   y <- dat[,1]
   if (is.null(sigma_y)) {

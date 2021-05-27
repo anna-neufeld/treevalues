@@ -1,3 +1,7 @@
+#' Returns vector of descendents in ``tree`` for node ``nn``.
+#' @param tree an rpart object.
+#' @param nn the number of a node in tree. Note that node numbers correspond to the row names of tree$frame.
+#' @return a vector of descendents.
 getDesc <- function(tree, nn) {
   allNodes <- as.numeric(row.names(tree$frame))
   if (nn %in% allNodes) return(c(nn, getDesc(tree,2*nn), getDesc(tree,2*nn+1)))
@@ -5,6 +9,10 @@ getDesc <- function(tree, nn) {
 }
 
 
+#' Returns vector of ancestors in ``tree`` for node ``nn``.
+#' @param tree an rpart object.
+#' @param nn the number of a node in tree. Note that node numbers correspond to the row names of tree$frame.
+#' @return a vector of ancestors.
 getAnc <- function(tree, nn) {
   anc <- c()
   allNodes <- as.numeric(row.names(tree$frame))
@@ -17,6 +25,9 @@ getAnc <- function(tree, nn) {
 }
 
 
+#' Performs bottom up pruning but goes in the specific order where BRANCH is visited last.
+#' @param tree An rpart object. If y is not provided, this must have been constructed with model=TRUE.
+#' @param lambda
 bup_branch <- function(tree,lambda,nn, y=NULL) {
   if (is.null(y)) {
     y <- tree$model[,1]

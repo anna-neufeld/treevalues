@@ -20,7 +20,7 @@ for (i in 1:nTrials) {
   print(i)
 
   X <- MASS::mvrnorm(n, mu=rep(0,p), Sigma=diag(1, nrow=p, ncol=p))
-  beta = 0
+  beta = 5
   mu_y_1 <- beta*I(X[,1] > 0)
   mu_y_2 <- mu_y_1 + 2*beta*(I(X[,1] > 0 & X[,2] > 0)) - 2*beta*(I(X[,1] < 0 & X[,2] > 0))
   mu_y <- mu_y_2 + beta*I(X[,3] > 0 & X[,2] > 0 & X[,1] > 0) - beta*I(X[,3] > 0 & X[,2] < 0 & X[,1] < 0)
@@ -55,6 +55,10 @@ for (i in 1:nTrials) {
 }
 
 all.equal(pvals,pvals2)
+mean(cov)
+mean(cov2)
+median(CIs)
+median(CIs2)
 
 par(mfrow=c(1,2))
 qqsample <- sort(pvals[!is.na(pvals)])
