@@ -24,11 +24,11 @@ getAnc <- function(tree, nn) {
   return(sort(anc, decreasing=TRUE))
 }
 
-#' Returns the tree that remains after all nodes in "tree" BESIDES the descendants of node 'nn' have been visited
+#' Returns the tree that remains after all nodes in "tree" BESIDES the ancestors of node 'nn' have been visited
 #' for bottom-up pruning with parameter lambda.
 #' @param tree An rpart object. If y is not provided, must have been built with model=TRUE
 #' @param lambda The cost complexity parameter for pruning.
-#' @param nn the node number of the region whose descendants you want to leave in the tree.
+#' @param nn the node number of the region whose ancestors you want to leave in the tree.
 #' @param y the response vector to evaluate the pruning on.
 #' @return An rpart object; intermediately pruned.
 tree_KL <- function(tree,lambda,nn, y=NULL) {
