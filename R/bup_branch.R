@@ -24,42 +24,13 @@ getAnc <- function(tree, nn) {
   return(sort(anc, decreasing=TRUE))
 }
 
-
-#' Performs bottom up pruning but goes in the specific order where BRANCH is visited last.
-#' @param tree An rpart object. If y is not provided, this must have been constructed with model=TRUE.
-#' @param lambda
-bup_branch <- function(tree,lambda,nn, y=NULL) {
-  if (is.null(y)) {
-    y <- tree$model[,1]
-  }
-  regions <- sort(as.numeric(row.names(tree$frame)), decreasing = TRUE)
-  BRANCH <- getAnc(tree,nn)
-  regions <- c(regions[(regions %in% BRANCH)==FALSE], BRANCH)
-
-  terminal <- as.numeric(row.names(tree$frame))[sort(unique(tree$where))]
-
-  #max_non_terminal <- (max(regions)-1)/2
-  to_visit <- regions[(regions %in% terminal)==FALSE]
-
-
-  prev_tree <- tree
-  prev_SSE <- sum((y-predict(prev_tree))^2)
-  for (region in to_visit) {
-    temp_tree <-rpart::snip.rpart(prev_tree, region)
-    temp_SSE <- sum((y-predict(temp_tree))^2)
-    if ((length(unique(prev_tree$where))-length(unique(temp_tree$where))) > 0) {
-      improvement <- (temp_SSE - prev_SSE)/(length(unique(prev_tree$where))-length(unique(temp_tree$where)))
-      if (improvement < lambda) {
-        prev_tree <- temp_tree
-        prev_SSE <- sum((y-predict(prev_tree))^2)
-      }
-    }
-  }
-  return(prev_tree)
-}
-
-
-
+#' Returns the tree that remains after all nodes in "tree" BESIDES the descendants of node 'nn' have been visited
+#' for bottom-up pruning with parameter lambda.
+#' @param tree An rpart object. If y is not provided, must have been built with model=TRUE
+#' @param lambda The cost complexity parameter for pruning.
+#' @param nn the node number of the region whose descendants you want to leave in the tree.
+#' @param y the response vector to evaluate the pruning on.
+#' @return An rpart object; intermediately pruned.
 tree_KL <- function(tree,lambda,nn, y=NULL) {
   if (is.null(y)) {
     y <- tree$model[,1]
