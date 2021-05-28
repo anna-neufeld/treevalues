@@ -2,7 +2,7 @@
 % Please edit documentation in R/user_funs.R
 \name{branchInference}
 \alias{branchInference}
-\title{This is the main function for carrying out inference on an \texttt{rpart} regression tree. This function can be used to
+\title{This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
 carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.}
 \usage{
 branchInference(
@@ -12,15 +12,13 @@ branchInference(
   alpha = 0.05,
   sigma_y = NULL,
   c = 0,
-  computeCI = TRUE
+  computeCI = TRUE,
+  permute = FALSE
 )
 }
 \arguments{
-\item{tree}{An \texttt{rpart} object corresponding to the tree that you wish to do inference on. This tree must have been built
-with \texttt{rpart} parameters \texttt{model=TRUE, maxcompete=0,maxsurrogate=0}.}
-
 \item{branch}{A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
-\texttt{getBranch()}. Must actually correspond to a branch in \texttt{tree}; otherwise, errors will occur.}
+``getBranch()``. Must actually correspond to a branch in ``tree``; otherwise, errors will occur.}
 
 \item{type}{A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
 inference on the mean of single region defined by the end of this branch ("reg"), or doing inference on the difference
@@ -35,12 +33,15 @@ as a conservative estimate.}
 
 \item{computeCI}{Would you like a confidence interval to be computed? Confidence intervals are much slower to compute than
 p-values, and so if you are performing simulations it may be wise to set this to false.}
+
+\item{permute}{If you are doing type="reg", do you want to consider all possible permutations of the branch? This leads to the highest power
+for region inference, but is computationally inefficient. If you are doing type="sib", there is no distinction.}
 }
 \value{
-An object of class \texttt{branch_inference} that contains a confidence interval, a p-value, 
+An object of class ``branch_inference`` that contains a confidence interval, a p-value,
 the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
 }
 \description{
-This is the main function for carrying out inference on an \texttt{rpart} regression tree. This function can be used to
+This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
 carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.
 }

@@ -3,7 +3,8 @@
 \name{magicfun}
 \alias{magicfun}
 \title{A helper function for approximating normal tail probabilities
-This comes directly from the Outference Package}
+This comes directly from the Outference Package.
+The code and the documentation can be found at https://github.com/shuxiaoc/outference.}
 \usage{
 magicfun(z)
 }

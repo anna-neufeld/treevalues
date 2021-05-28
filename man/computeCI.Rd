@@ -24,5 +24,6 @@ This function returns a vector of lower and upper confidence limits.
 }
 \description{
 This function computes the selective confidence intervals.
+Code modified from the Outference package, available at https://github.com/shuxiaoc/outference.
 }
 \keyword{internal}
