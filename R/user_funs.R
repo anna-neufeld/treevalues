@@ -4,7 +4,7 @@
 #' @param tree An \texttt{rpart} object corresponding to the tree that you wish to do inference on. This tree must have been built
 #' with \texttt{rpart} parameters \texttt{model=TRUE, maxcompete=0,maxsurrogate=0}.
 #' @param branch A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
-#' \texttt{getBranch()}. Must actually correspond to a branch in \texttt{tree}; otherwise, errors will occur.
+#' \texttt{getBranch()}. Must actually correspond to a branch in ``tree``; otherwise, errors will occur.
 #' @param type A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
 #' inference on the mean of single region defined by the end of this branch ("reg"), or doing inference on the difference
 #' between this region and its subling.
@@ -15,13 +15,16 @@
 #' @param computeCI Would you like a confidence interval to be computed? Confidence intervals are much slower to compute than
 #' p-values, and so if you are performing simulations it may be wise to set this to false.
 #' @param permute If you are doing type="reg", do you want to consider all possible permutations of the branch? This leads to the highest power
-#' for region inference, but is computationally inefficient.
-#' @return An object of class \texttt{branch_inference} that contains a confidence interval, a p-value,
+#' for region inference, but is computationally inefficient. If you are doing type="sib", there is no distinction.
+#' @return An object of class ``branch_inference`` that contains a confidence interval, a p-value,
 #' the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
 #' @export
 #' @importFrom intervals Intervals
+#' @importFrom intervals size
 branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=0, computeCI=TRUE,
                             permute=FALSE) {
+
+  if (c!=0) {stop("At this time, this package only supports testing hypotheses of the form param = 0")}
   dat <- tree$model
   y <- dat[,1]
   if (is.null(sigma_y)) {
@@ -62,7 +65,7 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
 
       ## START US OFF
       phiBounds <- getInterval(tree, nu, branch,sib=FALSE)
-      if (permutations==TRUE & length(branch) > 1) {
+      if (length(branch) > 1) {
         list1 <- list1[-1]
 
         while (length(list1) > 0) {

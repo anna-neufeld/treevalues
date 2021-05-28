@@ -20,7 +20,7 @@ for (i in 1:nTrials) {
   print(i)
 
   X <- MASS::mvrnorm(n, mu=rep(0,p), Sigma=diag(1, nrow=p, ncol=p))
-  beta = 5
+  beta = 0
   mu_y_1 <- beta*I(X[,1] > 0)
   mu_y_2 <- mu_y_1 + 2*beta*(I(X[,1] > 0 & X[,2] > 0)) - 2*beta*(I(X[,1] < 0 & X[,2] > 0))
   mu_y <- mu_y_2 + beta*I(X[,3] > 0 & X[,2] > 0 & X[,1] > 0) - beta*I(X[,3] > 0 & X[,2] < 0 & X[,1] < 0)
@@ -35,14 +35,14 @@ for (i in 1:nTrials) {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 4,
-                                                                 minsplit=1, minbucket=1,
-                                                                 cp=0.02, maxcompete=0,
-                                                                 maxsurrogate=0), model=TRUE)
+  base_tree <- rpart::rpart(y~.,
+     data=dat, control=rpart.control(maxdepth = 4,minsplit=1, minbucket=1,
+        cp=0.02, maxcompete=0,maxsurrogate=0), model=TRUE)
   if (length(unique(base_tree$where))>1){
     region <- sample(row.names(base_tree$frame)[-1], size=1)
-    res1 <- regInference(base_tree,region,permutation=TRUE,sigma_y=sigma_y,computeCI=TRUE)
-    res2 <- regInference(base_tree,region,permutation=FALSE,sigma_y=sigma_y,computeCI=TRUE)
+    branch <- getBranch(base_tree, region)
+    res1 <- branchInference(base_tree,branch,sigma_y=sigma_y,computeCI=TRUE,permute=TRUE)
+    res2 <- branchInference(base_tree,branch, sigma_y=sigma_y, permute=FALSE, computeCI=TRUE)
     pvals[i] <- res1$pval
     pvals2[i] <- res2$pval
     lengthS[i] <- sum(size(res1$condset))
