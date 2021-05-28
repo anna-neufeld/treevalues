@@ -33,7 +33,7 @@ data(blsdata, package="visTree")
 The ``treevalues`` package is designed for use with the ``rpart`` package, and so all trees should be built using ``rpart``. All trees should be built with the parameter ``model=TRUE``, which simply saves a copy of the training data inside of the fitted rpart object (this is useful so that the data need not be separately passed to each inference function). 
 
 ```{r, tree}
-bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
+bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02, maxcompete=0, maxsurrogate=0)
 ```
 
 Note that the arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. 

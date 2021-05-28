@@ -12,7 +12,7 @@
 #' @return an object of class Interval that defines the set S.
 #' @importFrom stats predict
 #' @export
-getInterval <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) {
+getInterval2 <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) {
 
   branch <- paste("dat$", branch)
   minbucket <- tree$control$minbucket
@@ -68,16 +68,16 @@ getInterval <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) {
     sizeZfull <- cumsum(sizeZ[length(sizeZ):1])
   } else {
     ### Deals with necessary pruning calculations in case where branch has length 1.
-if (!grow) {
-    off_subgroup_membership <- !eval(parse(text = branch))
-    vec <- off_subgroup_membership
-    gainZfull <-   sum((y[as.logical(vec)]-mean(y[as.logical(vec)]))^2)  - sum((y[as.logical(vec)]-predict(tree)[as.logical(vec)])^2)
-    sizeZfull <- length(unique(tree$where[as.logical(vec)])) - 1
+    if (!grow) {
+      off_subgroup_membership <- !eval(parse(text = branch))
+      vec <- off_subgroup_membership
+      gainZfull <-   sum((y[as.logical(vec)]-mean(y[as.logical(vec)]))^2)  - sum((y[as.logical(vec)]-predict(tree)[as.logical(vec)])^2)
+      sizeZfull <- length(unique(tree$where[as.logical(vec)])) - 1
 
-    vecChildren <- eval(parse(text = branch))
-    childrenGains <-   sum((y[as.logical(vecChildren)]-mean(y[as.logical(vecChildren)]))^2)  - sum((y[as.logical(vecChildren)]-predict(tree)[as.logical(vecChildren)])^2)
-    childrenSize <- length(unique(tree$where[as.logical(vecChildren)])) - 1
-}
+      vecChildren <- eval(parse(text = branch))
+      childrenGains <-   sum((y[as.logical(vecChildren)]-mean(y[as.logical(vecChildren)]))^2)  - sum((y[as.logical(vecChildren)]-predict(tree)[as.logical(vecChildren)])^2)
+      childrenSize <- length(unique(tree$where[as.logical(vecChildren)])) - 1
+    }
   }
 
   cp_cutoff <- cp*(sum((y-mean(y))^2))
@@ -97,6 +97,8 @@ if (!grow) {
   norm_nu <- sum(nu^2)
   nut_y <- sum(nu*y)
   y_proj <-nu*(nut_y/norm_nu)
+  y_perp <- y - nu*(nut_y/norm_nu)
+
 
 
   regions <- rep(1,n)
@@ -114,19 +116,27 @@ if (!grow) {
   ### There are different ways you can think about multiplying the matrices. This is an old version.
   for (l in 1:L) {
 
-    ### Each of these should be O(n). Techically number of regions can scale with L?? So maybe O(nL)??
-    Hnu <- nu - (sapply(1:max(regions), function(u) mean(nu[regions==u])))[regions]
-    Hy <- y - (sapply(1:max(regions), function(u) mean(y[regions==u])))[regions]
-    Hyproj <- y_proj - (sapply(1:max(regions), function(u) mean(y_proj[regions==u])))[regions]
-    Hminus <- Hy-Hyproj
+    #Hnu <- nu - (sapply(1:max(regions), function(u) mean(nu[regions==u])))[regions]
+    #Hy <- y - (sapply(1:max(regions), function(u) mean(y[regions==u])))[regions]
+    #Hyproj <- y_proj - (sapply(1:max(regions), function(u) mean(y_proj[regions==u])))[regions]
+    #Hminus <- Hy-Hyproj
 
     ### All of these are O(n) too
-    Hnu2 <- Hnu[nulled]
-    Hy2 <- Hy[nulled]
-    Hminus2 <- Hminus[nulled]
+    #Hnu2 <- Hnu[nulled]
+    #Hy2 <- Hy[nulled]
+    #Hminus2 <- Hminus[nulled]
 
-    ### This is like 1(R^{l-1), j_l, s_l).
+    nu2 <- nu[nulled]
+    y_perp2 <- y_perp[nulled]
+
+    ### Fix the comments Anna.
     cy<- eval(parse(text = branch[l]))*nulled
+    indices_left <- as.logical(cy==1)
+    indices_right <- as.logical(cy==0 & nulled==1)
+    n_left <- sum(indices_left)
+    n_right <- sum(indices_right)
+
+
 
     ### This is a trivial case where the split did like an (n-0) split. In this case, say that
     ### no interval is possible??
@@ -135,61 +145,113 @@ if (!grow) {
       break
     }
 
-    Hcy <- cy - (sapply(1:max(regions), function(u) mean(cy[regions==u])))[regions]
+
+    ##### NOTE TO SELF--- the last terms should always cancel and so we should be able to ignore??
+    ##### Except just saving these for pruning???
+    #partialC1 <- (sum(y_perp[indices_left])^2/n_left + sum(y_perp[indices_right])^2/n_right - sum(y_perp[as.logical(nulled)])^2/leafSize)
+    partialC1part <- (sum(y_perp[indices_left])^2/n_left + sum(y_perp[indices_right])^2/n_right)
+
+    #partialA1 <- 1/(norm_nu^2)*(sum(nu[indices_left])^2/n_left + sum(nu[indices_right])^2/n_right - sum(nu[as.logical(nulled)])^2/leafSize)
+    partialA1part <- 1/(norm_nu^2)*(sum(nu[indices_left])^2/n_left + sum(nu[indices_right])^2/n_right)
+
+   # partialB1 <- 2*1/(norm_nu)*(
+  #      (sum(nu[indices_left])*sum(y_perp[indices_left]))/n_left +
+  #      (sum(nu[indices_right])*sum(y_perp[indices_right]))/n_right -
+  #      (sum(nu[as.logical(nulled)])*sum(y_perp[as.logical(nulled)]))/leafSize)
+    partialB1part <- 2*1/(norm_nu)*(
+      (sum(nu[indices_left])*sum(y_perp[indices_left]))/n_left +
+        (sum(nu[indices_right])*sum(y_perp[indices_right]))/n_right)
+
+    #print(c(partialA1, partialB1, partialC1))
+
+    #Hcy <- cy - (sapply(1:max(regions), function(u) mean(cy[regions==u])))[regions]
 
     ### Cleverly a
-    denom <- sum(cy)*(leafSize - sum(cy))/leafSize
+    #denom <- sum(cy)*(leafSize - sum(cy))/leafSize
 
 
 
-    indices <- which(cy==1)
-    partialA <- (sum(Hnu[indices])^2/norm_nu^2)/denom
-    partialB <- as.numeric((2*sum(Hy[indices])*(t(nu)%*%Hcy)/
-                              norm_nu - 2*(t(cy)%*%Hnu)^2%*%nut_y/
-                              norm_nu^2)/denom)
-    partialC <- (sum(Hminus[indices]))^2/denom
+    #indices <- which(cy==1)
+    #partialA <- (sum(Hnu[indices])^2/norm_nu^2)/denom
 
-    gainsA[L-l+1] <- partialA
-    gainsB[L-l+1] <- partialB
-    gainsC[L-l+1] <- partialC
+    #partialB <- as.numeric((2*sum(Hy[indices])*(t(nu)%*%Hcy)/
+    #                          norm_nu - 2*(t(cy)%*%Hnu)^2%*%nut_y/
+    #                          norm_nu^2)/denom)
+
+
+    #partialC <- (sum(Hminus[indices]))^2/denom
+
+    #### Save these because they get used during pruning.
+    gainsA[L-l+1] <- partialA1part - 1/(norm_nu^2)*sum(nu[as.logical(nulled)])^2/leafSize
+    gainsB[L-l+1] <- partialB1part - 2/(norm_nu)*(sum(nu[as.logical(nulled)])*sum(y_perp[as.logical(nulled)]))/leafSize
+    gainsC[L-l+1] <- partialC1part - sum(y_perp[as.logical(nulled)])^2/leafSize
 
     for (j in 1:p) {
       c_now <- cs[j,nulled, nulled]
       hardwork <- sort(rowSums(c_now),index.return=TRUE) ## I hope this is O(n)!!!!
       num1sSORT <- hardwork$x
       sorted <- hardwork$ix
+      reverse_sorted <- hardwork$ix[length(hardwork$ix):1]
       len <- length(sorted)
 
+      ### I definitely mostly forget why this minbucket hack worked at all :(.
       denomsSORT <- (num1sSORT*(leafSize-num1sSORT)/leafSize)
       minDenomSORT <- ((minbucket-1)*(leafSize-(minbucket-1))/leafSize)
 
       ### These should be O(n)
-      unus <- cumsum(Hnu2[sorted])[1:(sum(nulled)-1)]
-      uys <- cumsum(Hy2[sorted])[1:(sum(nulled)-1)]
-      umin <- cumsum(Hminus2[sorted])[1:(sum(nulled)-1)]
-      denomsSORT <- denomsSORT[1:(sum(nulled)-1)]
+
+      #unus <- cumsum(Hnu2[sorted])[1:(sum(nulled)-1)]
+      #uys <- cumsum(Hy2[sorted])[1:(sum(nulled)-1)]
+      #umin <- cumsum(Hminus2[sorted])[1:(sum(nulled)-1)]
+      #denomsSORT <- denomsSORT[1:(sum(nulled)-1)]
+
+      Inus_left <- cumsum(nu2[sorted])[1:(sum(nulled)-1)]
+      Iys_left <- cumsum(y_perp2[sorted])[1:(sum(nulled)-1)]
+      Inus_right <- cumsum(nu2[reverse_sorted])[((sum(nulled)-1)):1]
+      Iys_right <- cumsum(y_perp2[reverse_sorted])[((sum(nulled)-1)):1]
+
+      denoms_left <- num1sSORT[1:(sum(nulled)-1)]
+      denoms_right <- leafSize-num1sSORT[1:(sum(nulled)-1)]
+
+
+      other_As1 <-1/(norm_nu^2)*(Inus_left^2/denoms_left + Inus_right^2/denoms_right)
+      other_Bs1 <- 2/(norm_nu)*(Inus_left*Iys_left/denoms_left + Inus_right*Iys_right/denoms_right)
+      other_Cs1 <- (Iys_left^2/denoms_left + Iys_right^2/denoms_right)
+
+
+      #umin <- cumsum(Hminus2[sorted])[1:(sum(nulled)-1)]
+      #denomsSORT <- denomsSORT[1:(sum(nulled)-1)]
+
 
       ### This is the clever thing where we hope we are only paying O(n) because
       ### we are not multiplying matricies
-      other_As <- unus^2/norm_nu^2
-      other_Bs <- 2*uys*unus/norm_nu- 2*(unus^2*(nut_y))/norm_nu^2
-      other_Cs <- umin^2
+      #other_As <- unus^2/norm_nu^2
+      #other_Bs <- 2*uys*unus/norm_nu- 2*(unus^2*(nut_y))/norm_nu^2
+      #other_Cs <- umin^2
+
+      #avec <- other_As/denomsSORT-partialA1
+      avec2 <- other_As1-partialA1part
+      bvec2 <- other_Bs1-partialB1part
+      cvec2 <- other_Cs1-partialC1part
+      #bvec <- other_Bs/denomsSORT-partialB1
+      #cvec <- other_Cs/denomsSORT-partialC1
+
+      #print(all.equal(avec,avec2))
+      #print(all.equal(bvec,bvec2))
+      #print(all.equal(cvec,cvec2))
+      #print(head(avec))
+      #print(head(avec2))
 
 
 
 
-      avec <- other_As/denomsSORT-partialA
-      bvec <- other_Bs/denomsSORT-partialB
-      cvec <- other_Cs/denomsSORT-partialC
-
-
-
+      ### ANNA BE SURE TO EVENTUALLY CHECK ON DISCRETE OR MINBUCK DATA
       uniqueindices <- c(cumsum(table(hardwork$x)))[1:(length(unique(hardwork$x))-1)]
       uniqueindices <- uniqueindices[denomsSORT[uniqueindices] > minDenomSORT]
 
-      num_coeffs <- length(avec[uniqueindices])
+      num_coeffs <- length(avec2[uniqueindices])
       if (num_coeffs !=0 & !is.na(uniqueindices[1])) {
-        coeffs_full[cur:(cur+num_coeffs-1),] <- cbind(avec,bvec,cvec)[uniqueindices,]
+        coeffs_full[cur:(cur+num_coeffs-1),] <- cbind(avec2,bvec2,cvec2)[uniqueindices,]
       }
       cur <- cur+num_coeffs
     }
@@ -219,20 +281,20 @@ if (!grow) {
     outside <- phi_bounds[phi_bounds[,3]==0,]
     intersection2 <- interval_complement(Intervals(c(min(outside[,1]), max(outside[,2]))))
   } else {
-  numIn <- nrow(phi_bounds[phi_bounds[,3]==1,])
-  if (!is.null(numIn)) {
-    inside_comp_mat <- matrix(c(-Inf, Inf), nrow=2*numIn, ncol=2, byrow=TRUE)
-    inside_comp_mat[1:numIn,2] <- phi_bounds[phi_bounds[,3]==1,1]
-    inside_comp_mat[(numIn+1):(2*numIn), 1] <- phi_bounds[phi_bounds[,3]==1,2]
-    ints_comp_inside <- Intervals(inside_comp_mat, closed=c(TRUE, TRUE))
-    intersection1 <- interval_complement(interval_union(ints_comp_inside))
-  } else {
-    intersection1 <- Intervals(c(-Inf, Inf))
-  }
+    numIn <- nrow(phi_bounds[phi_bounds[,3]==1,])
+    if (!is.null(numIn)) {
+      inside_comp_mat <- matrix(c(-Inf, Inf), nrow=2*numIn, ncol=2, byrow=TRUE)
+      inside_comp_mat[1:numIn,2] <- phi_bounds[phi_bounds[,3]==1,1]
+      inside_comp_mat[(numIn+1):(2*numIn), 1] <- phi_bounds[phi_bounds[,3]==1,2]
+      ints_comp_inside <- Intervals(inside_comp_mat, closed=c(TRUE, TRUE))
+      intersection1 <- interval_complement(interval_union(ints_comp_inside))
+    } else {
+      intersection1 <- Intervals(c(-Inf, Inf))
+    }
 
-  ### OUTSIDE INTERVALS
-  ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))
-  intersection2 <- interval_complement(interval_union(ints_outside))
+    ### OUTSIDE INTERVALS
+    ints_outside <- Intervals(phi_bounds[phi_bounds[,3]==0,1:2], closed=c(TRUE, TRUE))
+    intersection2 <- interval_complement(interval_union(ints_outside))
   }
 
 
@@ -275,59 +337,5 @@ if (!grow) {
     }
 
     return(suppressWarnings(interval_intersection(res1, cpInterval)))
-  }
-}
-
-
-#' Turn quadratic coefficients into an interval
-#'
-#' @param vec stores a,b,c coeffs of a quadratic equation
-#' @return A vector describing the regions where the quadratic is negative.
-#' @keywords internal
-#' @noRd
-getBounds <- function(vec) {
-
-  #vec[abs(vec) < 1e-15] <- 0
-  a <- vec[1]
-  b <- vec[2]
-  c <- vec[3]
-  tol <- 10*10^(-10)
-  if (abs(a) < tol & abs(b) < tol & abs(c) < tol) {
-    return(c(-Inf,Inf, 1))
-  }
-
-  ## If we just have a straight line
-  if (abs(a) < tol) {
-    if (abs(b) < tol) {
-      if (c < 1e-6) {return(c(-Inf,Inf, 1))
-        } else {return(c(-Inf, Inf, 0))}
-    }
-    root = -c/b
-    if (b>0) {
-      return(c(-Inf,root,1))
-    } else{
-      return(c(root, Inf, 1))
-    }
-  }
-
-  det <- b^2-4*a*c
-  if (det < 0) {
-    if (a > 0) {
-      #return(simpleError("STOP! EMPTY INTERVAL"))
-      return(c(-Inf,Inf,0)) ## TO AVOID ERRORS FOR NOW PLZ CHANGE LATER
-    }
-    return(c(-Inf, Inf, 1))
-  }
-  if (det==0) {
-    if (a > 0) {c(-b/(2*a), -b/(2*a), 1)}
-    return(c(-Inf, Inf, 1))
-  }
-  ## Down here determinant is positive: 2 roots
-  root1 <- (-b + sqrt(det))/(2*a)
-  root2 <- (-b - sqrt(det))/(2*a)
-  if (a > 0) {
-    return(c(min(root1, root2), max(root1,root2), 1))
-  } else {
-    return(c(min(root1, root2), max(root2,root1), 0))
   }
 }

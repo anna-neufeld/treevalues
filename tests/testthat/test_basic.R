@@ -19,7 +19,7 @@ test_that("Region: do different methods match??", {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.05, maxcompete=0,maxsurrogate=0))
+  base_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.01, maxcompete=0,maxsurrogate=0))
   unpruned_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.0, maxcompete=0,maxsurrogate=0))
 
   region <- sample(row.names(base_tree$frame)[-1],size=1)
@@ -27,10 +27,10 @@ test_that("Region: do different methods match??", {
   membership <-  getRegion(base_tree,region)
   nu <- (as.numeric(membership))/sum(membership)
 
-  fullInt <- getInterval_full(base_tree,nu, splits,grow=FALSE)
-  growInt <- getInterval_full(base_tree,nu, splits,grow=TRUE)
+  fullInt <- getInterval(base_tree,nu, splits,grow=FALSE)
+  growInt <- getInterval(base_tree,nu, splits,grow=TRUE)
 
-  growInt2 <- getInterval_full(unpruned_tree,nu, splits,grow=FALSE)
+  growInt2 <- getInterval(unpruned_tree,nu, splits,grow=FALSE)
 
   pruneInt <- suppressWarnings(interval_difference(growInt,fullInt))
 
@@ -58,7 +58,7 @@ test_that("Basic Hypothesis Tests; Null Model", {
   ### Build an rpart of depth d
   base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 2,
                                                                  minsplit=2, minbucket=1,
-                                                                 cp=-1, maxcompete=0,
+                                                                 cp=0, maxcompete=0,
                                                                  maxsurrogate=0), model=TRUE)
 
   ### For each pair of terminal nodes, compute results.
@@ -72,7 +72,7 @@ test_that("Basic Hypothesis Tests; Null Model", {
   y2 <- y[base_tree$where==locTest[2]]
   nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
   true_signal <- abs(t(nu)%*%mu_y)
-  phi_bounds1 <- getInterval_full(base_tree,nu, splits)
+  phi_bounds1 <- getInterval(base_tree,nu, splits)
   #pTree <- splitInference(base_tree, locTest, sigma_y)$pval
   #expect_true((pTree-0.8460218)<1e-6)
   #expect_true(pTree==correctPVal(phi_bounds1, nu, y, sigma_y))
