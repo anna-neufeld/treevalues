@@ -26,6 +26,8 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
 
   if (c!=0) {stop("At this time, this package only supports testing hypotheses of the form param = 0")}
   dat <- tree$model
+  n <- NROW(dat)
+  X <- dat[,-1]
   y <- dat[,1]
   if (is.null(sigma_y)) {
     sigma_y <- sd(dat[,1])
@@ -76,7 +78,7 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
             if (sgrow[1,1] == -Inf) {phiSample <- sgrow[1,2]-5
             } else {
               if (sgrow[1,2] == Inf) {phiSample <- sgrow[1,1]+5
-              } else {phiSample <- runif(1,sgrow[1,1],sgrow[1,2])}
+              } else {phiSample <- stats::runif(1,sgrow[1,1],sgrow[1,2])}
             }
             Pi_perp <- diag(rep(1,n)) - nu%*%t(nu)/sum(nu^2)
 
