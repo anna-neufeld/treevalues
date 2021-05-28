@@ -17,6 +17,9 @@ branchInference(
 )
 }
 \arguments{
+\item{tree}{An ``rpart`` object corresponding to the tree that you wish to do inference on. This tree must have been built
+with ``rpart`` parameters ``model=TRUE``, ``maxcompete=0``,``maxsurrogate=``.}
+
 \item{branch}{A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
 ``getBranch()``. Must actually correspond to a branch in ``tree``; otherwise, errors will occur.}
 

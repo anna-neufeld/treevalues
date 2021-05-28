@@ -2,7 +2,7 @@
 #' carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.
 #'
 #' @param tree An ``rpart`` object corresponding to the tree that you wish to do inference on. This tree must have been built
-#' with ``rpart`` parameters ``model=TRUE``, maxcompete=0,maxsurrogate=0}.
+#' with ``rpart`` parameters ``model=TRUE``, ``maxcompete=0``,``maxsurrogate=``.
 #' @param branch A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
 #' ``getBranch()``. Must actually correspond to a branch in ``tree``; otherwise, errors will occur.
 #' @param type A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
@@ -210,7 +210,7 @@ getAllBranches <- function(tree) {
 #'
 #' @param tree An rpart object.
 #' @param nn A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
-#' ``row.names(tree$frame)} or by plotting ``tree`` with ``treeval.plot`` and ``nn=TRUE``. The node number can be passed in as
+#' ``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot`` and ``nn=TRUE``. The node number can be passed in as
 #' either a character string or an integer.
 #' @return Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 #' @export

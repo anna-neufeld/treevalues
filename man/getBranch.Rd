@@ -10,6 +10,10 @@ getBranch(tree, nn = NULL)
 }
 \arguments{
 \item{tree}{An rpart object.}
+
+\item{nn}{A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
+``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot`` and ``nn=TRUE``. The node number can be passed in as
+either a character string or an integer.}
 }
 \value{
 Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
