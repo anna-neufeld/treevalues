@@ -37,15 +37,12 @@ fullTreeInference <- function(tree, sigma_y =
   j=2
   if (length(terminalNodes) > 1) {
     splitList <- getAllBranches(tree)
-    for (j in 1:length(splitList)) {
-      splitList[j][[1]] <- paste("dat$",   splitList[j][[1]])
-    }
+
     i=1
     while (i < length(splitList)) {
-      #print(i)
       splits <- splitList[i][[1]]
-      splitText1 <- paste(splitList[i][[1]], collapse=" & ")
-      splitText2 <- paste(splitList[i+1][[1]], collapse=" & ")
+      splitText1 <- paste(paste("dat$", splitList[i][[1]]), collapse=" & ")
+      splitText2 <- paste(paste("dat$", splitList[i+1][[1]]), collapse=" & ")
       i <- i+2
       node1 <- eval(parse(text =splitText1))
       node2 <- eval(parse(text =splitText2))*2

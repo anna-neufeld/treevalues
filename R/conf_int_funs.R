@@ -87,7 +87,8 @@ TNSurv <- function(q, mean, sd, E, approx = FALSE) {
 
 
 #' A helper function for approximating normal tail probabilities
-#' This comes directly from the Outference Package
+#' This comes directly from the Outference Package.
+#' The code and the documentation can be found at https://github.com/shuxiaoc/outference.
 #'
 #' For \eqn{Z ~ N(0, 1)}, we have the approximation
 #'     \eqn{P(Z \ge z) \approx }\code{magicfun(z)*exp(-z^2/2)}.
@@ -281,6 +282,7 @@ isSameIntervals <- function(int1, int2) {
 #' compute selective confidence intervals
 #'
 #' This function computes the selective confidence intervals.
+#' Code modified from the Outference package, available at https://github.com/shuxiaoc/outference.
 #'
 #' @keywords internal
 #'

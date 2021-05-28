@@ -20,10 +20,11 @@
 #' the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
 #' @export
 #' @importFrom intervals Intervals
+#' @importFrom intervals size
 branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=0, computeCI=TRUE,
                             permute=FALSE) {
 
-  if (c!=0) {stop("At this time, this package only supports testing hypotheses of the form nu^T \mu = 0")}
+  if (c!=0) {stop("At this time, this package only supports testing hypotheses of the form param = 0")}
   dat <- tree$model
   y <- dat[,1]
   if (is.null(sigma_y)) {

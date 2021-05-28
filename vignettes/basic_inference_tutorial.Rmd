@@ -20,7 +20,9 @@ In this tutorial, we demonstrate how to use the ``treevalues`` package to perfor
 We start by loading the two packages we will be working with, along with the dataset we will be using.
 
 ```{r}
-library(treevalues)
+#library(treevalues)
+setwd("~/treevalues")
+devtools::load_all()
 library(rpart)
 data(blsdata, package="visTree")
 ```
@@ -30,7 +32,8 @@ data(blsdata, package="visTree")
 The ``treevalues`` package is designed for use with the ``rpart`` package, and so all trees should be built using ``rpart``. All trees should be built with the parameter ``model=TRUE``, which simply saves a copy of the training data inside of the fitted rpart object (which is useful when carrying out inference). 
 
 ```{r, tree}
-bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
+bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02,
+                 maxsurrogate=0,maxcompete=0)
 ```
 
 Note that the arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript, $\lambda = $``cp`` $\times \sum_{i=1}^n (y_i-\bar{y})^2$. 
@@ -77,7 +80,7 @@ Suppose that we want
 We can also bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95%
 
 ```{r}
-treeval.plot(bls.tree,  inference=TRUE)
+treeval.plot(bls.tree,  inference=TRUE,nn=TRUE)
 ```
 
  
