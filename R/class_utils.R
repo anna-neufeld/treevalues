@@ -1,27 +1,36 @@
-## Class utils 
+## Class utils
 
-#' Summary of inference for a branch in a tree. 
-#' 
+#' Summary of inference for a branch in a tree.
+#'
 #' @param  x branch_inference object
 #'
 #' @export
 print.branch_inference <- function(x, ...) {
-  cat("\n ", x$alpha*100, "%confidence interval:", x$confint,  "\n")
-  cat("Type: ", x$type, "\n")
-  cat("\n ", "p-value for test that param=", x$c, ": ", x$pval)
+  CIlev <- 1-x$alpha
+  CI <- paste(round(x$confint,4), collapse=", ")
+  cat("\n", CIlev*100, "% confidence interval: ", CI,sep="")
+  cat("\nType: ", x$type,sep="")
+  cat("\n", "p-value for test that param=", x$c, ": ", x$pval,sep="")
+  cat("\n", "Conditioning Set: \n",sep="")
+  print(x$condset)
 }
 
 
-## Class utils 
+## Class utils
 
-#' Summary of inference for a branch in a tree. 
-#' 
+#' Summary of inference for a branch in a tree.
+#'
 #' @param  x branch_inference object
 #'
 #' @export
 summary.branch_inference <- function(x, ...) {
-  cat("\n ", x$alpha*100, "%confidence interval:", x$confint,  "\n")
-  cat("\n ", "p-value for test that param=", x$c, ": ", x$pval)
+  CIlev <- 1-x$alpha
+  CI <- paste(round(x$confint,4), collapse=", ")
+  cat("\n", CIlev*100, "% confidence interval: ", CI,sep="")
+  cat("\nType: ", x$type,sep="")
+  cat("\n", "p-value for test that param=", x$c, ": ", x$pval,sep="")
+  cat("\n", "Conditioning Set: \n",sep="")
+  print(x$condset)
 }
 
 
