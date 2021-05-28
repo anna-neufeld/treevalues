@@ -9,6 +9,7 @@
 #' @importFrom stats var
 #' @importFrom intervals interval_union
 #' @importFrom intervals interval_complement
+#' @export
 fullTreeInference <- function(tree, sigma_y =
                                 sd(tree$model[,1])) {
 
