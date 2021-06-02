@@ -1,8 +1,7 @@
 #' @docType data
 #'
-#' The variables are as follows:
-#'
-#' \itemize{
+#' @format
+#' \describe{
 #'   \item trt. Treatment
 #'   \item sex. Sex
 #'   \item bmi0. BMI
@@ -29,7 +28,7 @@
 #'   \item mlhfbias0.
 #'   \item fwahfbias0.
 #'   \item rrvfood. Relative reinforcement of food
-#'
+#'}
 #' @keywords datasets
 #' @name blsdata
 #' @usage data(blsdata)
