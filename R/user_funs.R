@@ -230,6 +230,7 @@ getBranch <- function(tree, nn=NULL) {
 #' @param nn A node number!! As a string or as an integer is fine
 #' @return The indices of data that belong to this region in the training set. The training set is stored in tree$model.
 #' @export
+#' @importFrom rpart path.rpart
 getRegion <- function(tree, nn){
   rule <- path.rpart(tree, nn,print.it=FALSE)
   dat <- tree$model

@@ -5,7 +5,7 @@
 # n <- 110
 # p <- 7
 # sigma_y <- 5
-# nTrials <- 10
+# nTrials <- 1000
 # pvals <- rep(0, nTrials)
 # pvals2 <- rep(0, nTrials)
 # lengthS <- rep(0, nTrials)
