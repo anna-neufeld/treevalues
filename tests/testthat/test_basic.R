@@ -101,6 +101,6 @@ test_that("Full Inference", {
   mat <- fullTreeInference(base_tree, sigma_y)
   expect_true(NROW(mat)==length(unique(base_tree$where)))
 
-  treeval.plot(base_tree, mat, sigma_y)
+  #treeval.plot(base_tree, mat, sigma_y)
 }
 )

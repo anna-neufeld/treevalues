@@ -5,7 +5,8 @@
 #' @param  x branch_inference object
 #'
 #' @export
-print.branch_inference <- function(x, ...) {
+#' @noRd
+print.branch_inference <- function(x,...) {
   CIlev <- 1-x$alpha
   CI <- paste(round(x$confint,4), collapse=", ")
   cat("\n", CIlev*100, "% confidence interval: ", CI,sep="")
@@ -20,10 +21,11 @@ print.branch_inference <- function(x, ...) {
 
 #' Summary of inference for a branch in a tree.
 #'
-#' @param  x branch_inference object
+#' @param  object branch_inference object
 #'
 #' @export
-summary.branch_inference <- function(x, ...) {
+#' @noRd
+summary.branch_inference <- function(object,...) {
   CIlev <- 1-x$alpha
   CI <- paste(round(x$confint,4), collapse=", ")
   cat("\n", CIlev*100, "% confidence interval: ", CI,sep="")

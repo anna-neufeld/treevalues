@@ -19,6 +19,10 @@ treeval.plot(
 \item{inferenceMatrix}{The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.}
 
 \item{sigma_y}{Need to provide this if you are not providing inference matrix.}
+
+\item{inference}{Boolean value. Would you like the tree to print p-values and CIs, or would you just like to see the tree?}
+
+\item{...}{Additional arguements are passed on to rpart.plot().x}
 }
 \description{
 This function allows users to plot their rpart object with all splits labeled with p-values and all nodes

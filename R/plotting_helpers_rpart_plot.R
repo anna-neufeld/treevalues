@@ -585,7 +585,9 @@ prp <- function(x=stop("no 'x' arg"),
     split.yshift <- layout$split.yshift
     if(trace > 0) {
         tweak.msg <- if(tweak == 1) "" else rpart.plot:::sprint(" (before applying tweak %g)", tweak)
-        printf("cex %.3g%s   xlim c(%.3g, %.3g)   ylim c(%.3g, %.3g)\n",
+        #printf("cex %.3g%s   xlim c(%.3g, %.3g)   ylim c(%.3g, %.3g)\n",
+         #      cex[1], tweak.msg, xlim[1], xlim[2], ylim[1], ylim[2])
+        print("cex %.3g%s   xlim c(%.3g, %.3g)   ylim c(%.3g, %.3g)\n",
                cex[1], tweak.msg, xlim[1], xlim[2], ylim[1], ylim[2])
     }
     if(!auto.cex && tweak != 1)
@@ -1155,6 +1157,9 @@ internal.split.labs <- function(x, type,
                      split.prefix, right.split.prefix,
                      split.suffix, right.split.suffix)
 }
+
+#' @keywords internal
+#' @noRd
 get.lsplit.rsplit <- function(x, isplit, split.var.names,
                               type, clip.left.labs, clip.right.labs, xflip,
                               digits, faclen, roundint, trace,
@@ -1235,7 +1240,8 @@ get.lsplit.rsplit <- function(x, isplit, split.var.names,
 #      format(1235.5+1e-10, digits=2) is 1236   rounds up
 #
 # Note that if roundint is FALSE then we still bump all entries by verysmall.
-
+#' @keywords internal
+#' @noRd
 tweak.splits <- function(obj, roundint, digits, trace)
 {
     splits <- obj$splits
@@ -1269,7 +1275,8 @@ tweak.splits <- function(obj, roundint, digits, trace)
 #    split.var.names sex   age     pclass     sibsp   pclass
 #    lsplit:         mal   >=9.5   =2nd,3rd   >=2.5   =3rd
 #    rsplit:         fml   <9.5    =1st       <2.5    =1st,2nd
-
+#' @keywords internal
+#' @noRd
 paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
                              type, clip.facs,
                              clip.left.labs, clip.right.labs, xflip, varlen,
@@ -1330,47 +1337,16 @@ EX9.PROB.ACROSS.ALL                 <- 9
 EX10.PROB.ACROSS.ALL.2ND.CLASS      <- 10
 EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT <- 11
 
-#extra.help <- function()
-#{
-#    cat0(
-#        "\n",
-#        "The 'extra' argument:\n",
-#        "    0  No extra information\n",
-#        "    1  Number of observations in the node\n",
-#        "    2  Class models: Classification rate (ncorrect/nobservations)\n",
-#        "       Poisson and exp models: number of events\n",
-#        "    3  Class models: Misclassification rate\n",
-#        "    4  Class models: Probability per class\n",
-#        "    5  Class models: Like 4 but don't display the fitted class\n",
-#        "    6  Class models: Probability of second class only\n",
-#        "    7  Class models: Like 6 but don't display the fitted class\n",
-#        "    8  Class models: Probability of the fitted class\n",
-#        "    9  Class models: Probability relative to all observations\n",
-#        "    10 Class models: like 9 but display the probability of the second class only\n",
-#        "\n",
-#        "    Add 100 to also display the percentage of observations in the node\n",
-#        "\n")
-#}
+
+#' @keywords internal
+#' @noRd
 is.vec <- function(x) {
     (NROW(x) == 1 || NCOL(x) == 1) && NROW(x) * NCOL(x) > 0
 }
-#is.numeric.response <- function(obj) {
-    # see if we have the fields necessary for
-    # get.anova.labs (but not get.class.labs)
-#    is.vec(obj$frame$yval) && is.null(obj$frame$yval2)
-#}
-#is.class.response <- function(obj) {
-    # check that we have the fields necessary for get.class.labs
-#    yval2 <- obj$frame$yval2
-#    NCOL(yval2) >= 5 &&
-#        colnames(yval2)[length(colnames(yval2))] == "nodeprob" &&
-#        is.vec(obj$frame$n) &&
-#        is.vec(obj$frame$wt)
-#}
-#is.multiclass.response <- function(obj) {
-#    is.class.response(obj) && NCOL(obj$frame$yval2) > 6
-#}
+
 # call node.fun or obj$functions$text, and check its args and returned value
+#' @keywords internal
+#' @noRd
 internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
                                under, xsep, digits, varlen,
                                prefix, suffix, class.stats, under.percent)
@@ -1441,6 +1417,7 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
 }
 
 #' This function is actually important and I actually modified it.
+#' This might be what I want to make more customizable!!!
 #' @keywords internal
 #' @noRd
 get.anova.labs <- function(x, extra, under, digits, xsep, varlen, under.percent)

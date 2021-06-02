@@ -6,6 +6,8 @@
 #' @param tree An rpart tree.
 #' @param inferenceMatrix The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.
 #' @param sigma_y Need to provide this if you are not providing inference matrix.
+#' @param inference Boolean value. Would you like the tree to print p-values and CIs, or would you just like to see the tree?
+#' @param ... Additional arguements are passed on to rpart.plot().x
 #' @importFrom intervals interval_union
 #' @importFrom intervals interval_complement
 treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL,
