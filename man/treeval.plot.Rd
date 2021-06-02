@@ -26,6 +26,8 @@ treeval.plot(
 
 \item{pval}{Boolean value. Would you lke to see th}
 
+\item{digits}{Integer- how many digits would you like the text in the plot rounded to.}
+
 \item{...}{Additional arguements are passed on to rpart.plot(). Examples include "nn", "extra","digits", and "cex".}
 }
 \description{

@@ -8,10 +8,12 @@
 #' @param sigma_y Need to provide this if you are not providing inference matrix.
 #' @param CI Boolean value. Would you like the tree to print CIs within each node?
 #' @param pval Boolean value. Would you lke to see th
+#' @param digits Integer- how many digits would you like the text in the plot rounded to.
 #' @param ... Additional arguements are passed on to rpart.plot(). Examples include "nn", "extra","digits", and "cex".
 #' @importFrom intervals interval_union
 #' @importFrom intervals interval_complement
 #' @importFrom rpart rpart
+#' @importFrom stats update
 treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL,
                          CI=TRUE,pval=TRUE, digits=3, ...) {
 

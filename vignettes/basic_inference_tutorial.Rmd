@@ -25,6 +25,7 @@ remotes::install_github("anna-neufeld/treevalues")
 ```{r}
 library(treevalues)
 library(rpart)
+load("~/treevalues/data/blsdata.RData")
 ```
 
 # Building the tree
@@ -40,7 +41,7 @@ Note that the arguement ``cp``, or complexity parameter, is a scaled version of 
 We might first want to plot the tree. While this could be accomplished using ``plot()`` from the ``rpart`` package, or else using something more specialized like the ``rpart.plot`` package, we recommend that you use our internal ``treeval.plot()`` function. However, since we are just exploring our tree and have not yet decided to do inference, you can set ``inference=FALSE``.  
 
 ```{r}
-treeval.plot(bls.tree, inference=FALSE)
+treeval.plot(bls.tree, pval=FALSE,CI=FALSE)
 ```
 
 # Inference on a pair of sibling regions. 
@@ -79,7 +80,8 @@ Suppose that we want
 We can also bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95%
 
 ```{r}
-treeval.plot(bls.tree,  inference=TRUE,nn=TRUE)
+treeval.plot(bls.tree, pval=TRUE,nn=TRUE)
+treeval.plot(bls.tree, pval=TRUE, CI=TRUE, nn=TRUE)
 ```
 
  
