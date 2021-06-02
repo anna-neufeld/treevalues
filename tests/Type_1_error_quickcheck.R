@@ -5,7 +5,7 @@ library(intervals)
 n <- 150
 p <- 8
 sigma_y <- 5
-nTrials <- 1000
+nTrials <- 10
 pvals <- rep(0, nTrials)
 pvals2 <- rep(0, nTrials)
 

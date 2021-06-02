@@ -1,16 +1,18 @@
-#' Get a valid pvalue for a test
+#' Get a pvalue for a selective Z-test.
 #'
 #' Based on the similar function from the Outference package,
 #' which accomplishes a similar task. Code modified from code found at
 #' https://github.com/shuxiaoc/outference
 #'
-#' @param phiInterval the selective inference interval
-#' @param nu the contrast vector for the hypothesis test
-#' @param y the response data y
+#' @param phiInterval the conditioning set (truncation interval). An object of class "Interval", where the rows represent the union of
+#' disjoint intervals on the real line.
+#' @param nu the vector that defines the parameter of interest. We are testing the hypothesis that nu^T mu = 0.
+#' @param y the response data y.
 #' @param sigma the (assumed known) noise standard deviation
 #' @return a p-value.
 #' @importFrom intervals interval_complement
 #' @importFrom intervals interval_intersection
+#' @export
 correctPVal <- function(phiInterval, nu, y, sigma) {
   delta1 <- phiInterval
   delta2 <- interval_complement(Intervals(c(-abs(t(nu)%*%y), abs(t(nu)%*%y))))
@@ -63,6 +65,7 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #' @param E1 numerator interval
 #' @param E2 denominator interval
 #' @param scale determines the grid search
+#' @keywords internal
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
   E1 <- sortE(E1)
   E2 <- sortE(E2)
@@ -100,8 +103,9 @@ myTNRatioApprox <- function(E1, E2, scale = NULL) {
   return(res)
 }
 
-#' normalCDF helper function.
+#' normalCDF helper function. Computes P(low <= X <= up), where X ~ N(0, sd).
 #' Code take from https://github.com/shuxiaoc/outference
+#' @param lo
 #' @keywords internal
 #' @noRd
 myGetNormProb <- function(lo, up,sd) {

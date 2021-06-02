@@ -1,8 +1,9 @@
 setwd("~/treevalues")
 devtools::load_all()
+library(rpart)
 
 
-nTrials <- 5000
+nTrials <- 10
 pvals1 <- rep(NA, nTrials)
 
 for (i in 1:nTrials) {

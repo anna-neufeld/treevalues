@@ -2,16 +2,17 @@
 % Please edit documentation in R/pval_funs.R
 \name{correctPVal}
 \alias{correctPVal}
-\title{Get a valid pvalue for a test}
+\title{Get a pvalue for a selective Z-test.}
 \usage{
 correctPVal(phiInterval, nu, y, sigma)
 }
 \arguments{
-\item{phiInterval}{the selective inference interval}
+\item{phiInterval}{the conditioning set (truncation interval). An object of class "Interval", where the rows represent the union of
+disjoint intervals on the real line.}
 
-\item{nu}{the contrast vector for the hypothesis test}
+\item{nu}{the vector that defines the parameter of interest. We are testing the hypothesis that nu^T mu = 0.}
 
-\item{y}{the response data y}
+\item{y}{the response data y.}
 
 \item{sigma}{the (assumed known) noise standard deviation}
 }

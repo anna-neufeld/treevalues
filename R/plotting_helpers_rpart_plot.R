@@ -52,6 +52,9 @@ inner.plot <- function(x=stop("no 'x' arg"),
         box.palette=box.palette, shadow.col=shadow.col,
         ...)
 }
+
+#' @keywords internal
+#' @noRd
 rpart.plot.version1 <- function(x=stop("no 'x' arg"),
     type=0, extra=0, under=FALSE, fallen.leaves=FALSE,
     digits=2, varlen=-8, faclen=3,
@@ -82,6 +85,8 @@ rpart.plot.version1 <- function(x=stop("no 'x' arg"),
         ...)
 }
 
+#' @keywords internal
+#' @noRd
 #' @importFrom graphics axis grid par plot rect text
 prp <- function(x=stop("no 'x' arg"),
     type=0, extra=0, under=FALSE, fallen.leaves=FALSE,
@@ -723,7 +728,8 @@ init.plot <- function(x, y,
 #}
 
 
-
+#' @keywords internal
+#' @noRd
 get.default.extra <- function(obj, class.stats)
 {
     #if(obj$method == "class" || is.class.response(obj)) {
@@ -737,6 +743,9 @@ get.default.extra <- function(obj, class.stats)
   #  else
         100
 }
+
+#' @keywords internal
+#' @noRd
 get.yshift <- function(type, nodes, is.leaf,
                        cex, node.labs, yshift, yspace, under.cex,
                        split.labs, split.cex, split.yshift, split.yspace, ygap)
@@ -814,6 +823,9 @@ get.yshift <- function(type, nodes, is.leaf,
     }
     list(yshift=yshift, split.yshift=split.yshift)
 }
+
+#' @keywords internal
+#' @noRd
 get.node.coords <- function(obj, uniform, branch, compress,
                             nspace, minbranch, fallen.leaves, Fallen.yspace)
 {
@@ -851,6 +863,9 @@ get.node.coords <- function(obj, uniform, branch, compress,
 # Get the box coords, a row for each box.
 # Use do.init.plot=FALSE if want to use char sizes etc. of the existing plot.
 
+
+#' @keywords internal
+#' @noRd
 get.boxes <- function(boxtype,  # one of "default", "left", "right", "undersplit"
     labs, x, y, xlim, ylim, nodes, branch,
     Margin, xflip, yflip, main, sub, col.main, cex.main, col.sub,  cex.sub,
@@ -941,6 +956,9 @@ get.boxes <- function(boxtype,  # one of "default", "left", "right", "undersplit
     }
     list(x1=x1 + xshift, y1=y1, x2=x2 + xshift, y2=y2)
 }
+
+#' @keywords internal
+#' @noRd
 draw.boxes <- function(fancy.style, draw.shadow, labs, xy,
                        xlim, ylim, nodes, branch,
                        Margin, xflip, yflip, main, sub,
@@ -979,6 +997,9 @@ draw.boxes <- function(fancy.style, draw.shadow, labs, xy,
                     xlim, ylim, r, shadow.col, shadow.offset)
     box
 }
+
+#' @keywords internal
+#' @noRd
 # Set bg to the background color or "white" if transparent.
 # The idea is that we want a color that is opaque but matches background.
 get.bg <- function()
@@ -990,6 +1011,9 @@ get.bg <- function()
     }
     bg
 }
+
+#' @keywords internal
+#' @noRd
 set.zero.to.bg <- function(col, bg) # set elems of col that are 0 or NA to bg
 {
     if(is.null(col))
@@ -998,6 +1022,10 @@ set.zero.to.bg <- function(col, bg) # set elems of col that are 0 or NA to bg
         col[which(col == 0) | is.na(col)] <- bg
     col
 }
+
+
+#' @keywords internal
+#' @noRd
 # true if x == "auto" or "-auto", ignoring case, partial match to n characters
 is.auto <- function(x, n=2)
 {
@@ -1009,20 +1037,29 @@ is.auto <- function(x, n=2)
         (grepl("^au",   substr(x[1], 1, 2), ignore.case=TRUE) ||
          grepl("^\\-a", substr(x[1], 1, 2), ignore.case=TRUE))
 }
+
+#' @keywords internal
+#' @noRd
 is.fancy <- function(type)
 {
     type == TYPE3.fancy.no.all ||
     type == TYPE4.fancy.all    ||
     type == TYPE5.varname.in.node
 }
+
 # text before \n\n goes in the box
 # text after \n\n if any goes under the box
+#' @keywords internal
+#' @noRd
 separate.labs <- function(labs)
 {
     labs <- strsplit(labs, "\n\n")
     list(in.box    = sapply(labs, function(x) x[1]),
          under.box = sapply(labs, function(x) paste(x[-1], collapse="\n")))
 }
+
+#' @keywords internal
+#' @noRd
 get.box.centers <- function(box)
 {
     list(x=(box$x1 + box$x2)/2, y=(box$y1 + box$y2)/2)
@@ -1035,7 +1072,8 @@ get.box.centers <- function(box)
 
 
 
-
+#' @keywords internal
+#' @noRd
 # split.labs.R: functions for generating split.labels
 split.labs.wrapper <- function(x, split.fun, split.fun.name,
                                split.prefix, split.suffix,
@@ -1066,6 +1104,9 @@ split.labs.wrapper <- function(x, split.fun, split.fun.name,
     rpart.plot:::check.returned.labs(x, labs, split.fun.name)
     labs
 }
+
+#' @keywords internal
+#' @noRd
 # Modified version of labels.rpart.
 # This uses format0 instead of formatg and has various other extensions.
 internal.split.labs <- function(x, type,

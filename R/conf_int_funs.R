@@ -1,3 +1,7 @@
+### Almost all of the code (and documentation) in this file comes directly from the ``Outference" package
+### The code and the documentation can be found at https://github.com/shuxiaoc/outference.
+
+
 # ----- Truncated Normal Distribution -----
 #' Survival function of truncated normal distribution. This comes directly from the Outference Package.
 #' The code and the documentation can be found at https://github.com/shuxiaoc/outference.
