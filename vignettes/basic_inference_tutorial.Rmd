@@ -14,9 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this tutorial, we demonstrate how to use the ``treevalues`` package to perform inference on a CART (@breiman1984classification) tree fit using the ``rpart`` package (@therneau2015package). Throughout this tutorial, we work with an example tree fit to the Box Lunch Study dataset, which is provided in the ``visTree`` package. 
+In this tutorial, we demonstrate how to use the ``treevalues`` package to perform inference on a CART (@breiman1984classification) tree fit using the ``rpart`` package (@therneau2015package). Throughout this tutorial, we work with an example tree fit to the Box Lunch Study dataset, which was originally provided in the ``visTree`` package. 
 
-We start by loading the two packages we will be working with, along with the dataset we will be using.
+We start by loading the two packages we will be working with. 
 
 ```{r,eval=FALSE}
 remotes::install_github("anna-neufeld/treevalues")
@@ -25,7 +25,7 @@ remotes::install_github("anna-neufeld/treevalues")
 ```{r}
 library(treevalues)
 library(rpart)
-data(blsdata, package="visTree")
+data(blsdata)
 ```
 
 # Building the tree

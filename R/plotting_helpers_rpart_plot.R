@@ -1053,26 +1053,14 @@ is.fancy <- function(type)
 # text after \n\n if any goes under the box
 #' @keywords internal
 #' @noRd
-separate.labs <- function(labs)
-{
+separate.labs <- function(labs) {
     labs <- strsplit(labs, "\n\n")
-    list(in.box    = sapply(labs, function(x) x[1]),
-         under.box = sapply(labs, function(x) paste(x[-1], collapse="\n")))
+    list(in.box    = sapply(labs, function(x) x[1]), under.box = sapply(labs, function(x) paste(x[-1], collapse="\n")))
 }
 
 #' @keywords internal
 #' @noRd
-get.box.centers <- function(box)
-{
-    list(x=(box$x1 + box$x2)/2, y=(box$y1 + box$y2)/2)
-}
-
-
-
-
-
-
-
+get.box.centers <- function(box) {list(x=(box$x1 + box$x2)/2, y=(box$y1 + box$y2)/2)}
 
 #' @keywords internal
 #' @noRd
@@ -1338,13 +1326,14 @@ EX10.PROB.ACROSS.ALL.2ND.CLASS      <- 10
 EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT <- 11
 
 
-#' @keywords internal
-#' @noRd
-is.vec <- function(x) {
-    (NROW(x) == 1 || NCOL(x) == 1) && NROW(x) * NCOL(x) > 0
-}
+##' @keywords internal
+##' @noRd
+#is.vec <- function(x) {
+ #   (NROW(x) == 1 || NCOL(x) == 1) && NROW(x) * NCOL(x) > 0
+#}
 
-# call node.fun or obj$functions$text, and check its args and returned value
+# call node.fun or obj$functions$text, and check its args and returned value.
+# I actually modified this one as well!!!!
 #' @keywords internal
 #' @noRd
 internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
@@ -1364,38 +1353,8 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
     labs <-
         if(x$method == "anova")
             get.anova.labs(x, extra, under, digits, xsep, varlen, under.percent)
-    #else if(x$method == "class")
-    #    get.class.labs(x, extra, under, digits, xsep, varlen,
-    #                   class.stats, under.percent)
-    #else if(x$method == "poisson" || x$method == "exp")
-    #    get.poisson.labs(x, extra, under, digits, xsep, varlen, under.percent)
-    #else if(x$method == "mrt")
-    #    get.mvpart.labs(x, extra, under, digits, xsep, varlen)
     else {
-       # if(is.numeric.response(x)) {
-      #      warning0("Unrecognized rpart object: treating as a numeric response model")
-       #     if(x$method == "user")
-      #          x$method = "user.with.numeric.response" # used only in err msgs
-      #      get.anova.labs(x, extra, under, digits, xsep, varlen, under.percent)
-        #} else if(is.class.response(x)) {
-        #    warning0("Unrecognized rpart object: treating as a class response model")
-        #    if(x$method == "user")
-        #        x$method = "user.with.class.response" # used only in err msgs
-        #    get.class.labs(x, extra, under, digits, xsep, varlen,
-        #                   class.stats, under.percent)
-        #} else {
            stop("Unrecognized rpart object")
-            #rpart.plot:::check.func.args(x$functions$text, "x$functions$text",
-            #                function(yval, dev, wt, ylevel, digits, n, use.n) NA)
-            #labs <- x$functions$text(
-            ##    yval=if(is.null(frame$yval2)) frame$yval else frame$yval2,
-            #    dev=frame$dev, wt=frame$wt, ylevel=attr(x, "ylevels"),
-            #    digits=abs(digits), n=frame$n, use.n=extra)
-          #  rpart.plot:::check.returned.labs(x, labs, "x$functions$text()")
-          #  if(under)
-          #      labs <- sub("\n", "\n\n", labs) # replace \n with \n\n
-          #  labs
-       # }
     }
     if(!is.null(node.fun)) {
         # call user's node.fun

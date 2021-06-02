@@ -1,5 +1,6 @@
 context("basic testing")
 library(treevalues)
+library(rpart)
 
 test_that("Region: do different methods match??", {
   #library(rpart)
@@ -19,8 +20,8 @@ test_that("Region: do different methods match??", {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.01, maxcompete=0,maxsurrogate=0))
-  unpruned_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.0, maxcompete=0,maxsurrogate=0))
+  base_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.01, maxcompete=0,maxsurrogate=0))
+  unpruned_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.0, maxcompete=0,maxsurrogate=0))
 
   region <- sample(row.names(base_tree$frame)[-1],size=1)
   splits <- getBranch(base_tree, region)
@@ -56,7 +57,7 @@ test_that("Basic Hypothesis Tests; Null Model", {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, control=rpart.control(maxdepth = 2,
+  base_tree <- rpart(y~., data=dat, control=rpart.control(maxdepth = 2,
                                                                  minsplit=2, minbucket=1,
                                                                  cp=0, maxcompete=0,
                                                                  maxsurrogate=0), model=TRUE)
@@ -94,7 +95,7 @@ test_that("Full Inference", {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart::rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 3,
+  base_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 3,
                                                                              minsplit=2, minbucket=1,
                                                                              cp=-1, maxcompete=0,
                                                                              maxsurrogate=0))

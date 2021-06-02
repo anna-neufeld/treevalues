@@ -26,13 +26,13 @@ print.branch_inference <- function(x,...) {
 #' @export
 #' @noRd
 summary.branch_inference <- function(object,...) {
-  CIlev <- 1-x$alpha
-  CI <- paste(round(x$confint,4), collapse=", ")
+  CIlev <- 1-object$alpha
+  CI <- paste(round(object$confint,4), collapse=", ")
   cat("\n", CIlev*100, "% confidence interval: ", CI,sep="")
-  cat("\nType: ", x$type,sep="")
-  cat("\n", "p-value for test that param=", x$c, ": ", x$pval,sep="")
+  cat("\nType: ", object$type,sep="")
+  cat("\n", "p-value for test that param=", object$c, ": ", object$pval,sep="")
   cat("\n", "Conditioning Set: \n",sep="")
-  print(x$condset)
+  print(object$condset)
 }
 
 
