@@ -17,6 +17,12 @@ fullTreeInference <- function(tree, sigma_y =
     stop('Must build rpart object with parameter model=TRUE')
   }
 
+  if (NROW(tree$frame) != (2*NROW(tree$splits)+1)) {
+    tree$call$maxcompete <- 0
+    tree$call$maxsurrogate <- 0
+    tree <- update(tree)
+  }
+
   ## This is unfortunately necessary to make sure I can read the splits correctly
   ## out of the R output
   dat <- tree$model

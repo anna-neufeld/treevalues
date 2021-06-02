@@ -9,20 +9,24 @@ treeval.plot(
   tree,
   inferenceMatrix = NULL,
   sigma_y = NULL,
-  inference = TRUE,
+  CI = TRUE,
+  pval = TRUE,
+  digits = 3,
   ...
 )
 }
 \arguments{
-\item{tree}{An rpart tree.}
+\item{tree}{An rpart tree. Note that the tree must have been built with arguements maxcompete=0 and maxsurrogates=0.}
 
 \item{inferenceMatrix}{The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.}
 
 \item{sigma_y}{Need to provide this if you are not providing inference matrix.}
 
-\item{inference}{Boolean value. Would you like the tree to print p-values and CIs, or would you just like to see the tree?}
+\item{CI}{Boolean value. Would you like the tree to print CIs within each node?}
 
-\item{...}{Additional arguements are passed on to rpart.plot().x}
+\item{pval}{Boolean value. Would you lke to see th}
+
+\item{...}{Additional arguements are passed on to rpart.plot(). Examples include "nn", "extra","digits", and "cex".}
 }
 \description{
 This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
