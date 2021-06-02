@@ -15,7 +15,7 @@ An object of class \code{data.frame} with 226 rows and 26 columns.
   \item{bmi0}{BMI}
   \item{skcal}{Snacking kilo calories.}
   \item{srvgfv0}{Serving size of fruits and vegetables.}
-  \item{srvgssb0}{Serving size of beverages}
+  \item{srvgssb}{Serving size of beverages}
   \item{kcal24h0}{Response variable; kcals consumed in 24 hours.}
   \item{disinhibition}{}
   \item{wanting}{}
