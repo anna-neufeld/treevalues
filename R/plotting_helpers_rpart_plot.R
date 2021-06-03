@@ -53,38 +53,6 @@ inner.plot <- function(x=stop("no 'x' arg"),
         ...)
 }
 
-#' #' @keywords internal
-#' #' @noRd
-#' rpart.plot.version1 <- function(x=stop("no 'x' arg"),
-#'     type=0, extra=0, under=FALSE, fallen.leaves=FALSE,
-#'     digits=2, varlen=-8, faclen=3,
-#'     cex=NULL, tweak=1,
-#'     snip=FALSE,
-#'     box.palette=0, shadow.col=0,
-#'     ...)
-#' {
-#'     if(!inherits(x, "rpart"))
-#'         stop("Not an rpart object")
-#'     # We have to get "trace" for get.modelframe.info, but I don't want to
-#'     # add trace to the rpart.plot arg list, hence the following bit of
-#'     # code to get trace from the dots.
-#'     dots <- match.call(expand.dots=FALSE)$...
-#'     trace <- 0
-#'     if(!is.null(dots$trace))
-#'         trace <- eval(dots$trace)
-#'     ## prepared to fixin 1 min
-#'     x$varinfo <- rpart.plot:::get.modelframe.info(x, roundint=FALSE, trace,
-#'                                      parent.frame(), "rpart.plot.version1")
-#'     prp(x,
-#'         type=type, extra=extra,
-#'         under=under, fallen.leaves=fallen.leaves, clip.facs=FALSE,
-#'         digits=digits, varlen=varlen, faclen=faclen, roundint=FALSE,
-#'         cex=cex, tweak=tweak,
-#'         snip=snip,
-#'         box.palette=box.palette, shadow.col=shadow.col,
-#'         ...)
-#' }
-
 #' @keywords internal
 #' @noRd
 #' @importFrom graphics axis grid par plot rect text
@@ -496,7 +464,7 @@ prp <- function(x=stop("no 'x' arg"),
         # Retain the top edge for the main title but only if necessary.
         # Likewise the bottom edge for the subtitle.
         # Note that family may change in my.strheight and init.plot, so we on.exit it here.
-        init.plot(1, 1, Margin, xflip, yflip, main, sub,
+        rpart.plot:::init.plot(1, 1, Margin, xflip, yflip, main, sub,
                   col.main, cex.main, col.sub, cex.sub)
         par <- par("mar", "xpd", "family")
         on.exit(par(par))
@@ -602,7 +570,7 @@ prp <- function(x=stop("no 'x' arg"),
     lwd <-rpart.plot:::recycle(cex * lwd, nodes)
 
     node.xy <- layout$node.xy
-    init.plot(xlim, ylim, Margin, xflip, yflip, main, sub,
+    rpart.plot:::init.plot(xlim, ylim, Margin, xflip, yflip, main, sub,
               col.main, cex.main, col.sub, cex.sub,
               fam.main=fam.main, cex=cex[1], trace=trace, hide.title=FALSE)
     split.strwidth  <- rpart.plot:::my.strwidth("M", split.cex * cex, split.font, split.family)
@@ -642,12 +610,7 @@ prp <- function(x=stop("no 'x' arg"),
         split.boxes <- ret$split.boxes
     }
     snipped.nodes <- NULL
-    #if(snip) {
-    #    ret <- do.snip(obj, nodes, split.labs, node.xy, branch.xy,
-    #                   branch.lwd, xlim, ylim, digits, snip.fun, cex)
-    #    obj <- ret$obj
-    #    snipped.nodes <- ret$snipped.nodes
-    #}
+
     ret <- list(obj=obj, snipped.nodes=snipped.nodes,
                 xlim=xlim, ylim=ylim,
                 x=node.xy$x, y=node.xy$y,
@@ -660,75 +623,6 @@ prp <- function(x=stop("no 'x' arg"),
 
     invisible(ret)
 }
-
-#' Another rpart.plot function
-#' @keywords internal
-#' @noRd
-#' @importFrom graphics axis grid par plot rect text
-init.plot <- function(x, y,
-                      Margin, xflip, yflip, main, sub,
-                      col.main, cex.main, col.sub, cex.sub,
-                      fam.main="", cex=1, trace=0, hide.title=TRUE)
-{
-    if(length(x) == 1)
-        x <- c(0, x)
-    if(length(y) == 1)
-        y <- c(0, y)
-    xlim <- range(x) + diff(range(x)) * c(-Margin, Margin)
-    if(xflip)
-        xlim <- rev(xlim)
-    ylim <- range(y) + diff(range(y)) * c(-Margin, Margin)
-    if(yflip)
-        ylim <- rev(ylim)
-    old.family <- NA
-    if(hide.title) {
-        # need to plot main and sub to get screen layout that accounts
-        # for their allotted space, but want them to be invisible
-        col.main <- col.sub <- 0
-    } else {
-        if(is.null(cex.main))
-            cex.main <- max(.8, min(1.5 * cex, 1.2))
-        if(is.null(cex.sub))
-            cex.sub <- max(.8, min(1.5 * cex, 1.2))
-        if(!is.null(sub)) # hack to make subtitle visible with our do.par()
-            sub <- paste(sub, "\n")
-        if(!identical(fam.main, ""))
-            old.family <- par(family=fam.main) # on.exit for this already set up in prp()
-    }
-    plot(0, 0, xlim=xlim, ylim=ylim, type="n", axes=FALSE, xlab="", ylab="",
-         main=main, sub=sub,
-         col.main=col.main, cex.main=cex.main, col.sub=col.sub, cex.sub=cex.sub)
-    if(!is.na(old.family))
-        par(family=old.family)
-    if(trace >= 2) { # draw the grid and region boxes
-        col <- "palegreen"
-        # set xpd so grid lines stay in our region
-        old.xpd <- par(xpd=FALSE)
-        on.exit(par(xpd=old.xpd))
-        grid(col=col, lwd=cex)
-        axis(1, col=col, col.axis=col)
-        axis(2, col=col, col.axis=col)
-        rect(xlim[1], ylim[1], xlim[2], ylim[2], col=NA, border=col, lty=1, lwd=cex)
-        text((xlim[1] + xlim[2]) / 2, ylim[2], "xlim ylim", col=col)
-        usr <- par("usr")
-        rect(usr[1], usr[3], usr[2], usr[4], col=NA, border=col, lty=1, lwd=cex)
-        text((usr[1] + usr[2]) / 2, usr[4], "usr", col=col, xpd=NA)
-    }
-}
-
-#' This is the type of thing I think I can probably delete.
-#process.digits.arg <- function(digits)
-#{
-#    digits <- rpart.plot:::check.integer.scalar(digits, min=-22, max=22, logical.ok=FALSE)
-#    if(digits == 0)
-#        digits <- getOption("digits")
-#    if(digits > 8)  # silently reduce digits because of verysmall in tweak.splits
-#        digits <- 8
-#    else if(digits < -8)
-#        digits <- -8
-#    digits
-#}
-
 
 #' @keywords internal
 #' @noRd
@@ -876,7 +770,7 @@ get.boxes <- function(boxtype,  # one of "default", "left", "right", "undersplit
     box.around.all.text=TRUE)   # else box only around "in box" text i.e. text before \n\n
 {                               # TRUE when figuring out box spacing, FALSE when drawing boxes
     if(do.init.plot)
-        init.plot(xlim, ylim, Margin, xflip, yflip, main, sub,
+        rpart.plot:::init.plot(xlim, ylim, Margin, xflip, yflip, main, sub,
                   col.main, cex.main, col.sub, cex.sub)
 
     # to minimize blanking out parts of the branch lines, we want only a
