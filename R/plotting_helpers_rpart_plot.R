@@ -203,7 +203,7 @@ prp <- function(x=stop("no 'x' arg"),
             rpart.plot:::is.box.invisible(split.box.col, split.border.col, bg)
 
         split.boxes <-
-            draw.boxes(if(rpart.plot:::is.fancy(type)) "left" else "default", draw.split.shadows1,
+            rpart.plot:::draw.boxes(if(rpart.plot:::is.fancy(type)) "left" else "default", draw.split.shadows1,
                    split.labs, node.xy, xlim, ylim,
                    nodes, branch,
                    Margin, xflip, yflip, main, sub,
@@ -223,7 +223,7 @@ prp <- function(x=stop("no 'x' arg"),
 
         if(rpart.plot:::is.fancy(type)) { # right hand boxes
             right.split.boxes <-
-                draw.boxes("right", draw.split.shadows1,
+                rpart.plot:::draw.boxes("right", draw.split.shadows1,
                    right.split.labs, node.xy, xlim, ylim,
                    nodes, branch,
                    Margin, xflip, yflip, main, sub,
@@ -241,7 +241,7 @@ prp <- function(x=stop("no 'x' arg"),
                     split.cex * cex, split.font, split.family, split.col,
                     draw.split.shadows1, draw.split.shadows, split.shadow.col, split.round)
         }
-        node.boxes <- draw.boxes("default", draw.shadows1,
+        node.boxes <- rpart.plot:::draw.boxes("default", draw.shadows1,
                    node.labs, node.xy, xlim, ylim,
                    nodes, branch,
                    Margin, xflip, yflip, main, sub,
@@ -392,7 +392,7 @@ prp <- function(x=stop("no 'x' arg"),
     faclen   <- rpart.plot:::check.integer.scalar(faclen, logical.ok=FALSE)
     roundint <- rpart.plot:::check.boolean(roundint)
 
-    bg <- get.bg() # never returns NA or 0
+    bg <- rpart.plot:::get.bg() # never returns NA or 0
     border.col       <- rpart.plot:::set.zero.to.bg(border.col,       bg)
     shadow.col       <- rpart.plot:::set.zero.to.bg(shadow.col,       bg)
     under.col        <- rpart.plot:::set.zero.to.bg(under.col,        bg)
@@ -838,63 +838,7 @@ get.boxes <- function(boxtype,  # one of "default", "left", "right", "undersplit
     list(x1=x1 + xshift, y1=y1, x2=x2 + xshift, y2=y2)
 }
 
-#' @keywords internal
-#' @noRd
-draw.boxes <- function(fancy.style, draw.shadow, labs, xy,
-                       xlim, ylim, nodes, branch,
-                       Margin, xflip, yflip, main, sub,
-                       col.main, cex.main, col.sub, cex.sub,
-                       cex, font, family, adj, yshift,
-                       box.col, border.col,
-                       lty, lwd, space, yspace, r,
-                       under.cex, under.font, under.ygap, ygap,
-                       shadow.col, shadow.offset, bg,
-                       small.underspace=FALSE, split.strwidth=0, split.strheight=0)
-{
-    box <- get.boxes(fancy.style, labs, xy$x, xy$y, xlim, ylim, nodes, branch,
-                     Margin, xflip, yflip, main, sub,
-                     col.main, cex.main, col.sub, cex.sub,
-                     cex, font, family, adj,
-                     yshift, box.col, border.col, space, yspace,
-                     ygap, bg,
-                     do.init.plot=FALSE,
-                     box.around.all.text=FALSE)
-
-    new.box <- box
-    if(small.underspace) {
-        # Splits are under the node boxes.  Reduce sides and bottom of box slightly so
-        # just a little white space below the split box so branch line is more visible.
-        add.space  <- pmin(space, .6)
-        add.yspace <- pmin(yspace, .8)
-        new.box$x1 <- new.box$x1 + (space - add.space)   * split.strwidth
-        new.box$x2 <- new.box$x2 - (space - add.space)   * split.strwidth
-        new.box$y1 <- new.box$y1 + (yspace - add.yspace) * split.strheight
-    }
-    if(!draw.shadow)
-        rpart.plot:::rounded.rect(new.box$x1, new.box$y1, new.box$x2, new.box$y2,
-                     xlim, ylim, r, box.col, border.col, lty, lwd)
-    else if(!rpart.plot:::is.invisible(shadow.col, bg))
-        rpart.plot:::draw.shadow(new.box$x1, new.box$y1, new.box$x2, new.box$y2,
-                    xlim, ylim, r, shadow.col, shadow.offset)
-    box
-}
-
-#' @keywords internal
-#' @noRd
-# Set bg to the background color or "white" if transparent.
-# The idea is that we want a color that is opaque but matches background.
-get.bg <- function()
-{
-    bg <- par("bg")
-    if(bg[1] == "transparent" || # TODO par("bg") incorrectly(?) returns transparent with mfrow
-       bg[1] == 0 || is.na(bg[1])) { # probably unnecessary
-        bg <- "white"
-    }
-    bg
-}
-
-
-
+#' Calls functions that I modified
 #' @keywords internal
 #' @noRd
 # split.labs.R: functions for generating split.labels
@@ -954,7 +898,7 @@ internal.split.labs <- function(x, type,
     index <- cumsum(c(1, frame$ncompete + frame$nsurrogate + !is.leaf))
     isplit  <- index[c(!is.leaf, FALSE)]
 
-    split <- get.lsplit.rsplit(x, isplit, split.var.names,
+    split <- rpart.plot:::get.lsplit.rsplit(x, isplit, split.var.names,
                                type, clip.left.labs, clip.right.labs, xflip,
                                digits, faclen, roundint, trace,
                                facsep, eq, logical.eq, lt, ge)
@@ -971,6 +915,7 @@ internal.split.labs <- function(x, type,
         split$lsplit[is.eq.l] <- substring(split$lsplit[is.eq.l], 2) # drop leading |
         split$rsplit[is.eq.r] <- substring(split$rsplit[is.eq.r], 2)
     }
+    ## SHOULD CHANGE SO THAT PVAL IS AN ARGUEMENT.
     paste.split.labs(frame,
                      split.var.names, split$lsplit, split$rsplit,
                      type, clip.facs,
@@ -979,72 +924,12 @@ internal.split.labs <- function(x, type,
                      split.suffix, right.split.suffix)
 }
 
-#' @keywords internal
-#' @noRd
-get.lsplit.rsplit <- function(x, isplit, split.var.names,
-                              type, clip.left.labs, clip.right.labs, xflip,
-                              digits, faclen, roundint, trace,
-                              facsep, eq, logical.eq, lt, ge)
-{
-    frame <- x$frame
-    is.leaf <- rpart.plot:::is.leaf(frame)
-    splits <- rpart.plot:::tweak.splits(x, roundint, digits, trace)
-    ncat  <- splits[isplit, "ncat"]
-    lsplit <- rsplit <- character(length=length(isplit))
-    is.con <- ncat <= 1             # continuous vars (a logical vector)
-    if(any(is.con)) {               # any continuous vars?
-        cut <- splits[isplit[is.con], "index"]
-        formatted.cut <- rpart.plot:::format0(cut, digits)
-        is.less.than <- ncat < 0
-        lsplit[is.con] <- paste0(ifelse(is.less.than, lt, ge)[is.con], formatted.cut)
-        rsplit[is.con] <- paste0(ifelse(is.less.than, ge, lt)[is.con], formatted.cut)
-        # print logical and 01 predictors as "Survived = 1" or "Survived = 0"
-        islogical <- x$varinfo$islogical[isplit]
-        is01      <- x$varinfo$is01[isplit]
-        if(!anyNA(islogical) && !anyNA(is01) && (any(islogical) || any(is01))) {
-            isbool <- islogical | (roundint & is01)
-            eq0 <- paste0(logical.eq, "0")
-            eq1 <- paste0(logical.eq, "1")
-            lsplit[isbool] <- paste0(ifelse(is.less.than, eq0, eq1)[isbool])
-            rsplit[isbool] <- paste0(ifelse(is.less.than, eq1, eq0)[isbool])
-        }
-    }
-    is.cat <- ncat > 1              # categorical variables (a logical vector)
-    if(any(is.cat)) {               # any categorical variables?
-        # jrow is the row numbers of factors within lsplit and rsplit
-        # cindex is the index on the "xlevels" list
-        jrow <- seq_along(ncat)[is.cat]
-        crow <- splits[isplit[is.cat], "index"] # row number in csplit
-        xlevels <- attr(x, "xlevels")
-        cindex <- match(split.var.names, names(xlevels))[is.cat]
-        # decide if we must add a "=" prefix
-        paste.left.eq  <- !rpart.plot:::is.fancy(type) | (if(xflip) !clip.right.labs else !clip.left.labs)
-        paste.right.eq <- !rpart.plot:::is.fancy(type) | (if(xflip) !clip.left.labs  else !clip.right.labs)
-        for(i in 1:length(jrow)) {
-            node.xlevels <- rpart.plot:::my.abbreviate(xlevels[[cindex[i]]],
-                                          faclen, one.is.special=TRUE)
-            j <- jrow[i]
-            splits <- x$csplit[crow[i],]
-            # splits is 1=left 2=neither 3=right
-            left  <- (1:length(splits))[splits == 1]
-            right <- (1:length(splits))[splits == 3]
-            collapse <- if(faclen==1) "" else facsep
-            lsplit[j] <- paste(node.xlevels[left],   collapse=collapse)
-            rsplit[j] <- paste0(node.xlevels[right], collapse=collapse)
-            if(paste.left.eq[i])
-                lsplit[j] <- paste0(eq, lsplit[j])
-            if(paste.right.eq[i])
-                rsplit[j] <- paste0(eq, rsplit[j])
-        }
-    }
-    list(lsplit=lsplit, rsplit=rsplit)
-}
-
 # Paste the various constituents to create the split labels vector.
 # On entry we have something like this:
 #    split.var.names sex   age     pclass     sibsp   pclass
 #    lsplit:         mal   >=9.5   =2nd,3rd   >=2.5   =3rd
 #    rsplit:         fml   <9.5    =1st       <2.5    =1st,2nd
+# ACTUALLY NEED THS ONE BC PVALS
 #' @keywords internal
 #' @noRd
 paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
@@ -1078,6 +963,7 @@ paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
     # the heart of this function
     newline <- "\n\n"
 
+    #### I MODIFIED THIS.
     labs  <- paste0(split.prefix, left.names[parent], lsplit[parent], split.suffix,
                     newline, "pval", frame$pval)
 
