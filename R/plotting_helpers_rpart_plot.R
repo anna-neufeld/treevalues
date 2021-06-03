@@ -1,14 +1,11 @@
-# This code is taken from rpart.plot package
-# Originally written by Stephen Milborrow (2010) and
+# These functions come directly from the rpart.plot() package. They have small
+# modfications that allow pvalues and confidence intervals to be printed.
+# The rpart.plot code is originally written by Stephen Milborrow (2010) and
 # derived from the rpart code by written by
 #   Terry M Therneau and Beth Atkinson:
 #   http://mayoresearch.mayo.edu/mayo/research/biostat/splusfunctions.cfm
 # and the R port and modifications of that code by Brian Ripley:
 #   www.stats.ox.ac.uk/~ripley/
-#
-# The functions were modified by Anna Neufeld in 9/2020.
-# The only changes from the rpart.plot package are that pvalues and confidence intervals
-# are now printed.
 #------------------------------------------------------------------------------
 
 # allowable values of prp's type argument
@@ -20,10 +17,11 @@ TYPE4.fancy.all       <- 4
 TYPE5.varname.in.node <- 5
 
 
-#' A copy of the workhorse function from rpart.plot that has been modified.
+#' This function is taken almost directly from rpart.plot(). The main modification is the addition of the
+#' pval and CI parameters.
 #' @keywords internal
 #' @noRd
-inner.plot <- function(x=stop("no 'x' arg"),
+inner.plot <- function(x=stop("no 'x' arg"), inferenceType=4,
     type=2, extra="auto", under=FALSE, fallen.leaves=TRUE,
     digits=2, varlen=0, faclen=0, roundint=TRUE,
     cex=NULL, tweak=1,
@@ -43,8 +41,10 @@ inner.plot <- function(x=stop("no 'x' arg"),
         trace <- eval(dots$trace)
     x$varinfo <- rpart.plot:::get.modelframe.info(x, roundint, trace,
                                      parent.frame(), "rpart.plot")
-    prp(x,
-        type=type, extra=extra, under=under, fallen.leaves=fallen.leaves,
+
+    ## Importantly, this will call the treevalues prp function, NOT the rpart.plot prp function.
+    print(digits)
+    prp(x, inferenceType, type=type, extra=extra, under=under, fallen.leaves=fallen.leaves,
         digits=digits, varlen=varlen, faclen=faclen, roundint=roundint,
         cex=cex, tweak=tweak,
         clip.facs=clip.facs, clip.right.labs=clip.right.labs,
@@ -56,7 +56,7 @@ inner.plot <- function(x=stop("no 'x' arg"),
 #' @keywords internal
 #' @noRd
 #' @importFrom graphics axis grid par plot rect text
-prp <- function(x=stop("no 'x' arg"),
+prp <- function(x=stop("no 'x' arg"), inferenceType=4,
     type=0, extra=0, under=FALSE, fallen.leaves=FALSE,
     nn=FALSE, ni=FALSE, yesno=TRUE,
     branch=if(fallen.leaves) 1 else .2,
@@ -432,6 +432,8 @@ prp <- function(x=stop("no 'x' arg"),
         extra <- rpart.plot:::get.default.extra(obj, class.stats)
 
     node.fun.name <- deparse(substitute(node.fun))
+    print("Second place")
+    print(digits)
     node.labs <- internal.node.labs(obj, node.fun, node.fun.name, type, extra,
                                     under, xsep, digits, varlen,
                                     prefix, suffix, class.stats, under.percent)
@@ -1003,6 +1005,8 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
                                under, xsep, digits, varlen,
                                prefix, suffix, class.stats, under.percent)
 {
+  print("third:")
+  print(digits)
     stopifnot(is.numeric(extra) || is.logical(extra))
     stopifnot(length(extra) == 1)
     ex <- if(extra < 100) extra else extra - 100
@@ -1015,7 +1019,7 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
     frame <- x$frame
     labs <-
         if(x$method == "anova")
-            get.anova.labs(x, extra, under, digits, xsep, varlen, under.percent)
+            get.anova.labs(x, inferenceType, extra, under, digits, xsep, varlen, under.percent)
     else {
            stop("Unrecognized rpart object")
     }
@@ -1042,15 +1046,21 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
 #' This might be what I want to make more customizable!!!
 #' @keywords internal
 #' @noRd
-get.anova.labs <- function(x, extra, under, digits, xsep, varlen, under.percent)
+get.anova.labs <- function(x, inferenceType, extra, under, digits, xsep, varlen, under.percent)
 {
+  print("last")
+  print(digits)
     frame <- x$frame
     fitted <- frame$CI
     newline <- if(under) "\n\n" else "\n"
     ex <- if(extra < 100) extra else extra - 100
     labs <-
-        if(ex == EX0)
+        if(ex == EX0 & inferenceType >= 4)
             rpart.plot:::sprint("Fitted Mean:%s%s95%% CI:%s", rpart.plot:::format0(frame$y, digits), newline, fitted)
+    else if(ex == EX0 & inferenceType==3)
+      rpart.plot:::sprint("Fitted Mean:%s%s%s%s", newline, rpart.plot:::format0(frame$y, digits), newline, fitted)
+    else if(ex == EX0 & inferenceType<=2)
+      rpart.plot:::sprint("Fitted Mean:%s%s", newline, rpart.plot:::format0(frame$y, digits))
     else if(ex == EX1.NOBS) # add n?
         rpart.plot:::sprint("%s%sn=%s", fitted, newline, rpart.plot:::format0(frame$n, digits))
     else if (ex == EX2.CLASS.RATE) {

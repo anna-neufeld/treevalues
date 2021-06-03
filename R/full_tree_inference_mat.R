@@ -3,7 +3,8 @@
 #'
 #' @param tree An rpart object. Must have been built with rpart arguement "model=TRUE".
 #' @param sigma_y The known error variance. If not provided, is estimated with a conservative guess.
-#'
+#' @param CI A boolean. Would you like to compute confidence intervals in addition to pvalues? Confidence intervals are more
+#' comutationally intensive, and so it may sometimes be desireable to set this to FALSE.
 #' @return A large matrix storing lots of pvalues and confidence intervals.
 #' @importFrom stats sd
 #' @importFrom stats var
@@ -12,7 +13,7 @@
 #' @importFrom stats update
 #' @export
 fullTreeInference <- function(tree, sigma_y =
-                                sd(tree$model[,1])) {
+                                sd(tree$model[,1]), CI=TRUE) {
 
   if (is.null(tree$model)) {
     stop('Must build rpart object with parameter model=TRUE')
@@ -62,7 +63,9 @@ fullTreeInference <- function(tree, sigma_y =
       sample_signal <- t(nu)%*%y
       phi_bounds_split <- getInterval(tree, nu,splits)
       p_split <- correctPVal(phi_bounds_split, nu, y, sigma_y)
+      if (CI) {
       CI_split <- computeCI(nu,y,sigma_y, phi_bounds_split, 0.05)
+      } else {  CI_split <- c(NA,NA)}
 
       nu1 <- (where==1)/sum(where==1)
       nu2 <- (where==2)/sum(where==2)
@@ -70,10 +73,13 @@ fullTreeInference <- function(tree, sigma_y =
       phiBounds1 <- getInterval(tree, nu1, splits)
       phiBounds2 <- getInterval(tree, nu2, splits)
 
-      CI1 <- computeCI(nu1,y,sigma_y, phiBounds1, 0.05)
-      CI2 <- computeCI(nu2,y,sigma_y, phiBounds2, 0.05)
-
-
+      if(CI)  {
+        CI1 <- computeCI(nu1,y,sigma_y, phiBounds1, 0.05)
+        CI2 <- computeCI(nu2,y,sigma_y, phiBounds2, 0.05)
+        } else {
+          CI1 <- c(NA,NA)
+          CI2 <- c(NA,NA)
+        }
       splitResults[j,] <- c(splitText1,p_split, mean(y1)-mean(y2),
                             CI_split, mean(y1), CI1 , mean(y2),
                             CI2)
