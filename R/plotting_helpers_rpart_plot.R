@@ -175,8 +175,8 @@ prp <- function(x=stop("no 'x' arg"),
             }
             #--- draw.labs1 starts here ---
             FUN <- rpart.plot:::check.func.args(FUN, "FUN argument to the prp", graphics::text)
-            sep.labs <- separate.labs(labs)
-            xy <- get.box.centers(boxes)
+            sep.labs <- rpart.plot:::separate.labs(labs)
+            xy <- rpart.plot:::get.box.centers(boxes)
             # draw the text after \n\n if any under the box
             if(!all(nchar(sep.labs$under.box) == 0))
                 draw.under.text()
@@ -203,7 +203,7 @@ prp <- function(x=stop("no 'x' arg"),
             rpart.plot:::is.box.invisible(split.box.col, split.border.col, bg)
 
         split.boxes <-
-            draw.boxes(if(is.fancy(type)) "left" else "default", draw.split.shadows1,
+            draw.boxes(if(rpart.plot:::is.fancy(type)) "left" else "default", draw.split.shadows1,
                    split.labs, node.xy, xlim, ylim,
                    nodes, branch,
                    Margin, xflip, yflip, main, sub,
@@ -221,7 +221,7 @@ prp <- function(x=stop("no 'x' arg"),
                 split.cex * cex, split.font, split.family, split.col,
                 draw.split.shadows1, draw.split.shadows, split.shadow.col, split.round)
 
-        if(is.fancy(type)) { # right hand boxes
+        if(rpart.plot:::is.fancy(type)) { # right hand boxes
             right.split.boxes <-
                 draw.boxes("right", draw.split.shadows1,
                    right.split.labs, node.xy, xlim, ylim,
@@ -258,7 +258,7 @@ prp <- function(x=stop("no 'x' arg"),
             cex, font, family, col,
             draw.shadows1, draw.shadows, shadow.col, round)
 
-        if(yesno && !is.fancy(type) && !snip) # draw "yes" and "no" at root?
+        if(yesno && !rpart.plot:::is.fancy(type) && !snip) # draw "yes" and "no" at root?
             rpart.plot:::draw.yes.no(yesno, yes.text, no.text,
                     type, draw.shadows1,
                     xflip, left, branch, xlim, ylim, node.xy, lwd,
@@ -428,7 +428,7 @@ prp <- function(x=stop("no 'x' arg"),
     is.leaf <- rpart.plot:::is.leaf(frame)
     nodes <- as.numeric(row.names(frame))
 
-    if(is.auto(extra, n=1))
+    if(rpart.plot:::is.auto(extra, n=1))
         extra <- rpart.plot:::get.default.extra(obj, class.stats)
 
     node.fun.name <- deparse(substitute(node.fun))
@@ -479,7 +479,7 @@ prp <- function(x=stop("no 'x' arg"),
         par(mar=mar, xpd=xpd)
         par(new=TRUE) # done par for now, start next plot on the same page
     }
-    if(is.fancy(type)) {
+    if(rpart.plot:::is.fancy(type)) {
         right.split.labs <- split.labs[match(2 * nodes+1, nodes)]
         split.labs <- split.labs[match(2 * nodes, nodes)]
         if(!left) # TODO msg uses hard coded TYPE3.fancy, TYPE4.fancy.all, TYPE5.varname.in.node
@@ -516,7 +516,7 @@ prp <- function(x=stop("no 'x' arg"),
     yshift       <- ret$yshift
     split.yshift <- ret$split.yshift
 
-    if(yesno == 2 && !is.fancy(type))
+    if(yesno == 2 && !rpart.plot:::is.fancy(type))
         split.labs <- ifelse(split.labs == "NA",
                              "NA", paste(yes.text, split.labs, no.text))
 
@@ -533,7 +533,7 @@ prp <- function(x=stop("no 'x' arg"),
         max.auto.cex, min.auto.cex, ycompress.cex, accept.cex,
         shift.amounts, Fallen.yspace, bg)
 
-    if(yesno == 2 && !is.fancy(type)) # remove prepended yes.text and no.text?
+    if(yesno == 2 && !rpart.plot:::is.fancy(type)) # remove prepended yes.text and no.text?
         split.labs <-
             ifelse(split.labs == "NA",
                      "NA",
@@ -650,11 +650,11 @@ get.yshift <- function(type, nodes, is.leaf,
     # We use the number of lines to estimate the vert space taken by the label
     # We discount the first line of the inbox text.
 
-    node.sep.labs <- separate.labs(node.labs)
+    node.sep.labs <- rpart.plot:::separate.labs(node.labs)
     node.nlines  <- get.nlines(node.sep.labs$in.box) - 1 +
                     under.cex * get.nlines(node.sep.labs$under.box)
 
-    split.sep.labs <- separate.labs(split.labs)
+    split.sep.labs <- rpart.plot:::separate.labs(split.labs)
     split.nlines  <- get.nlines(split.sep.labs$in.box) - 1 +
                     under.cex * get.nlines(split.sep.labs$under.box)
 
@@ -670,7 +670,7 @@ get.yshift <- function(type, nodes, is.leaf,
     node.shift  <- -yshift + .6 + .9 * node.nlines + .5 * yspace
     split.shift <- .5 * yspace + .6 + .9 * split.nlines
 
-    if(is.fancy(type)) {
+    if(rpart.plot:::is.fancy(type)) {
         # Want the node box on the node, and the top of left split box below
         # the bottom of node box, with a little vertical space.
         # The right split box position is calculated in get.boxes, once we
@@ -772,7 +772,7 @@ get.boxes <- function(boxtype,  # one of "default", "left", "right", "undersplit
 
     # TODO simplistic approach for now, assumes \n approx equal to under.ygap
     stripped.labs <- gsub("\n\n", "\n", labs) # replace \n\n with \n
-    sep.labs <- separate.labs(labs)
+    sep.labs <- rpart.plot:::separate.labs(labs)
     in.box.labs <- sep.labs$in.box
 
     height1         <-rpart.plot:::recycle(rpart.plot:::my.strheight("M", cex, font, family), labs)
@@ -894,41 +894,6 @@ get.bg <- function()
 }
 
 
-#' @keywords internal
-#' @noRd
-# true if x == "auto" or "-auto", ignoring case, partial match to n characters
-is.auto <- function(x, n=2)
-{
-    is.character(x) &&
-    length(x) >= 1  &&
-    if(n == 1) # only one character is needed to disambiguate from e.g. extra=1
-        grepl("^a",     substr(x[1], 1, 1), ignore.case=TRUE)
-    else       # two characters needed to disambiguate from e.g. "aliceblue"
-        (grepl("^au",   substr(x[1], 1, 2), ignore.case=TRUE) ||
-         grepl("^\\-a", substr(x[1], 1, 2), ignore.case=TRUE))
-}
-
-#' @keywords internal
-#' @noRd
-is.fancy <- function(type)
-{
-    type == TYPE3.fancy.no.all ||
-    type == TYPE4.fancy.all    ||
-    type == TYPE5.varname.in.node
-}
-
-# text before \n\n goes in the box
-# text after \n\n if any goes under the box
-#' @keywords internal
-#' @noRd
-separate.labs <- function(labs) {
-    labs <- strsplit(labs, "\n\n")
-    list(in.box    = sapply(labs, function(x) x[1]), under.box = sapply(labs, function(x) paste(x[-1], collapse="\n")))
-}
-
-#' @keywords internal
-#' @noRd
-get.box.centers <- function(box) {list(x=(box$x1 + box$x2)/2, y=(box$y1 + box$y2)/2)}
 
 #' @keywords internal
 #' @noRd
@@ -1053,8 +1018,8 @@ get.lsplit.rsplit <- function(x, isplit, split.var.names,
         xlevels <- attr(x, "xlevels")
         cindex <- match(split.var.names, names(xlevels))[is.cat]
         # decide if we must add a "=" prefix
-        paste.left.eq  <- !is.fancy(type) | (if(xflip) !clip.right.labs else !clip.left.labs)
-        paste.right.eq <- !is.fancy(type) | (if(xflip) !clip.left.labs  else !clip.right.labs)
+        paste.left.eq  <- !rpart.plot:::is.fancy(type) | (if(xflip) !clip.right.labs else !clip.left.labs)
+        paste.right.eq <- !rpart.plot:::is.fancy(type) | (if(xflip) !clip.left.labs  else !clip.right.labs)
         for(i in 1:length(jrow)) {
             node.xlevels <- rpart.plot:::my.abbreviate(xlevels[[cindex[i]]],
                                           faclen, one.is.special=TRUE)
@@ -1095,7 +1060,7 @@ paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
     split.var.names <- rpart.plot:::my.abbreviate(split.var.names, varlen)
     left.names <- right.names <- split.var.names
 
-    if(is.fancy(type)) {
+    if(rpart.plot:::is.fancy(type)) {
         if(xflip)
             right.names[clip.left.labs] <- ""
         else
@@ -1144,6 +1109,8 @@ EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT <- 11
 
 # call node.fun or obj$functions$text, and check its args and returned value.
 # I actually modified this one as well!!!!
+# This needs to be my code and not rpart.plot code because this is what calls get.anova.labs which is the
+# important part!!!!
 #' @keywords internal
 #' @noRd
 internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
