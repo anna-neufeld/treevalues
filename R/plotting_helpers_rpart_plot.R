@@ -393,15 +393,15 @@ prp <- function(x=stop("no 'x' arg"),
     roundint <- rpart.plot:::check.boolean(roundint)
 
     bg <- get.bg() # never returns NA or 0
-    border.col       <- set.zero.to.bg(border.col,       bg)
-    shadow.col       <- set.zero.to.bg(shadow.col,       bg)
-    under.col        <- set.zero.to.bg(under.col,        bg)
-    split.col        <- set.zero.to.bg(split.col,        bg)
-    split.box.col    <- set.zero.to.bg(split.box.col,    bg)
-    split.shadow.col <- set.zero.to.bg(split.shadow.col, bg)
-    nn.col           <- set.zero.to.bg(nn.col,           bg)
-    nn.box.col       <- set.zero.to.bg(nn.box.col,       bg)
-    nn.border.col    <- set.zero.to.bg(nn.border.col,    bg)
+    border.col       <- rpart.plot:::set.zero.to.bg(border.col,       bg)
+    shadow.col       <- rpart.plot:::set.zero.to.bg(shadow.col,       bg)
+    under.col        <- rpart.plot:::set.zero.to.bg(under.col,        bg)
+    split.col        <- rpart.plot:::set.zero.to.bg(split.col,        bg)
+    split.box.col    <- rpart.plot:::set.zero.to.bg(split.box.col,    bg)
+    split.shadow.col <- rpart.plot:::set.zero.to.bg(split.shadow.col, bg)
+    nn.col           <- rpart.plot:::set.zero.to.bg(nn.col,           bg)
+    nn.box.col       <- rpart.plot:::set.zero.to.bg(nn.box.col,       bg)
+    nn.border.col    <- rpart.plot:::set.zero.to.bg(nn.border.col,    bg)
 
     # We use parent.frame() here -- we can't use attr(,".Environment") from
     # terms(obj) because that gives the wrong environment if rpart called
@@ -429,7 +429,7 @@ prp <- function(x=stop("no 'x' arg"),
     nodes <- as.numeric(row.names(frame))
 
     if(is.auto(extra, n=1))
-        extra <- get.default.extra(obj, class.stats)
+        extra <- rpart.plot:::get.default.extra(obj, class.stats)
 
     node.fun.name <- deparse(substitute(node.fun))
     node.labs <- internal.node.labs(obj, node.fun, node.fun.name, type, extra,
@@ -624,21 +624,6 @@ prp <- function(x=stop("no 'x' arg"),
     invisible(ret)
 }
 
-#' @keywords internal
-#' @noRd
-get.default.extra <- function(obj, class.stats)
-{
-    #if(obj$method == "class" || is.class.response(obj)) {
-     #   if(class.stats$nlev > 2)
-       #     104 # multiclass response
-      #  else
-       #     106 # binomial model (two class response)
-    #} else
-  #if(obj$method == "poisson" || obj$method == "exp")
-  #      101
-  #  else
-        100
-}
 
 #' @keywords internal
 #' @noRd
@@ -906,17 +891,6 @@ get.bg <- function()
         bg <- "white"
     }
     bg
-}
-
-#' @keywords internal
-#' @noRd
-set.zero.to.bg <- function(col, bg) # set elems of col that are 0 or NA to bg
-{
-    if(is.null(col))
-        col <- bg
-    else
-        col[which(col == 0) | is.na(col)] <- bg
-    col
 }
 
 
