@@ -53,37 +53,37 @@ inner.plot <- function(x=stop("no 'x' arg"),
         ...)
 }
 
-#' @keywords internal
-#' @noRd
-rpart.plot.version1 <- function(x=stop("no 'x' arg"),
-    type=0, extra=0, under=FALSE, fallen.leaves=FALSE,
-    digits=2, varlen=-8, faclen=3,
-    cex=NULL, tweak=1,
-    snip=FALSE,
-    box.palette=0, shadow.col=0,
-    ...)
-{
-    if(!inherits(x, "rpart"))
-        stop("Not an rpart object")
-    # We have to get "trace" for get.modelframe.info, but I don't want to
-    # add trace to the rpart.plot arg list, hence the following bit of
-    # code to get trace from the dots.
-    dots <- match.call(expand.dots=FALSE)$...
-    trace <- 0
-    if(!is.null(dots$trace))
-        trace <- eval(dots$trace)
-    ## prepared to fixin 1 min
-    x$varinfo <- rpart.plot:::get.modelframe.info(x, roundint=FALSE, trace,
-                                     parent.frame(), "rpart.plot.version1")
-    prp(x,
-        type=type, extra=extra,
-        under=under, fallen.leaves=fallen.leaves, clip.facs=FALSE,
-        digits=digits, varlen=varlen, faclen=faclen, roundint=FALSE,
-        cex=cex, tweak=tweak,
-        snip=snip,
-        box.palette=box.palette, shadow.col=shadow.col,
-        ...)
-}
+#' #' @keywords internal
+#' #' @noRd
+#' rpart.plot.version1 <- function(x=stop("no 'x' arg"),
+#'     type=0, extra=0, under=FALSE, fallen.leaves=FALSE,
+#'     digits=2, varlen=-8, faclen=3,
+#'     cex=NULL, tweak=1,
+#'     snip=FALSE,
+#'     box.palette=0, shadow.col=0,
+#'     ...)
+#' {
+#'     if(!inherits(x, "rpart"))
+#'         stop("Not an rpart object")
+#'     # We have to get "trace" for get.modelframe.info, but I don't want to
+#'     # add trace to the rpart.plot arg list, hence the following bit of
+#'     # code to get trace from the dots.
+#'     dots <- match.call(expand.dots=FALSE)$...
+#'     trace <- 0
+#'     if(!is.null(dots$trace))
+#'         trace <- eval(dots$trace)
+#'     ## prepared to fixin 1 min
+#'     x$varinfo <- rpart.plot:::get.modelframe.info(x, roundint=FALSE, trace,
+#'                                      parent.frame(), "rpart.plot.version1")
+#'     prp(x,
+#'         type=type, extra=extra,
+#'         under=under, fallen.leaves=fallen.leaves, clip.facs=FALSE,
+#'         digits=digits, varlen=varlen, faclen=faclen, roundint=FALSE,
+#'         cex=cex, tweak=tweak,
+#'         snip=snip,
+#'         box.palette=box.palette, shadow.col=shadow.col,
+#'         ...)
+#' }
 
 #' @keywords internal
 #' @noRd
@@ -1155,7 +1155,7 @@ get.lsplit.rsplit <- function(x, isplit, split.var.names,
 {
     frame <- x$frame
     is.leaf <- rpart.plot:::is.leaf(frame)
-    splits <- tweak.splits(x, roundint, digits, trace)
+    splits <- rpart.plot:::tweak.splits(x, roundint, digits, trace)
     ncat  <- splits[isplit, "ncat"]
     lsplit <- rsplit <- character(length=length(isplit))
     is.con <- ncat <= 1             # continuous vars (a logical vector)
@@ -1207,57 +1207,6 @@ get.lsplit.rsplit <- function(x, isplit, split.var.names,
     list(lsplit=lsplit, rsplit=rsplit)
 }
 
-
-
-# If roundint is TRUE then round up the entries in splits$index for
-# variables that are integral. (All values in the input data for the
-# variable must be integral, not just the entry in splits$index.)
-#
-# Add verysmall to all other cuts where verysmall is something like 1e-10.
-# This is so format(cut, digits=digits) always rounds up (rather than the
-# default behaviour of format which is to round to even when the last digit
-# is even).
-# This gives more easily interpretable results, especially because split
-# cuts ending in .5 are common for integer predictors.
-# Thus "nbr.family.members < 2.5" is now rounded to "nbr.family.members < 3"
-# (rather than "nbr.family.members < 2", which was misleading).
-#
-# e.g. format(1234.5,       digits=2) is 1234   rounds down (not what we want)
-#      format(1235.5,       digits=2) is 1236   rounds up
-#      format(1234.5+1e-10, digits=2) is 1235   rounds up
-#      format(1235.5+1e-10, digits=2) is 1236   rounds up
-#
-# Note that if roundint is FALSE then we still bump all entries by verysmall.
-#' @keywords internal
-#' @noRd
-tweak.splits <- function(obj, roundint, digits, trace)
-{
-    splits <- obj$splits
-    if(is.null(splits))               # semtree object (from package semtree)
-        return(splits)
-    if(!is.numeric(splits[,"index"])) # paranoia
-        return(splits)
-
-    verysmall <- floor(log10(abs(splits[,"index"])))
-    verysmall[verysmall > 0] <- 0
-    verysmall <- rpart.plot:::exp10(-abs(verysmall) - 10)
-
-    splits[,"index"] <- splits[,"index"] + verysmall
-
-    # Because rpart.model.frame() may fail or give warnings, we do
-    # processing here only if the roundint argument is TRUE.
-    if(roundint) {
-        isroundint <- obj$varinfo$isroundint # vector of bools
-        if(anyNA(isroundint)) # couldn't get the isroundint vector
-            return(splits)
-        for(varname in names(isroundint)) if(isroundint[varname]) {
-            i <- rownames(splits) %in% varname
-            if(length(i) > 0)
-                splits[,"index"][i] <- ceiling(splits[,"index"][i] - verysmall[i])
-        }
-    }
-    splits
-}
 # Paste the various constituents to create the split labels vector.
 # On entry we have something like this:
 #    split.var.names sex   age     pclass     sibsp   pclass
@@ -1311,7 +1260,6 @@ paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
 
 
 # node.labs.R: functions for generating labels
-
 EX0                                 <- 0
 EX1.NOBS                            <- 1
 EX2.CLASS.RATE                      <- 2
@@ -1325,12 +1273,6 @@ EX9.PROB.ACROSS.ALL                 <- 9
 EX10.PROB.ACROSS.ALL.2ND.CLASS      <- 10
 EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT <- 11
 
-
-##' @keywords internal
-##' @noRd
-#is.vec <- function(x) {
- #   (NROW(x) == 1 || NCOL(x) == 1) && NROW(x) * NCOL(x) > 0
-#}
 
 # call node.fun or obj$functions$text, and check its args and returned value.
 # I actually modified this one as well!!!!
