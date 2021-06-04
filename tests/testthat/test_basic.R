@@ -3,10 +3,6 @@ library(treevalues)
 library(rpart)
 
 test_that("Region: do different methods match??", {
-  #library(rpart)
-  #library(intervals)
-  #library(rpart.plot)
-  #library(partykit)
 
   n <- 150
   p <- 8
@@ -20,8 +16,8 @@ test_that("Region: do different methods match??", {
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.01, maxcompete=0,maxsurrogate=0))
-  unpruned_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.0, maxcompete=0,maxsurrogate=0))
+  base_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.01))
+  unpruned_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.0))
 
   region <- sample(row.names(base_tree$frame)[-1],size=1)
   splits <- getBranch(base_tree, region)
@@ -42,7 +38,7 @@ test_that("Region: do different methods match??", {
   }
 )
 
-test_that("Basic Hypothesis Tests; Null Model", {
+test_that("Basic Hypothesis Tests; Siblings under Null!!!!", {
   set.seed(153)
   n <- 150
   p <- 8
@@ -51,32 +47,32 @@ test_that("Basic Hypothesis Tests; Null Model", {
   mu_y <- 0*X[,1]
   y <- rnorm(n, mu_y, sigma_y)
 
-  ### This turns out to be necessary to reading the split rules.
   dat <- data.frame(y=y,X=X)
   nameX <- sapply(1:p, function(u) paste0("X",u))
   names(dat) = c("y", nameX)
 
   ### Build an rpart of depth d
-  base_tree <- rpart(y~., data=dat, control=rpart.control(maxdepth = 2,
-                                                                 minsplit=2, minbucket=1,
-                                                                 cp=0, maxcompete=0,
-                                                                 maxsurrogate=0), model=TRUE)
+  base_tree <- rpart(y~X1+X3+X5+X7, data=dat, control=rpart.control(cp=0.03, maxcompete=0, maxsurrogate=0), model=TRUE)
 
   ### For each pair of terminal nodes, compute results.
-  terminalNodes <- sort(unique(base_tree$where))
+  region <- sample(row.names(base_tree$frame)[-1],size=1)
+  if (as.numeric(region)%%2==0) {
+    sib = as.numeric(region)+1
+  } else { sib = as.numeric(region)-1}
 
 
+  splits <- getBranch(base_tree, region)
+  membership <-  getRegion(base_tree,region)
+  membershipsib <-  getRegion(base_tree,sib)
 
-  locTest = c(terminalNodes[1], terminalNodes[2])
-  splits <- getBranch(base_tree, locTest[1])
-  y1 <- y[base_tree$where==locTest[1]]
-  y2 <- y[base_tree$where==locTest[2]]
-  nu <- (base_tree$where==locTest[1])/sum((base_tree$where==locTest[1])) - (base_tree$where==locTest[2])/sum(base_tree$where==locTest[2])
-  true_signal <- abs(t(nu)%*%mu_y)
+
+  nu <- (as.numeric(membership))/sum(membership) - (as.numeric(membershipsib))/sum(membershipsib)
+
   phi_bounds1 <- getInterval(base_tree,nu, splits)
-  #pTree <- splitInference(base_tree, locTest, sigma_y)$pval
-  #expect_true((pTree-0.8460218)<1e-6)
-  #expect_true(pTree==correctPVal(phi_bounds1, nu, y, sigma_y))
+  pTree <- branchInference(base_tree, splits, "sib")$pval
+  CI1 <- branchInference(base_tree, splits, "sib")$confint
+  expect_true(pTree==correctPVal(phi_bounds1, nu, y, sigma_y))
+  expect_true(CI1==computeCI(nu, y, sigma_y,phi_bounds1))
 })
 
 
@@ -101,7 +97,29 @@ test_that("Full Inference", {
                                                                              maxsurrogate=0))
   mat <- fullTreeInference(base_tree, sigma_y)
   expect_true(NROW(mat)==length(unique(base_tree$where)))
-
-  #treeval.plot(base_tree, mat, sigma_y)
 }
 )
+
+
+test_that("Permutation!!!", {
+  n <- 150
+  p <- 8
+  sigma_y <- 5
+  X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))
+  mu_y <- 0
+  y <- rnorm(n, mu_y, sigma_y)
+
+  dat <- data.frame(y=y,X=X)
+  nameX <- sapply(1:p, function(u) paste0("X",u))
+  names(dat) = c("y", nameX)
+
+  ### Build an rpart of depth d
+  base_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 4, minsplit=2, minbucket=1,cp=0.01))
+
+  region <- sample(row.names(base_tree$frame)[-1],size=1)
+  splits <- getBranch(base_tree, region)
+
+  res <- branchInference(base_tree, splits, type="reg", permute=TRUE)
+  res2 <- branchInference(base_tree, splits, type="reg", permute=FALSE)
+
+})

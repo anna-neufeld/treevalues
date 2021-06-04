@@ -9,8 +9,9 @@ treeval.plot(
   tree,
   inferenceMatrix = NULL,
   sigma_y = NULL,
-  CI = TRUE,
-  pval = TRUE,
+  nn = TRUE,
+  extra = 1,
+  inferenceType = 2,
   digits = 3,
   ...
 )
@@ -18,13 +19,11 @@ treeval.plot(
 \arguments{
 \item{tree}{An rpart tree. Note that the tree must have been built with arguements maxcompete=0 and maxsurrogates=0.}
 
-\item{inferenceMatrix}{The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.}
+\item{inferenceMatrix}{Optionally provide an inference matrix, built with ``fullTreeInference()``. If not provided, ``fullTreeInference()``
+will be called internally (and is relatively slow).}
 
-\item{sigma_y}{Need to provide this if you are not providing inference matrix.}
-
-\item{CI}{Boolean value. Would you like the tree to print CIs within each node?}
-
-\item{pval}{Boolean value. Would you lke to see th}
+\item{sigma_y}{Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
+as a conservative estimate.}
 
 \item{digits}{Integer- how many digits would you like the text in the plot rounded to.}
 

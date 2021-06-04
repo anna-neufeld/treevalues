@@ -8,7 +8,7 @@
 #   www.stats.ox.ac.uk/~ripley/
 #------------------------------------------------------------------------------
 
-# allowable values of prp's type argument
+# allowable values of prp's type argument (taken from rpart.plot)
 TYPE0.default         <- 0
 TYPE1.all             <- 1
 TYPE2.all.under       <- 2
@@ -17,8 +17,10 @@ TYPE4.fancy.all       <- 4
 TYPE5.varname.in.node <- 5
 
 
-#' This function is taken almost directly from rpart.plot(). The main modification is the addition of the
-#' pval and CI parameters.
+#' This function is taken almost directly from ``rpart.plot``. The main modification is the addition of the
+#' inferenceType parameter. By default, inferenceType=4, which means that pvalues, CIs, and labels are all printed.
+#' All other arguements have same meaning as in ``rpart.plot`` package.
+#'
 #' @keywords internal
 #' @noRd
 inner.plot <- function(x=stop("no 'x' arg"), inferenceType=4,
@@ -43,7 +45,7 @@ inner.plot <- function(x=stop("no 'x' arg"), inferenceType=4,
                                      parent.frame(), "rpart.plot")
 
     ## Importantly, this will call the treevalues prp function, NOT the rpart.plot prp function.
-    print(digits)
+
     prp(x, inferenceType, type=type, extra=extra, under=under, fallen.leaves=fallen.leaves,
         digits=digits, varlen=varlen, faclen=faclen, roundint=roundint,
         cex=cex, tweak=tweak,
@@ -53,6 +55,11 @@ inner.plot <- function(x=stop("no 'x' arg"), inferenceType=4,
         ...)
 }
 
+#' Main workhorse function modified from``rpart.plot``. The main modification is the addition of the
+#' inferenceType parameter. By default, inferenceType=4, which means that pvalues, CIs, and labels are all printed.
+#' All other arguements have same meaning as in ``rpart.plot`` package. This function calls our internal labeling functions,
+#' which deal with adding the extra labels.
+#'
 #' @keywords internal
 #' @noRd
 #' @importFrom graphics axis grid par plot rect text
@@ -187,10 +194,6 @@ prp <- function(x=stop("no 'x' arg"), inferenceType=4,
         }
         #--- draw.labs starts here ---
         if(boxes.include.gap) {
-            # For debugging: make get.boxes expand the boxes to include
-            # what would normally be the gap between the boxes.
-            # With optimum cex, at least one pair of boxes will just touch.
-            print("boxes.include.gap is TRUE\n")
             split.space <- split.space + gap/2
             split.yspace <- split.yspace + ygap/2
             space <- space + gap/2
@@ -431,10 +434,11 @@ prp <- function(x=stop("no 'x' arg"), inferenceType=4,
     if(rpart.plot:::is.auto(extra, n=1))
         extra <- rpart.plot:::get.default.extra(obj, class.stats)
 
+    #### This is one place where a treevalues function is called, instead of an rpart.plot() function!
+    ### To draw our own labels.
     node.fun.name <- deparse(substitute(node.fun))
-    print("Second place")
-    print(digits)
-    node.labs <- internal.node.labs(obj, node.fun, node.fun.name, type, extra,
+
+    node.labs <- internal.node.labs(obj, inferenceType, node.fun, node.fun.name, type, extra,
                                     under, xsep, digits, varlen,
                                     prefix, suffix, class.stats, under.percent)
 
@@ -995,18 +999,17 @@ EX10.PROB.ACROSS.ALL.2ND.CLASS      <- 10
 EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT <- 11
 
 
-# call node.fun or obj$functions$text, and check its args and returned value.
-# I actually modified this one as well!!!!
-# This needs to be my code and not rpart.plot code because this is what calls get.anova.labs which is the
+#' Call node.fun or obj$functions$text, and check its args and returned value.
+#' This needs to be my code and not rpart.plot code because this is what calls ``get.anova.labs``; and we need
+#' to call the ``treevalues`` version of ``get.anova.labs`` as opposed to the ``rpart.plot`` version.
 # important part!!!!
 #' @keywords internal
 #' @noRd
-internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
+internal.node.labs <- function(x, inferenceType, node.fun, node.fun.name, type, extra,
                                under, xsep, digits, varlen,
                                prefix, suffix, class.stats, under.percent)
 {
-  print("third:")
-  print(digits)
+
     stopifnot(is.numeric(extra) || is.logical(extra))
     stopifnot(length(extra) == 1)
     ex <- if(extra < 100) extra else extra - 100
@@ -1042,28 +1045,39 @@ internal.node.labs <- function(x, node.fun, node.fun.name, type, extra,
     labs
 }
 
-#' This function is actually important and I actually modified it.
-#' This might be what I want to make more customizable!!!
+#' This function is actually important and I actually modified it from ``rpart.plot()`` package so that it prints
+#' CIs in nodes (depending on the arguement inferenceType). Can continue to improve with more flexible user parameters over tme.
+#'
 #' @keywords internal
 #' @noRd
 get.anova.labs <- function(x, inferenceType, extra, under, digits, xsep, varlen, under.percent)
 {
-  print("last")
-  print(digits)
+
     frame <- x$frame
-    fitted <- frame$CI
     newline <- if(under) "\n\n" else "\n"
     ex <- if(extra < 100) extra else extra - 100
     labs <-
-        if(ex == EX0 & inferenceType >= 4)
-            rpart.plot:::sprint("Fitted Mean:%s%s95%% CI:%s", rpart.plot:::format0(frame$y, digits), newline, fitted)
-    else if(ex == EX0 & inferenceType==3)
-      rpart.plot:::sprint("Fitted Mean:%s%s%s%s", newline, rpart.plot:::format0(frame$y, digits), newline, fitted)
-    else if(ex == EX0 & inferenceType<=2)
-      rpart.plot:::sprint("Fitted Mean:%s%s", newline, rpart.plot:::format0(frame$y, digits))
-    else if(ex == EX1.NOBS) # add n?
-        rpart.plot:::sprint("%s%sn=%s", fitted, newline, rpart.plot:::format0(frame$n, digits))
-    else if (ex == EX2.CLASS.RATE) {
+    if(ex == EX0) {
+      if (inferenceType < 2) {
+        rpart.plot:::sprint("Fitted Mean: %s%s", newline, rpart.plot:::format0(frame$y, digits))
+      } else if (inferenceType==2) {
+        rpart.plot:::sprint("Fitted Mean: %s%s95%%CI: %s", rpart.plot:::format0(frame$y, digits), newline, frame$CI)
+      } else if (inferenceType >= 3) {
+        rpart.plot:::sprint("Fitted Mean: %s%s%s",rpart.plot:::format0(frame$y, digits), newline, frame$CI)
+      }
+    } else if (ex == EX1.NOBS) {
+      if (inferenceType < 2) {
+        rpart.plot:::sprint("Fitted Mean:%s%sn=%s", rpart.plot:::format0(frame$y, digits),
+                            newline,rpart.plot:::format0(frame$n, digits))
+      } else if (inferenceType==2) {
+        rpart.plot:::sprint("Fitted Mean:%s%s95%% CI: %s%sn=%s", rpart.plot:::format0(frame$y, digits),
+                            newline,frame$CI, newline, rpart.plot:::format0(frame$n, digits))
+      } else if (inferenceType >= 3) {
+        rpart.plot:::sprint("Fitted Mean: %s%s%s%sn=%s",  rpart.plot:::format0(frame$y, digits), newline,
+                            frame$CI, newline, rpart.plot:::format0(frame$n, digits))
+
+      }
+    } else if (ex == EX2.CLASS.RATE) {
         #extra.help()
         stop("extra=", extra,
               ' is legal only for "class", "poisson" and "exp" models (you have an "anova" model)')

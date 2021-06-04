@@ -4,23 +4,34 @@
 #' @export
 #'
 #' @param tree An rpart tree. Note that the tree must have been built with arguements maxcompete=0 and maxsurrogates=0.
-#' @param inferenceMatrix The corrsponding inference matrix. This matrix should have been build with the "getFullTreeInference" function.
-#' @param sigma_y Need to provide this if you are not providing inference matrix.
-#' @param inferenceType An integer specifying which pieces of inference information should be added to the plot. The options are:
+#' @param inferenceMatrix Optionally provide an inference matrix, built with ``fullTreeInference()``. If not provided, ``fullTreeInference()``
+#' will be called internally (and is relatively slow).
+#' @param sigma_y Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
+#' as a conservative estimate.
+#' @param inferenceType An integer specifying which pieces of inference information should be added to the plot. The options
+#' currently available are:
+#' @param nn boolean- would you like node numbers to be printed?
+#' @param extra Passed on to rpart.plot. Most relevant are the following options.
 #' \describe{
-#' \item{0}{No confidence intervals or p-values.}
-#' \item{1}{No confidence intervals. Label each split with a p-value.}
+#' \item{0}{Do not print sample size in each node. }
+#' \item{1}{Print sample size in each node. }
+#' \item{2}{Label each internal node with a confidence interval and label each split with a p-value.}
+#' \item{3}{Slightly less verbose version of "2". Omit the phrase "95% CI" from node labels.}
+#' }
+#' \describe{
+#' \item{0}{No confidence intervals, p-values, or "fitted mean" label. Just calls rpart.plot().}
+#' \item{1}{No confidence intervals. Each split labeled with a p-value.}
 #' \item{2}{Label each internal node with a confidence interval and label each split with a p-value.}
 #' \item{3}{Slightly less verbose version of "2". Omit the phrase "95% CI" from node labels.}
 #' }
 #' @param digits Integer- how many digits would you like the text in the plot rounded to.
-#' @param ... Additional arguements are passed on to rpart.plot(). Examples include "nn", "extra","digits", and "cex".
+#' @param ... Additional arguements are passed on to rpart.plot(). Examples include "cex".
 #' @importFrom intervals interval_union
 #' @importFrom intervals interval_complement
 #' @importFrom rpart rpart
 #' @importFrom stats update
-treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL,nn=TRUE, extra=1,
-                         inferenceType=0, digits=3, ...) {
+treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL,nn=TRUE, printn=1,
+                         inferenceType=2, digits=3, ...) {
 
 
 
@@ -50,8 +61,8 @@ treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL,nn=TRUE, ext
   rootLower <- inferenceMatrix[1,4]
   rootUpper <- inferenceMatrix[1,5]
 
-  tree$frame[1,]$CI <-paste("(",  round(  rootLower, 4), ", ",
-                            round(  rootUpper,4), ")",
+  tree$frame[1,]$CI <-paste("(",  round(  rootLower, digits), ", ",
+                            round(  rootUpper,digits), ")",
                             sep="")
 
   indices <- which(inferenceMatrix$pval < 1e-3)
@@ -80,8 +91,8 @@ treeval.plot <- function(tree, inferenceMatrix = NULL, sigma_y=NULL,nn=TRUE, ext
       tree$frame[row,]$pval <- inferenceMatrix[child2,]$pval
     }
   }
-  inner.plot(tree,inferenceType, roundint=FALSE, nn=nn, extra=extra,digits=digits,...)
+  inner.plot(tree,inferenceType, roundint=FALSE, nn=nn, extra=(printn==TRUE),digits=digits,...)
   } else{
-    rpart.plot::rpart.plot(tree, nn=nn, extra=extra, roundint=FALSE, digits=digits, ...)
+    rpart.plot::rpart.plot(tree, nn=nn, extra=(printn==TRUE), roundint=FALSE, digits=digits, ...)
   }
 }
