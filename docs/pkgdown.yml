@@ -1,0 +1,10 @@
+pandoc: 2.11.4
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  basic_inference_tutorial: basic_inference_tutorial.html
+last_built: 2021-06-07T19:18Z
+urls:
+  reference: https://anna-neufeld.github.io/treevalues/reference
+  article: https://anna-neufeld.github.io/treevalues/articles
+
