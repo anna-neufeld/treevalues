@@ -30,10 +30,10 @@ load("~/treevalues/data/blsdata.RData")
 
 # Building the tree
 
-The ``treevalues`` package is designed for use with the ``rpart`` package, and so all trees should be built using ``rpart``. All trees should be built with the parameter ``model=TRUE``, which simply saves a copy of the training data inside of the fitted rpart object (this is useful so that the data need not be separately passed to each inference function). 
+The ``treevalues`` package is designed for use with the ``rpart`` package, and so all trees should be built using ``rpart``. All trees should be built with the parameter ``model=TRUE``, which saves a copy of the training data inside of the fitted rpart object (this is useful so that the data need not be separately passed to each inference function). 
 
 ```{r, tree}
-bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02, maxcompete=0, maxsurrogate=0)
+bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
 ```
 
 Note that the arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. 
@@ -56,7 +56,7 @@ branch
 We now pass this branch into ``branchInference``, which does inference conditional on the event that this branch appeared in the tree. We should specify if we want to do inference just on region 8, or on the difference between region 8 and its sibling, region 9. In this section, we do the latter.
 
 ```{r}
-result <- treevalues::branchInference(bls.tree, branch, type="sib")
+result <- branchInference(bls.tree, branch, type="sib")
 result$confint
 result$pval
 ```
@@ -84,11 +84,4 @@ treeval.plot(bls.tree, inferenceType=1)
 treeval.plot(bls.tree, inferenceType=2)
 ```
 
- 
-Or we can see it in a matrix. I need to work on my row and column names for this!!
-
-```{r}
-mat <- fullTreeInference(bls.tree)
-print(mat, ndigits=3)
-```
 

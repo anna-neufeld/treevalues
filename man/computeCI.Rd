@@ -4,7 +4,7 @@
 \alias{computeCI}
 \title{compute selective confidence intervals}
 \usage{
-computeCI(v, y, sigma = NULL, truncation, alpha)
+computeCI(v, y, sigma = NULL, truncation, alpha = 0.05)
 }
 \arguments{
 \item{v}{the contrast vector that defines the parameter of interest}

@@ -69,36 +69,11 @@ test_that("Basic Hypothesis Tests; Siblings under Null!!!!", {
   nu <- (as.numeric(membership))/sum(membership) - (as.numeric(membershipsib))/sum(membershipsib)
 
   phi_bounds1 <- getInterval(base_tree,nu, splits)
-  pTree <- branchInference(base_tree, splits, "sib")$pval
-  CI1 <- branchInference(base_tree, splits, "sib")$confint
+  pTree <- branchInference(base_tree, splits, "sib", sigma_y=sigma_y)$pval
+  CI1 <- branchInference(base_tree, splits, "sib", sigma_y=sigma_y)$confint
   expect_true(pTree==correctPVal(phi_bounds1, nu, y, sigma_y))
-  expect_true(CI1==computeCI(nu, y, sigma_y,phi_bounds1))
+  expect_true(all.equal(CI1, computeCI(nu, y, sigma_y,phi_bounds1, alpha=0.05)))
 })
-
-
-test_that("Full Inference", {
-  set.seed(1)
-  n <- 200
-  p <- 10
-  sigma_y <- 5
-  X <- MASS::mvrnorm(n, rep(0,p), diag(rep(1,p)))
-  mu_y <- 0*X[,1]
-  y <- rnorm(n, mu_y, sigma_y)
-
-  ### This turns out to be necessary to reading the split rules.
-  dat <- data.frame(y=y,X=X)
-  nameX <- sapply(1:p, function(u) paste0("X",u))
-  names(dat) = c("y", nameX)
-
-  ### Build an rpart of depth d
-  base_tree <- rpart(y~., data=dat, model=TRUE, control=rpart.control(maxdepth = 3,
-                                                                             minsplit=2, minbucket=1,
-                                                                             cp=-1, maxcompete=0,
-                                                                             maxsurrogate=0))
-  mat <- fullTreeInference(base_tree, sigma_y)
-  expect_true(NROW(mat)==length(unique(base_tree$where)))
-}
-)
 
 
 test_that("Permutation!!!", {

@@ -300,7 +300,7 @@ isSameIntervals <- function(int1, int2) {
 #'
 #' @return This function returns a vector of lower and upper confidence limits.
 #'
-computeCI <- function(v, y, sigma=NULL, truncation, alpha) {
+computeCI <- function(v, y, sigma=NULL, truncation, alpha=0.05) {
   ### Conservative guess
   if (is.null(sigma)) {
     sigma <- sd(y)
