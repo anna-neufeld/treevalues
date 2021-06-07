@@ -6,29 +6,28 @@
 #' @param tree An rpart tree. Note that the tree must have been built with arguements maxcompete=0 and maxsurrogates=0.
 #' @param sigma_y Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
 #' as a conservative estimate.
-#' @param inferenceType An integer specifying which pieces of inference information should be added to the plot. The options
-#' currently available are:
 #' @param nn boolean- would you like node numbers to be printed?
-#' @param extra Passed on to rpart.plot. Most relevant are the following options.
-#' \describe{
-#' \item{0}{Do not print sample size in each node. }
-#' \item{1}{Print sample size in each node. }
-#' \item{2}{Label each internal node with a confidence interval and label each split with a p-value.}
-#' \item{3}{Slightly less verbose version of "2". Omit the phrase "95% CI" from node labels.}
-#' }
-#' \describe{
-#' \item{0}{No confidence intervals, p-values, or "fitted mean" label. Just calls rpart.plot().}
-#' \item{1}{No confidence intervals. Each split labeled with a p-value.}
-#' \item{2}{Label each internal node with a confidence interval and label each split with a p-value.}
-#' \item{3}{Slightly less verbose version of "2". Omit the phrase "95% CI" from node labels.}
-#' }
+#' @param printn boolean - would you like the number of observations to be printed in each node?
+#' @param inferenceType An integer specifying which pieces of inference information should be added to the plot. The options
+#' currently available are
+#' (0) No confidence intervals, p-values, or "fitted mean" label. Just calls rpart.plot().
+#' (1) No confidence intervals. Each split labeled with a p-value.
+#' (2)  Label each internal node with a confidence interval and label each split with a p-value. This is the default, but
+#' can also be a little messy/hard to read. Options 3 and 4 print the same information but with small
+#' formatting tweaks.
 #' @param digits Integer- how many digits would you like the text in the plot rounded to.
+#' @param alpha If inferenceType is such that confidence intervals will be printed, (1-alpha) confidence intervals will be printed.
+#' @param permute If inferenceType is such that confidence intervals will be printed, should the conditioning set for the confidence intervals include
+#' all permutations of the relevant branch? Setting this to TRUE will lead to slightly narrower confidence intervals, but will make computations more expensive.
+#' See paper for more details.
 #' @param ... Additional arguements are passed on to rpart.plot(). Examples include "cex".
 #' @importFrom intervals interval_union
 #' @importFrom intervals interval_complement
 #' @importFrom rpart rpart
 #' @importFrom stats update
-treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=1,
+#' @importFrom stats qnorm
+#' @importFrom stats sd
+treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
                          inferenceType=2, digits=3,alpha=0.05, permute=FALSE, ...) {
 
 
@@ -58,8 +57,25 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=1,
 }
 
 
-
-
+#' This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.
+#'
+#' This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. Ths function is called internally by ``treeval.plot``,
+#' as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed
+#' internally by ``treeval.plot``.
+#'
+#' @param tree The tree that you will be plotting.
+#' @param sigma_y The standard deviation of the response. If known, should be provided. Otherwise, a convervative estiamte (the sample
+#' standard deviation of the response) is used.
+#' @param CI Boolean. Should confidence intervals be computed? As confidence intervals are inefficient to compute, this should be set to
+#' ``FALSE`` if you intend to make a plot that does not display confidence intervals.
+#' @param alpha If ``CI=TRUE``, the confidence intervals that are computed will be (1-alpha) confidence intervals.
+#' @param digits Integer. The number of digits that the p-values and confidence intervals will be rounded to in the later plot.
+#' @param permute If ``CI=TRUE``, this boolean says whether or not the
+#' @return An rpart object. Identical to ``tree`` expect that now ``tree$frame`` has two extra columns; one storing p-values for splits and the other
+#' storing confidence intervals for regions. If this object is passed in to ``treeval.plot``, the plots will be made more efficiently.
+#' @importFrom stats qnorm
+#' @importFrom stats sd
+#' @export
 inferenceFrame <- function(tree, sigma_y = sd(tree$model[,1]), CI=TRUE, alpha=0.05,digits=3,
                            permute=FALSE) {
 
