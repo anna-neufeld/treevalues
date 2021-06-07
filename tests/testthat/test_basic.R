@@ -122,4 +122,6 @@ test_that("Permutation!!!", {
   res <- branchInference(base_tree, splits, type="reg", permute=TRUE)
   res2 <- branchInference(base_tree, splits, type="reg", permute=FALSE)
 
+  expect_true(length(suppressWarnings(interval_difference(res2$condset,res$condset)))==0)
+  expect_true((res$confint[2]-res$confint[1]) <= (res2$confint[2]-res2$confint[1]))
 })

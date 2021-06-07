@@ -1078,7 +1078,7 @@ get.anova.labs <- function(x, inferenceType, extra, under, digits, xsep, varlen,
         rpart.plot:::sprint("Fitted Mean: %s%s%s%sn=%s",  rpart.plot:::format0(frame$y, digits), newline,
                             frame$CI, newline, rpart.plot:::format0(frame$n, digits))
       } else if (inferenceType >= 4) {
-        rpart.plot:::sprint("Fitted Mean: %s%s%s%s",newline, rpart.plot:::format0(frame$y, digits), newline, frame$CI)
+        rpart.plot:::sprint("Fitted Mean: %s%s%s%s%sn=%s",newline, rpart.plot:::format0(frame$y, digits), newline, frame$CI,newline,rpart.plot:::format0(frame$n, digits))
       }
       } else if (ex == EX2.CLASS.RATE) {
         #extra.help()

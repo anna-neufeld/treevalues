@@ -93,7 +93,7 @@ inferenceFrame <- function(tree, sigma_y = sd(tree$model[,1]), CI=TRUE, alpha=0.
     rootnodepval <- branchInference(tree, allBranches[["2"]], type="sib", computeCI=FALSE)$pval
     child1CI <- branchInference(tree, allBranches[["2"]], type="reg", computeCI=TRUE, alpha=alpha, permute=permute)$confint
     child2CI <- branchInference(tree, allBranches[["3"]], type="reg", computeCI=TRUE,alpha=alpha, permute=permute)$confint
-    tree$frame["2",9] <- paste("(", round(child1CI[1],digits), ", ", round(child2CI[2],digits), ")", sep="")
+    tree$frame["2",9] <- paste("(", round(child1CI[1],digits), ", ", round(child1CI[2],digits), ")", sep="")
     tree$frame["3",9] <- paste("(", round(child2CI[1],digits), ", ", round(child2CI[2],digits), ")", sep="")
     tree$frame["2",10] <- ifelse(rootnodepval < 1e-3, "<1e-3", paste(" = ", round(rootnodepval, digits)))
     tree$frame["3",10] <- ifelse(rootnodepval < 1e-3, "<1e-3", paste(" = ", round(rootnodepval, digits)))
