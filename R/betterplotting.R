@@ -28,7 +28,7 @@
 #' @importFrom intervals interval_complement
 #' @importFrom rpart rpart
 #' @importFrom stats update
-treeval.plot2 <- function(tree, sigma_y=NULL,nn=TRUE, printn=1,
+treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=1,
                          inferenceType=2, digits=3, ...) {
 
 
@@ -116,7 +116,7 @@ inferenceFrame <- function(tree, sigma_y = sd(tree$model[,1]), CI=TRUE, alpha=0.
         tree$frame[child2,10] <-  paste("=", round(splitpval, digits), sep=" ")
 
       }
-      tree$frame[child1,9] <- paste("(", round(child1CI[1],digits), ", ", round(child2CI[2],digits), ")", sep="")
+      tree$frame[child1,9] <- paste("(", round(child1CI[1],digits), ", ", round(child1CI[2],digits), ")", sep="")
       tree$frame[child2,9] <- paste("(", round(child2CI[1],digits), ", ", round(child2CI[2],digits), ")", sep="")
     }
  }

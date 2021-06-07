@@ -22,7 +22,7 @@ treeval.plot(bls.tree2, inferenceType=2, inferenceMatrix = mat)
 treeval.plot(bls.tree2, inferenceType=2,inferenceMatrix = mat, printn=FALSE)
 
 
- treeval.plot(bls.tree2, inferenceType=3, inferenceMatrix = mat)
+ treeval.plot2(bls.tree2)
  treeval.plot(bls.tree2, inferenceType=3,inferenceMatrix = mat, printn=TRUE)
  treeval.plot(bls.tree2, inferenceType=3,inferenceMatrix = mat, printn=FALSE)
 
