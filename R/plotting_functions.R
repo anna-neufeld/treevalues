@@ -29,7 +29,7 @@
 #' @importFrom rpart rpart
 #' @importFrom stats update
 treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=1,
-                         inferenceType=2, digits=3, ...) {
+                         inferenceType=2, digits=3,alpha=0.05, permute=FALSE, ...) {
 
 
 

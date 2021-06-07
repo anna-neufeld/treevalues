@@ -1062,8 +1062,10 @@ get.anova.labs <- function(x, inferenceType, extra, under, digits, xsep, varlen,
         rpart.plot:::sprint("Fitted Mean: %s%s", newline, rpart.plot:::format0(frame$y, digits))
       } else if (inferenceType==2) {
         rpart.plot:::sprint("Fitted Mean: %s%s95%%CI: %s", rpart.plot:::format0(frame$y, digits), newline, frame$CI)
-      } else if (inferenceType >= 3) {
+      } else if (inferenceType == 3) {
         rpart.plot:::sprint("Fitted Mean: %s%s%s",rpart.plot:::format0(frame$y, digits), newline, frame$CI)
+      } else if (inferenceType >= 4) {
+        rpart.plot:::sprint("Fitted Mean: %s%s%s%s",newline, rpart.plot:::format0(frame$y, digits), newline, frame$CI)
       }
     } else if (ex == EX1.NOBS) {
       if (inferenceType < 2) {
@@ -1072,17 +1074,17 @@ get.anova.labs <- function(x, inferenceType, extra, under, digits, xsep, varlen,
       } else if (inferenceType==2) {
         rpart.plot:::sprint("Fitted Mean:%s%s95%% CI: %s%sn=%s", rpart.plot:::format0(frame$y, digits),
                             newline,frame$CI, newline, rpart.plot:::format0(frame$n, digits))
-      } else if (inferenceType >= 3) {
+      } else if (inferenceType == 3) {
         rpart.plot:::sprint("Fitted Mean: %s%s%s%sn=%s",  rpart.plot:::format0(frame$y, digits), newline,
                             frame$CI, newline, rpart.plot:::format0(frame$n, digits))
-
+      } else if (inferenceType >= 4) {
+        rpart.plot:::sprint("Fitted Mean: %s%s%s%s",newline, rpart.plot:::format0(frame$y, digits), newline, frame$CI)
       }
-    } else if (ex == EX2.CLASS.RATE) {
+      } else if (ex == EX2.CLASS.RATE) {
         #extra.help()
         stop("extra=", extra,
               ' is legal only for "class", "poisson" and "exp" models (you have an "anova" model)')
-    }
-    else if (ex > EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT) {
+    } else if (ex > EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT) {
         #extra.help()
         stop("extra=", extra, " is illegal")
     } else { # ex >= EX3.MISCLASS.RATE && ex <= EX11.PROB.ACROSS.ALL.2ND.CLASS.DONT
