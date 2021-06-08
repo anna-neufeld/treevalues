@@ -25,7 +25,6 @@ remotes::install_github("anna-neufeld/treevalues")
 ```{r}
 library(treevalues)
 library(rpart)
-#load("~/treevalues/data/blsdata.RData")
 ```
 
 # Building the tree
