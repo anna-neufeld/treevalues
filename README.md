@@ -1,8 +1,5 @@
 # treevalues: inference for CART regression trees. 
 
-[![Build Status](https://travis-ci.org/anna-neufeld/treevalues.svg?branch=master)](https://travis-ci.org/anna-neufeld/treevalues)
-
-
 Installation 
 -----
 
@@ -15,7 +12,7 @@ devtools::install_github("anna-neufeld/treevalues")
 Usage
 -----
 
-See [http://anna-neufeld.github.io/treevalues/intro.html](http://anna-neufeld.github.io/treevalues/intro.html) for instructions on how to use this package on real data. See [](???) for the preprint.
+See [https://anna-neufeld.github.io/treevalues/articles/basic_inference_tutorial.html](https://anna-neufeld.github.io/treevalues/articles/basic_inference_tutorial.html) for instructions on how to use this package on real data. See [](???) for the preprint.
 
 
 

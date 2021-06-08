@@ -1,1 +1,61 @@
-url: https://anna-neufeld.github.io/treevalues
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Forest Building with splinetree
+        href: articles/Forest-intro.html
+      - text: Introduction to splinetree
+        href: articles/Long-Intro.html
+      - text: Tree Building with splinetree
+        href: articles/Tree-Intro.html
+
+reference:
+- title: User Functions
+  desc: ~
+  contents:
+  - '`splineTree`'
+  - stPrint
+  - '`treeSummary`'
+  - '`predictCoeffs`'
+  - '`predictY`'
+  - '`projectedR2`'
+  - '`yR2`'
+  - '`treeSimilarity`'
+  - '`treeSize`'
+  - '`getNodeData`'
+  - '`terminalNodeSummary`'
+- title: Plotting
+  desc: ~
+  contents:
+    - treeval.plot
+    - inferenceFrame
+    
+- title: Spline Forests
+  desc: ~
+  contents:
+    -  splineForest
+    -  avSize
+    -  pruneForest
+    - '`predictCoeffsForest`'
+    - predictYForest
+    - '`projectedR2Forest`'
+    - '`yR2Forest`'
+    - '`varImpCoeff`'
+    - '`varImpY`'
+    - '`plotImp`'
