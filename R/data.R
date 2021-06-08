@@ -34,6 +34,7 @@
 #' @usage data(blsdata)
 #' @format A data frame with 226 rows and 26 variables
 #' @examples
+#' @export
 #' data(blsdata)
 #'
 "blsdata"
