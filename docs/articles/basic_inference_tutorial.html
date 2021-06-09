@@ -48,13 +48,13 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/basic_inference_tutorial.html">Tutorial: using ``treevalues`` to perform inference on ``rpart`` trees</a>
+      <a href="../articles/basic_inference_tutorial.html">Introduction to ``treevalues``.</a>
     </li>
   </ul>
 </li>
@@ -96,15 +96,15 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/anna-neufeld/splinetree">treevalues</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="st">"~/treevalues/data/blsdata.RData"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">blsdata</span>, package<span class="op">=</span><span class="st">"treevalues"</span><span class="op">)</span></code></pre></div>
 <div id="building-the-tree" class="section level1">
 <h1 class="hasAnchor">
 <a href="#building-the-tree" class="anchor"></a>Building the tree</h1>
 <p>The <code>treevalues</code> package is designed for use with the <code>rpart</code> package, and so all trees should be built using <code>rpart</code>. All trees should be built with the parameter <code>model=TRUE</code>, which saves a copy of the training data inside of the fitted rpart object (this is useful so that the data need not be separately passed to each inference function).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bls.tree</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">kcal24h0</span><span class="op">~</span><span class="va">hunger</span><span class="op">+</span><span class="va">disinhibition</span><span class="op">+</span><span class="va">resteating</span><span class="op">+</span><span class="va">rrvfood</span><span class="op">+</span><span class="va">liking</span><span class="op">+</span><span class="va">wanting</span>, model <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">blsdata</span>, cp<span class="op">=</span><span class="fl">0.02</span><span class="op">)</span></code></pre></div>
-<p>Note that the arguement <code>cp</code>, or complexity parameter, is a scaled version of the complexity parameter <span class="math inline">\(\lambda\)</span> described in our manuscript, <span class="math inline">\(\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2\)</span>.</p>
-<p>We might first want to plot the tree. While this could be accomplished using <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> from the <code>rpart</code> package, or else using something more specialized like the <code>rpart.plot</code> package, we recommend that you use our internal <code><a href="../reference/treeval.plot.html">treeval.plot()</a></code> function. However, since we are just exploring our tree and have not yet decided to do inference, you can set <code>inferenceType=0</code>.</p>
+<p>The arguement <code>cp</code>, or complexity parameter, is a scaled version of the complexity parameter <span class="math inline">\(\lambda\)</span> described in our manuscript, <span class="math inline">\(\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2\)</span>. The larger the value of <code>cp</code>, the more the tree will be pruned.</p>
+<p>We begin by plotting our tree. While we could plot the tree using <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> from the <code>rpart</code> package, or <code>rpart.plot()</code> from the <code>rpart.plot()</code> package, we instead use our internal<code><a href="../reference/treeval.plot.html">treeval.plot()</a></code> function. However, since we are just exploring and have not yet decided to conduct any inference, we set <code>inferenceType=0</code> (no p-values or confidence intervals are computed).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">0</span><span class="op">)</span></code></pre></div>
 <p><img src="basic_inference_tutorial_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
@@ -149,6 +149,10 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
 <p><img src="basic_inference_tutorial_files/figure-html/unnamed-chunk-8-2.png" width="700"></p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-breiman1984classification" class="csl-entry">
 Breiman, Leo, Jerome Friedman, Charles J Stone, and Richard A Olshen. 1984. <em>Classification and Regression Trees</em>. CRC press.

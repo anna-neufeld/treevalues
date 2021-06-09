@@ -12,7 +12,7 @@ devtools::install_github("anna-neufeld/treevalues")
 Usage
 -----
 
-See [https://anna-neufeld.github.io/treevalues/articles/basic_inference_tutorial.html](https://anna-neufeld.github.io/treevalues/articles/basic_inference_tutorial.html) for instructions on how to use this package on real data. See [](???) for the preprint.
+See [https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html](https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html) for instructions on how to use this package on real data. See [](???) for the preprint.
 
 
 

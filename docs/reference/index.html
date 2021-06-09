@@ -88,13 +88,13 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/basic_inference_tutorial.html">Tutorial: using ``treevalues`` to perform inference on ``rpart`` trees</a>
+      <a href="../articles/basic_inference_tutorial.html">Introduction to ``treevalues``.</a>
     </li>
   </ul>
 </li>
@@ -133,7 +133,80 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-user-functions" class="hasAnchor"><a href="#section-user-functions" class="anchor"></a>User Functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="branchInference.html">branchInference()</a></code> </p>
+        </td>
+        <td><p>This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
+carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getBranch.html">getBranch()</a></code> </p>
+        </td>
+        <td><p>Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
+If no node numbers are passed in, a list of all branches in the tree will be returned.
+Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getAllBranches.html">getAllBranches()</a></code> </p>
+        </td>
+        <td><p>This function takes an rpart tree and</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-example-datasets" class="hasAnchor"><a href="#section-example-datasets" class="anchor"></a>Example datasets</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-plotting" class="hasAnchor"><a href="#section-plotting" class="anchor"></a>Plotting</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="treeval.plot.html">treeval.plot()</a></code> </p>
+        </td>
+        <td><p>This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
+labeled with confidence intervals.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="inferenceFrame.html">inferenceFrame()</a></code> </p>
+        </td>
+        <td><p>This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-selective-inference-functions" class="hasAnchor"><a href="#section-selective-inference-functions" class="anchor"></a>Selective Inference Functions</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -149,90 +222,6 @@
         </td>
         <td><p>Survival function of truncated normal distribution. This comes directly from the Outference Package.
 The code and the documentation can be found at https://github.com/shuxiaoc/outference.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="blsdata.html">blsdata</a></code> <code><a href="blsdata.html">blsdata</a></code> </p>
-        </td>
-        <td><p>Dataset from the Box Lunch Study, taken from the "visTree" package.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="branchInference.html">branchInference()</a></code> </p>
-        </td>
-        <td><p>This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="correctPVal.html">correctPVal()</a></code> </p>
-        </td>
-        <td><p>Get a pvalue for a selective Z-test.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="finiteE.html">finiteE()</a></code> </p>
-        </td>
-        <td><p>Make endpoints of intervals finite</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getAllBranches.html">getAllBranches()</a></code> </p>
-        </td>
-        <td><p>This function takes an rpart tree and</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getAnc.html">getAnc()</a></code> </p>
-        </td>
-        <td><p>Returns vector of ancestors in ``tree`` for node ``nn``.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getBranch.html">getBranch()</a></code> </p>
-        </td>
-        <td><p>Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getDesc.html">getDesc()</a></code> </p>
-        </td>
-        <td><p>Returns vector of descendents in ``tree`` for node ``nn``.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getInterval.html">getInterval()</a></code> </p>
-        </td>
-        <td><p>Workhorse function for computing conditioning sets.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getRegion.html">getRegion()</a></code> </p>
-        </td>
-        <td><p>Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="inferenceFrame.html">inferenceFrame()</a></code> </p>
-        </td>
-        <td><p>This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="magicfun.html">magicfun()</a></code> </p>
-        </td>
-        <td><p>A helper function for approximating normal tail probabilities
-This comes directly from the Outference Package.
-The code and the documentation can be found at https://github.com/shuxiaoc/outference.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="treeval.plot.html">treeval.plot()</a></code> </p>
-        </td>
-        <td><p>This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
-labeled with confidence intervals.</p></td>
       </tr>
     </tbody>
     </table>

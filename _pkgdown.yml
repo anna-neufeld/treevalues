@@ -16,46 +16,30 @@ navbar:
       text: Reference
       href: reference/index.html
     articles:
-      text: Articles
+      text: Tutorials
       menu:
-      - text: Forest Building with splinetree
-        href: articles/Forest-intro.html
-      - text: Introduction to splinetree
-        href: articles/Long-Intro.html
-      - text: Tree Building with splinetree
-        href: articles/Tree-Intro.html
+      - text: Introduction to ``treevalues``.
+        href: articles/basic_inference_tutorial.html
 
 reference:
 - title: User Functions
   desc: ~
   contents:
-  - '`splineTree`'
+  - branchInference
+  - getBranch
+  - getAllBranches
   - stPrint
-  - '`treeSummary`'
-  - '`predictCoeffs`'
-  - '`predictY`'
-  - '`projectedR2`'
-  - '`yR2`'
-  - '`treeSimilarity`'
-  - '`treeSize`'
-  - '`getNodeData`'
-  - '`terminalNodeSummary`'
+
+- title: Example datasets
+  desc: ~
+  contents:
+    - blsdata
 - title: Plotting
   desc: ~
   contents:
     - treeval.plot
     - inferenceFrame
-    
-- title: Spline Forests
+- title: Selective Inference Functions
   desc: ~
   contents:
-    -  splineForest
-    -  avSize
-    -  pruneForest
-    - '`predictCoeffsForest`'
-    - predictYForest
-    - '`projectedR2Forest`'
-    - '`yR2Forest`'
-    - '`varImpCoeff`'
-    - '`varImpY`'
-    - '`plotImp`'
+    -  TNSurv

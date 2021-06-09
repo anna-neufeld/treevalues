@@ -36,13 +36,15 @@ The ``treevalues`` package is designed for use with the ``rpart`` package, and s
 bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
 ```
 
-Note that the arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. 
+The arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. The larger the value of ``cp``, the more the tree will be pruned. 
 
-We might first want to plot the tree. While this could be accomplished using ``plot()`` from the ``rpart`` package, or else using something more specialized like the ``rpart.plot`` package, we recommend that you use our internal ``treeval.plot()`` function. However, since we are just exploring our tree and have not yet decided to do inference, you can set ``inferenceType=0``.  
+We begin by plotting our tree. While we could plot the tree using ``plot()`` from the ``rpart`` package, or ``rpart.plot()`` from the ``rpart.plot()`` package, we instead use our internal``treeval.plot()`` function. However, since we are just exploring and have not yet decided to conduct any inference, we set ``inferenceType=0`` (no p-values or confidence intervals are computed).   
 
 ```{r}
 treeval.plot(bls.tree, inferenceType=0)
 ```
+
+A useful 
 
 # Inference on a pair of sibling regions. 
 
