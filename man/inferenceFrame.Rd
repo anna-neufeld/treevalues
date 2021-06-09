@@ -34,6 +34,17 @@ storing confidence intervals for regions. If this object is passed in to ``treev
 }
 \description{
 This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. Ths function is called internally by ``treeval.plot``,
-as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed
-internally by ``treeval.plot``.
+as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed by ``treeval.plot()``. If you will be
+making several plots while playing around with font size and formatting, it is a good idea to call this function first so that it need not be called
+repeatedly by different calls of treeval.plot
+}
+\examples{
+\dontrun{
+library(rpart)
+bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
+bls.tree2 <- inferenceFrame(bls.tree)
+treeval.plot(bls.tree2, inferenceType=1)
+treeval.plot(bls.tree2, inferenceType=2)
+treeval.plot(bls.tree2, inferenceType=2, nn=FALSE)
+}
 }

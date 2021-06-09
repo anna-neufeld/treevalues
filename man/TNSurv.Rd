@@ -2,8 +2,7 @@
 % Please edit documentation in R/conf_int_funs.R
 \name{TNSurv}
 \alias{TNSurv}
-\title{Survival function of truncated normal distribution. This comes directly from the Outference Package.
-The code and the documentation can be found at https://github.com/shuxiaoc/outference.}
+\title{Survival function of truncated normal distribution. This comes from the Outference Package https://github.com/shuxiaoc/outference.}
 \usage{
 TNSurv(q, mean, sd, E, approx = FALSE)
 }

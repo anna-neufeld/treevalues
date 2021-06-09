@@ -18,7 +18,7 @@ treeval.plot(
 )
 }
 \arguments{
-\item{tree}{An rpart tree. Note that the tree must have been built with arguements maxcompete=0 and maxsurrogates=0.}
+\item{tree}{An rpart tree. The tree must have been build with parameter ``model=TRUE``.}
 
 \item{sigma_y}{Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
 as a conservative estimate.}

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Returns vector of descendents in ``tree`` for node ``nn``. — getDesc • treevalues</title>
+<title>Returns vector of descendants in ``tree`` for node ``nn``. — getDesc • treevalues</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Returns vector of descendents in ``tree`` for node ``nn``. — getDesc" />
-<meta property="og:description" content="Returns vector of descendents in ``tree`` for node ``nn``." />
+<meta property="og:title" content="Returns vector of descendants in ``tree`` for node ``nn``. — getDesc" />
+<meta property="og:description" content="Returns vector of descendants in ``tree`` for node ``nn``." />
 
 
 
@@ -111,13 +111,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Returns vector of descendents in ``tree`` for node ``nn``.</h1>
+    <h1>Returns vector of descendants in ``tree`` for node ``nn``.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/tree_KL_helpers.R'><code>R/tree_KL_helpers.R</code></a></small>
     <div class="hidden name"><code>getDesc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Returns vector of descendents in ``tree`` for node ``nn``.</p>
+    <p>Returns vector of descendants in ``tree`` for node ``nn``.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getDesc</span><span class='op'>(</span><span class='va'>tree</span>, <span class='va'>nn</span><span class='op'>)</span></pre>
@@ -131,13 +131,13 @@
     </tr>
     <tr>
       <th>nn</th>
-      <td><p>the number of a node in tree. Note that node numbers correspond to the row names of tree$frame.</p></td>
+      <td><p>the number of a node in tree. Must correspond to a valid node number (found in row names of tree$frame).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a vector of descendents.</p>
+    <p>a vector of node numbers corresponding to the descendants of ``nn`` in ``tree``.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -32,6 +32,7 @@ inner.plot <- function(x=stop("no 'x' arg"), inferenceType=4,
     box.palette="auto", shadow.col=0,
     ...)
 {
+    print(type)
  if(!inherits(x, "rpart"))
         stop("Not an rpart object")
     # We have to get "trace" for get.modelframe.info, but I don't want to

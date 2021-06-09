@@ -2,12 +2,13 @@
 % Please edit documentation in R/conf_int_funs.R
 \name{computeCI}
 \alias{computeCI}
-\title{compute selective confidence intervals}
+\title{Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Outference package, available at https://github.com/shuxiaoc/outference.}
 \usage{
 computeCI(v, y, sigma = NULL, truncation, alpha = 0.05)
 }
 \arguments{
-\item{v}{the contrast vector that defines the parameter of interest}
+\item{v}{the vector that defines the parameter of interest; v^T mu}
 
 \item{y}{the observed response vector}
 
@@ -23,7 +24,6 @@ Computes a confidence interval for the mean of a truncated normal distribution.}
 This function returns a vector of lower and upper confidence limits.
 }
 \description{
-This function computes the selective confidence intervals.
-Code modified from the Outference package, available at https://github.com/shuxiaoc/outference.
+Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Outference package, available at https://github.com/shuxiaoc/outference.
 }
-\keyword{internal}

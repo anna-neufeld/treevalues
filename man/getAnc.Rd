@@ -9,10 +9,10 @@ getAnc(tree, nn)
 \arguments{
 \item{tree}{an rpart object.}
 
-\item{nn}{the number of a node in tree. Note that node numbers correspond to the row names of tree$frame.}
+\item{nn}{the number of a node in tree. Must correspond to a valid node number (found in row names of tree$frame).}
 }
 \value{
-a vector of ancestors.
+a vector of node numbers corresponding to the ancestors of ``nn`` in ``tree``.
 }
 \description{
 Returns vector of ancestors in ``tree`` for node ``nn``.

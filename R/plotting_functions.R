@@ -3,7 +3,7 @@
 #'
 #' @export
 #'
-#' @param tree An rpart tree. Note that the tree must have been built with arguements maxcompete=0 and maxsurrogates=0.
+#' @param tree An rpart tree. The tree must have been build with parameter ``model=TRUE``.
 #' @param sigma_y Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
 #' as a conservative estimate.
 #' @param nn boolean- would you like node numbers to be printed?
@@ -60,8 +60,9 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
 #' This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.
 #'
 #' This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. Ths function is called internally by ``treeval.plot``,
-#' as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed
-#' internally by ``treeval.plot``.
+#' as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed by ``treeval.plot()``. If you will be
+#' making several plots while playing around with font size and formatting, it is a good idea to call this function first so that it need not be called
+#' repeatedly by different calls of treeval.plot
 #'
 #' @param tree The tree that you will be plotting.
 #' @param sigma_y The standard deviation of the response. If known, should be provided. Otherwise, a convervative estiamte (the sample
@@ -76,6 +77,18 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
 #' @importFrom stats qnorm
 #' @importFrom stats sd
 #' @export
+#' @examples
+#' \dontrun{
+#' library(rpart)
+#' bls.tree <-rpart(
+#'   kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+#'   model = TRUE, data = blsdata, cp=0.02
+#' )
+#' bls.tree2 <- inferenceFrame(bls.tree)
+#' treeval.plot(bls.tree2, inferenceType=1)
+#' treeval.plot(bls.tree2, inferenceType=2)
+#' treeval.plot(bls.tree2, inferenceType=2, nn=FALSE)
+#' }
 inferenceFrame <- function(tree, sigma_y = sd(tree$model[,1]), CI=TRUE, alpha=0.05,digits=3,
                            permute=FALSE) {
 

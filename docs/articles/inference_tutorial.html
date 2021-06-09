@@ -168,8 +168,19 @@
 <a href="#inference-for-the-entire-tree" class="anchor"></a>Inference for the entire tree</h1>
 <p>We can bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95% confidence intervals for the mean within each region and reports p-values for a test of no difference in means across each split. When looking at a large tree, this plot should be interpretted with care; the p-values have not been corrected for multiple testing.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span><span class="op">)</span>
+<span class="co">## [1] 2</span></code></pre></div>
 <p><img src="inference_tutorial_files/figure-html/unnamed-chunk-11-1.png" width="90%"></p>
+<p>If we set <code>permute=TRUE</code>, we will get slightly narrower confidence intervals in each node, at the expense of computation time.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">## [1] 2</span></code></pre></div>
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-12-1.png" width="90%"></p>
+<p>There are many ways to customize this plot. If the default version is too congested, alternate values of <code>inferenceType</code> can be provided to customize how much information is displayed. Addional arguements provided will be passed on to `<code>rpart.plot()</code>. For example,</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">1</span>, cex<span class="op">=</span><span class="fl">0.5</span>, printn<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">## [1] 2</span></code></pre></div>
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-1.png" width="90%"></p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">

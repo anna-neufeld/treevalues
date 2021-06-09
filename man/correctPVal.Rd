@@ -2,7 +2,7 @@
 % Please edit documentation in R/pval_funs.R
 \name{correctPVal}
 \alias{correctPVal}
-\title{Get a pvalue for a selective Z-test.}
+\title{Get a pvalue for a selective Z-test using a truncated normal distribution.}
 \usage{
 correctPVal(phiInterval, nu, y, sigma)
 }
@@ -14,7 +14,7 @@ disjoint intervals on the real line.}
 
 \item{y}{the response data y.}
 
-\item{sigma}{the (assumed known) noise standard deviation}
+\item{sigma}{the (assumed known) noise standard deviation. The assumption is that y_i ~ N(mu_i, sigma^2).}
 }
 \value{
 a p-value.
@@ -22,5 +22,5 @@ a p-value.
 \description{
 Based on the similar function from the Outference package,
 which accomplishes a similar task. Code modified from code found at
-https://github.com/shuxiaoc/outference
+https://github.com/shuxiaoc/outference.
 }

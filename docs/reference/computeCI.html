@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>compute selective confidence intervals — computeCI • treevalues</title>
+<title>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Outference package, available at https://github.com/shuxiaoc/outference. — computeCI • treevalues</title>
 
 
 <!-- jquery -->
@@ -39,9 +40,10 @@
 
 
 
-<meta property="og:title" content="compute selective confidence intervals — computeCI" />
-<meta property="og:description" content="This function computes the selective confidence intervals.
-Code modified from the Outference package, available at https://github.com/shuxiaoc/outference." />
+<meta property="og:title" content="Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Outference package, available at https://github.com/shuxiaoc/outference. — computeCI" />
+<meta property="og:description" content="Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Outference package, available at https://github.com/shuxiaoc/outference." />
 
 
 
@@ -112,14 +114,15 @@ Code modified from the Outference package, available at https://github.com/shuxi
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>compute selective confidence intervals</h1>
+    <h1>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Outference package, available at https://github.com/shuxiaoc/outference.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/conf_int_funs.R'><code>R/conf_int_funs.R</code></a></small>
     <div class="hidden name"><code>computeCI.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function computes the selective confidence intervals.
-Code modified from the Outference package, available at https://github.com/shuxiaoc/outference.</p>
+    <p>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Outference package, available at https://github.com/shuxiaoc/outference.</p>
     </div>
 
     <pre class="usage"><span class='fu'>computeCI</span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>y</span>, sigma <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>truncation</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span></pre>
@@ -129,7 +132,7 @@ Code modified from the Outference package, available at https://github.com/shuxi
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>v</th>
-      <td><p>the contrast vector that defines the parameter of interest</p></td>
+      <td><p>the vector that defines the parameter of interest; v^T mu</p></td>
     </tr>
     <tr>
       <th>y</th>

@@ -106,6 +106,17 @@ We can bypass the need to specify a specific branch by making the following plot
 treeval.plot(bls.tree)
 ```
 
+If we set ``permute=TRUE``, we will get slightly narrower confidence intervals in each node, at the expense of computation time. 
+```{r,dpi=300, out.width="90%"}
+treeval.plot(bls.tree, permute=TRUE)
+```
+
+
+There are many ways to customize this plot. If the default version is too congested, alternate values of ``inferenceType`` can be provided to customize how much information is displayed. Addional arguements provided will be passed on to ```rpart.plot()``. For example,
+
+```{r,dpi=300, out.width="90%"}
+treeval.plot(bls.tree, inferenceType=1, cex=0.5, printn=FALSE)
+```
 
 
 # References

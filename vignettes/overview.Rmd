@@ -20,7 +20,7 @@ Suppose that we use a CART regression tree [@breiman1984classification], fit usi
 library(rpart)
 library(rpart.plot)
 data(blsdata, package="treevalues")
-bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata)
+bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
 rpart.plot(bls.tree, extra=1, nn=TRUE)
 ```
 

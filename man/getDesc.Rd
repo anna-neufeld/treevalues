@@ -2,18 +2,18 @@
 % Please edit documentation in R/tree_KL_helpers.R
 \name{getDesc}
 \alias{getDesc}
-\title{Returns vector of descendents in ``tree`` for node ``nn``.}
+\title{Returns vector of descendants in ``tree`` for node ``nn``.}
 \usage{
 getDesc(tree, nn)
 }
 \arguments{
 \item{tree}{an rpart object.}
 
-\item{nn}{the number of a node in tree. Note that node numbers correspond to the row names of tree$frame.}
+\item{nn}{the number of a node in tree. Must correspond to a valid node number (found in row names of tree$frame).}
 }
 \value{
-a vector of descendents.
+a vector of node numbers corresponding to the descendants of ``nn`` in ``tree``.
 }
 \description{
-Returns vector of descendents in ``tree`` for node ``nn``.
+Returns vector of descendants in ``tree`` for node ``nn``.
 }
