@@ -25,6 +25,7 @@ remotes::install_github("anna-neufeld/treevalues")
 ```{r}
 library(treevalues)
 library(rpart)
+data(blsdata, package="treevalues")
 ```
 
 # Building the tree
@@ -84,3 +85,5 @@ treeval.plot(bls.tree, inferenceType=2)
 ```
 
 
+
+# References
