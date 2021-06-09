@@ -1,14 +1,18 @@
-#' Get a pvalue for a selective Z-test.
+### Almost all of the code (and documentation) in this file comes directly from the ``Outference" package,
+#### written by Shuxiao Chen.
+### The code and the documentation can be found at https://github.com/shuxiaoc/outference.
+
+#' Get a pvalue for a selective Z-test using a truncated normal distribution.
 #'
 #' Based on the similar function from the Outference package,
 #' which accomplishes a similar task. Code modified from code found at
-#' https://github.com/shuxiaoc/outference
+#' https://github.com/shuxiaoc/outference.
 #'
 #' @param phiInterval the conditioning set (truncation interval). An object of class "Interval", where the rows represent the union of
 #' disjoint intervals on the real line.
 #' @param nu the vector that defines the parameter of interest. We are testing the hypothesis that nu^T mu = 0.
 #' @param y the response data y.
-#' @param sigma the (assumed known) noise standard deviation
+#' @param sigma the (assumed known) noise standard deviation. The assumption is that y_i ~ N(mu_i, sigma^2).
 #' @return a p-value.
 #' @importFrom intervals interval_complement
 #' @importFrom intervals interval_intersection

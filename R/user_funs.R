@@ -153,9 +153,13 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
   return(out)
 }
 
-#' This function takes an rpart tree and
+#' Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.
 #'
 #' @param tree An rpart object. Must have been built with model=TRUE
+#' @return A list. Each entry corresponds to a branch in the tree. The entries are named with the node-number of the node that falls at the end of the branch.
+#' Each entry is a vector of strings.
+#' @export
+#'
 getAllBranches <- function(tree) {
   if (length(unique(tree$where))==1) {return(NA)}
   allNodes <- sort(as.numeric(as.character(unique(rpart.utils::rpart.rules.table(tree)$Rule)[-1])))
@@ -208,14 +212,12 @@ getAllBranches <- function(tree) {
   return(allSplits)
 }
 
-#' Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-#' If no node numbers are passed in, a list of all branches in the tree will be returned.
-#' Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
+#' Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
 #'
 #' @param tree An rpart object.
 #' @param nn A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
-#' ``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot`` and ``nn=TRUE``. The node number can be passed in as
-#' either a character string or an integer.
+#' ``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot()``. The node number can be passed in as
+#' either a character string or an integer. If no node number is provided, a list of all branches in the tree will be returned.
 #' @return Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 #' @export
 getBranch <- function(tree, nn=NULL) {

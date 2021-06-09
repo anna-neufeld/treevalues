@@ -138,8 +138,8 @@
         <td>
           <p><code><a href="branchInference.html">branchInference()</a></code> </p>
         </td>
-        <td><p>This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.</p></td>
+        <td><p>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
+carry out inference on a pair of sibling regions or on a single region.</p></td>
       </tr><tr>
         
         <td>
@@ -158,15 +158,13 @@ labeled with confidence intervals.</p></td>
         <td>
           <p><code><a href="getBranch.html">getBranch()</a></code> </p>
         </td>
-        <td><p>Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p></td>
+        <td><p>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="getAllBranches.html">getAllBranches()</a></code> </p>
         </td>
-        <td><p>This function takes an rpart tree and</p></td>
+        <td><p>Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -197,7 +195,8 @@ Pass in a tree and a node number (node number like the type that comes up in rpa
         <td>
           <p><code><a href="getRegion.html">getRegion()</a></code> </p>
         </td>
-        <td><p>Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p></td>
+        <td><p>Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region.</p></td>
       </tr>
     </tbody><tbody>
       <tr>

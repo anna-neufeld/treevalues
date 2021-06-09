@@ -6,9 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!) — getBranch • treevalues</title>
+<title>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node. — getBranch • treevalues</title>
 
 
 <!-- jquery -->
@@ -41,12 +39,8 @@ Pass in a tree and a node number (node number like the type that comes up in rpa
 
 
 
-<meta property="og:title" content="Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!) — getBranch" />
-<meta property="og:description" content="Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)" />
+<meta property="og:title" content="Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node. — getBranch" />
+<meta property="og:description" content="Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node." />
 
 
 
@@ -117,17 +111,13 @@ Pass in a tree and a node number (node number like the type that comes up in rpa
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</h1>
+    <h1>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/user_funs.R'><code>R/user_funs.R</code></a></small>
     <div class="hidden name"><code>getBranch.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p>
+    <p>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getBranch</span><span class='op'>(</span><span class='va'>tree</span>, nn <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -142,8 +132,8 @@ Pass in a tree and a node number (node number like the type that comes up in rpa
     <tr>
       <th>nn</th>
       <td><p>A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
-``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot`` and ``nn=TRUE``. The node number can be passed in as
-either a character string or an integer.</p></td>
+``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot()``. The node number can be passed in as
+either a character string or an integer. If no node number is provided, a list of all branches in the tree will be returned.</p></td>
     </tr>
     </table>
 

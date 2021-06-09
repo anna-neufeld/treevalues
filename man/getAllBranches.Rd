@@ -2,13 +2,17 @@
 % Please edit documentation in R/user_funs.R
 \name{getAllBranches}
 \alias{getAllBranches}
-\title{This function takes an rpart tree and}
+\title{Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.}
 \usage{
 getAllBranches(tree)
 }
 \arguments{
 \item{tree}{An rpart object. Must have been built with model=TRUE}
 }
+\value{
+A list. Each entry corresponds to a branch in the tree. The entries are named with the node-number of the node that falls at the end of the branch.
+Each entry is a vector of strings.
+}
 \description{
-This function takes an rpart tree and
+Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.
 }

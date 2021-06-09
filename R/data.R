@@ -1,5 +1,4 @@
 #' @docType data
-#'
 #' @format
 #' \describe{
 #'   \item{trt}{Treatment}

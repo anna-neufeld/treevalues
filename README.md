@@ -3,10 +3,10 @@
 Installation 
 -----
 
-Make sure that ``devtools`` is installed by running ``install.packages("devtools")``, then type
+Make sure that ``remotes`` is installed by running ``install.packages("remotes")``, then type
 
 ```R
-devtools::install_github("anna-neufeld/treevalues")
+remotes::install_github("anna-neufeld/treevalues")
 ```
 
 Usage

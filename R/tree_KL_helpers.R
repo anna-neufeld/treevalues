@@ -1,7 +1,8 @@
-#' Returns vector of descendents in ``tree`` for node ``nn``.
+#' Returns vector of descendants in ``tree`` for node ``nn``.
+#'
 #' @param tree an rpart object.
-#' @param nn the number of a node in tree. Note that node numbers correspond to the row names of tree$frame.
-#' @return a vector of descendents.
+#' @param nn the number of a node in tree. Must correspond to a valid node number (found in row names of tree$frame).
+#' @return a vector of node numbers corresponding to the descendants of ``nn`` in ``tree``.
 #' @export
 getDesc <- function(tree, nn) {
   allNodes <- as.numeric(row.names(tree$frame))
@@ -11,9 +12,10 @@ getDesc <- function(tree, nn) {
 
 
 #' Returns vector of ancestors in ``tree`` for node ``nn``.
+#'
 #' @param tree an rpart object.
-#' @param nn the number of a node in tree. Note that node numbers correspond to the row names of tree$frame.
-#' @return a vector of ancestors.
+#' @param nn the number of a node in tree. Must correspond to a valid node number (found in row names of tree$frame).
+#' @return a vector of node numbers corresponding to the ancestors of ``nn`` in ``tree``.
 #' @export
 getAnc <- function(tree, nn) {
   anc <- c()

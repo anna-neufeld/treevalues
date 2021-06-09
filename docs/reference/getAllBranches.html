@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>This function takes an rpart tree and — getAllBranches • treevalues</title>
+<title>Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``. — getAllBranches • treevalues</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="This function takes an rpart tree and — getAllBranches" />
-<meta property="og:description" content="This function takes an rpart tree and" />
+<meta property="og:title" content="Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``. — getAllBranches" />
+<meta property="og:description" content="Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``." />
 
 
 
@@ -111,13 +111,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>This function takes an rpart tree and</h1>
+    <h1>Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/user_funs.R'><code>R/user_funs.R</code></a></small>
     <div class="hidden name"><code>getAllBranches.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function takes an rpart tree and</p>
+    <p>Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getAllBranches</span><span class='op'>(</span><span class='va'>tree</span><span class='op'>)</span></pre>
@@ -131,6 +131,10 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list. Each entry corresponds to a branch in the tree. The entries are named with the node-number of the node that falls at the end of the branch.
+Each entry is a vector of strings.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

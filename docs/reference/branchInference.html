@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper. — branchInference • treevalues</title>
+<title>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
+carry out inference on a pair of sibling regions or on a single region. — branchInference • treevalues</title>
 
 
 <!-- jquery -->
@@ -40,10 +40,10 @@ carry out the "inference on a pair of sibling regions" or the "efficient alterna
 
 
 
-<meta property="og:title" content="This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper. — branchInference" />
-<meta property="og:description" content="This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-carry out the &quot;inference on a pair of sibling regions&quot; or the &quot;efficient alternative inference on a single region&quot; described in our paper." />
+<meta property="og:title" content="The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
+carry out inference on a pair of sibling regions or on a single region. — branchInference" />
+<meta property="og:description" content="The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
+carry out inference on a pair of sibling regions or on a single region." />
 
 
 
@@ -114,15 +114,15 @@ carry out the &quot;inference on a pair of sibling regions&quot; or the &quot;ef
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.</h1>
+    <h1>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
+carry out inference on a pair of sibling regions or on a single region.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/user_funs.R'><code>R/user_funs.R</code></a></small>
     <div class="hidden name"><code>branchInference.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.</p>
+    <p>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
+carry out inference on a pair of sibling regions or on a single region.</p>
     </div>
 
     <pre class="usage"><span class='fu'>branchInference</span><span class='op'>(</span>
@@ -142,41 +142,43 @@ carry out the "inference on a pair of sibling regions" or the "efficient alterna
     <tr>
       <th>tree</th>
       <td><p>An ``rpart`` object corresponding to the tree that you wish to do inference on. This tree must have been built
-with ``rpart`` parameters ``model=TRUE``, ``maxcompete=0``,``maxsurrogate=``.</p></td>
+with ``rpart`` parameter ``model=TRUE``.</p></td>
     </tr>
     <tr>
       <th>branch</th>
       <td><p>A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
-``getBranch()``. Must actually correspond to a branch in ``tree``; otherwise, errors will occur.</p></td>
+``getBranch()``. Must actually correspond to a branch in ``tree``.</p></td>
     </tr>
     <tr>
       <th>type</th>
       <td><p>A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
-inference on the mean of single region defined by the end of this branch ("reg"), or doing inference on the difference
-between this region and its subling.</p></td>
+inference on the mean of single region at the end of this branch ("reg"), or doing inference on the difference
+between this region and its sibling.</p></td>
     </tr>
     <tr>
       <th>alpha</th>
-      <td><p>The significance level for the confidence interval</p></td>
+      <td><p>Function will compute an equi-tailed (1-alpha) confidence interval. Default is 0.05.</p></td>
     </tr>
     <tr>
       <th>sigma_y</th>
-      <td><p>The true error variance. If known, this should be passed in. Otherwise, the sample variance will be computed
-as a conservative estimate.</p></td>
+      <td><p>The true standard deviation of the response. If known, this should be passed in. Otherwise, the sample standard deviation
+will be used as a conservative estimate.</p></td>
     </tr>
     <tr>
       <th>c</th>
-      <td><p>The p-value c</p></td>
+      <td><p>The p-value returned will test the null hypothesis that the parameter of interest is equal to c. Currently, only c=0 is a valid
+input.</p></td>
     </tr>
     <tr>
       <th>computeCI</th>
-      <td><p>Would you like a confidence interval to be computed? Confidence intervals are much slower to compute than
-p-values, and so if you are performing simulations it may be wise to set this to false.</p></td>
+      <td><p>Boolean that specifies if you would like a confidence interval to be computed. Confidence intervals are much slower to compute than
+p-values, and so if you only wish to see a p-value you may want to set this to be false.</p></td>
     </tr>
     <tr>
       <th>permute</th>
-      <td><p>If you are doing type="reg", do you want to consider all possible permutations of the branch? This leads to the highest power
-for region inference, but is computationally inefficient. If you are doing type="sib", there is no distinction.</p></td>
+      <td><p>Boolean. Only relevant if type="reg". If ``FALSE`` (default), inference is conducted conditional on the event that this exact branch
+appeared in the tree. If ``TRUE``, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
+latter achieves higher power, it can be computationally prohibitive in large trees.</p></td>
     </tr>
     </table>
 

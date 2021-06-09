@@ -2,9 +2,7 @@
 % Please edit documentation in R/user_funs.R
 \name{getBranch}
 \alias{getBranch}
-\title{Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)}
+\title{Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.}
 \usage{
 getBranch(tree, nn = NULL)
 }
@@ -12,14 +10,12 @@ getBranch(tree, nn = NULL)
 \item{tree}{An rpart object.}
 
 \item{nn}{A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
-``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot`` and ``nn=TRUE``. The node number can be passed in as
-either a character string or an integer.}
+``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot()``. The node number can be passed in as
+either a character string or an integer. If no node number is provided, a list of all branches in the tree will be returned.}
 }
 \value{
 Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 }
 \description{
-Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
-If no node numbers are passed in, a list of all branches in the tree will be returned.
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
+Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
 }

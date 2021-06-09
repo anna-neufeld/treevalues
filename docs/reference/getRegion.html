@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!) — getRegion • treevalues</title>
+<title>Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region. — getRegion • treevalues</title>
 
 
 <!-- jquery -->
@@ -39,8 +40,10 @@
 
 
 
-<meta property="og:title" content="Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!) — getRegion" />
-<meta property="og:description" content="Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)" />
+<meta property="og:title" content="Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region. — getRegion" />
+<meta property="og:description" content="Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region." />
 
 
 
@@ -111,13 +114,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</h1>
+    <h1>Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/user_funs.R'><code>R/user_funs.R</code></a></small>
     <div class="hidden name"><code>getRegion.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p>
+    <p>Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getRegion</span><span class='op'>(</span><span class='va'>tree</span>, <span class='va'>nn</span><span class='op'>)</span></pre>
@@ -131,7 +136,7 @@
     </tr>
     <tr>
       <th>nn</th>
-      <td><p>A node number!! As a string or as an integer is fine</p></td>
+      <td><p>A node number. Can be a string or an integer.</p></td>
     </tr>
     </table>
 

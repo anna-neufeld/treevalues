@@ -1,4 +1,5 @@
-### Almost all of the code (and documentation) in this file comes directly from the ``Outference" package
+### Almost all of the code (and documentation) in this file comes directly from the ``Outference" package,
+#### written by Shuxiao Chen.
 ### The code and the documentation can be found at https://github.com/shuxiaoc/outference.
 
 
@@ -148,7 +149,6 @@ finiteE <- function(E) {
 #'
 #' @keywords internal
 #' @noRd
-#'
 #' @param E an "Intervals" object or a matrix where rows represents
 #'     a union of intervals with \emph{positive} but possibly infinite endpoints.
 #'
