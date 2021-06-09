@@ -78,30 +78,21 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../articles/overview.html">Overview</a>
+</li>
+<li>
+  <a href="../articles/inference_tutorial.html">Tutorial</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/basic_inference_tutorial.html">Introduction to ``treevalues``.</a>
-    </li>
-  </ul>
+<li>
+  <a></a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/anna-neufeld/splinetree/">
+  <a href="https://github.com/anna-neufeld/treevalues/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -133,7 +124,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-user-functions" class="hasAnchor"><a href="#section-user-functions" class="anchor"></a>User Functions</h2>
+          <h2 id="section-primary-user-functions" class="hasAnchor"><a href="#section-primary-user-functions" class="anchor"></a>Primary user functions</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -152,6 +143,19 @@ carry out the "inference on a pair of sibling regions" or the "efficient alterna
       </tr><tr>
         
         <td>
+          <p><code><a href="treeval.plot.html">treeval.plot()</a></code> </p>
+        </td>
+        <td><p>This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
+labeled with confidence intervals.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="inferenceFrame.html">inferenceFrame()</a></code> </p>
+        </td>
+        <td><p>This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="getBranch.html">getBranch()</a></code> </p>
         </td>
         <td><p>Pass in an rpart tree and also a node number. The nodes are numbered strangely in rpart.
@@ -167,20 +171,7 @@ Pass in a tree and a node number (node number like the type that comes up in rpa
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-example-datasets" class="hasAnchor"><a href="#section-example-datasets" class="anchor"></a>Example datasets</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-plotting" class="hasAnchor"><a href="#section-plotting" class="anchor"></a>Plotting</h2>
+          <h2 id="section-helper-functions-for-working-with-trees" class="hasAnchor"><a href="#section-helper-functions-for-working-with-trees" class="anchor"></a>Helper functions for working with trees</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -192,16 +183,21 @@ Pass in a tree and a node number (node number like the type that comes up in rpa
       <tr>
         
         <td>
-          <p><code><a href="treeval.plot.html">treeval.plot()</a></code> </p>
+          <p><code><a href="getAnc.html">getAnc()</a></code> </p>
         </td>
-        <td><p>This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
-labeled with confidence intervals.</p></td>
+        <td><p>Returns vector of ancestors in ``tree`` for node ``nn``.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="inferenceFrame.html">inferenceFrame()</a></code> </p>
+          <p><code><a href="getDesc.html">getDesc()</a></code> </p>
         </td>
-        <td><p>This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.</p></td>
+        <td><p>Returns vector of descendents in ``tree`` for node ``nn``.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getRegion.html">getRegion()</a></code> </p>
+        </td>
+        <td><p>Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -218,10 +214,34 @@ labeled with confidence intervals.</p></td>
       <tr>
         
         <td>
+          <p><code><a href="getInterval.html">getInterval()</a></code> </p>
+        </td>
+        <td><p>Workhorse function for computing conditioning sets.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="correctPVal.html">correctPVal()</a></code> </p>
+        </td>
+        <td><p>Get a pvalue for a selective Z-test.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="computeCI.html">computeCI()</a></code> </p>
+        </td>
+        <td><p>compute selective confidence intervals</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="TNSurv.html">TNSurv()</a></code> </p>
         </td>
         <td><p>Survival function of truncated normal distribution. This comes directly from the Outference Package.
 The code and the documentation can be found at https://github.com/shuxiaoc/outference.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="TNProb.html">TNProb()</a></code> </p>
+        </td>
+        <td><p>Probability of a standard normal in a union of intervals</p></td>
       </tr>
     </tbody>
     </table>

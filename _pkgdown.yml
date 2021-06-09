@@ -2,44 +2,46 @@ navbar:
   structure:
     left:
     - home
-    - intro
+    - tutorial
     - reference
-    - articles
-    - tutorials
-    - news
-    right: github
+    right:
+    - github
   components:
     home:
-      icon: fa-home fa-lg
-      href: index.html
+      text: Overview
+      href: articles/overview.html
+    tutorial:
+      text: Tutorial
+      href: articles/inference_tutorial.html
     reference:
       text: Reference
       href: reference/index.html
     articles:
-      text: Tutorials
+      text:
       menu:
-      - text: Introduction to ``treevalues``.
-        href: articles/basic_inference_tutorial.html
+
 
 reference:
-- title: User Functions
+- title: Primary user functions
   desc: ~
   contents:
   - branchInference
+  - treeval.plot
+  - inferenceFrame
   - getBranch
   - getAllBranches
-  - stPrint
 
-- title: Example datasets
+- title: Helper functions for working with trees
   desc: ~
   contents:
-    - blsdata
-- title: Plotting
-  desc: ~
-  contents:
-    - treeval.plot
-    - inferenceFrame
+    - getAnc
+    - getDesc
+    - getRegion
 - title: Selective Inference Functions
   desc: ~
   contents:
-    -  TNSurv
+    - getInterval
+    - correctPVal
+    - computeCI
+    - TNSurv
+    - TNProb

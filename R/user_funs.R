@@ -1,21 +1,23 @@
-#' This is the main function for carrying out inference on an ``rpart`` regression tree. This function can be used to
-#' carry out the "inference on a pair of sibling regions" or the "efficient alternative inference on a single region" described in our paper.
+#' The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
+#' carry out inference on a pair of sibling regions or on a single region.
 #'
 #' @param tree An ``rpart`` object corresponding to the tree that you wish to do inference on. This tree must have been built
-#' with ``rpart`` parameters ``model=TRUE``, ``maxcompete=0``,``maxsurrogate=``.
+#' with ``rpart`` parameter ``model=TRUE``.
 #' @param branch A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
-#' ``getBranch()``. Must actually correspond to a branch in ``tree``; otherwise, errors will occur.
+#' ``getBranch()``. Must actually correspond to a branch in ``tree``.
 #' @param type A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
-#' inference on the mean of single region defined by the end of this branch ("reg"), or doing inference on the difference
-#' between this region and its subling.
-#' @param alpha The significance level for the confidence interval
-#' @param sigma_y The true error variance. If known, this should be passed in. Otherwise, the sample variance will be computed
-#' as a conservative estimate.
-#' @param c The p-value c
-#' @param computeCI Would you like a confidence interval to be computed? Confidence intervals are much slower to compute than
-#' p-values, and so if you are performing simulations it may be wise to set this to false.
-#' @param permute If you are doing type="reg", do you want to consider all possible permutations of the branch? This leads to the highest power
-#' for region inference, but is computationally inefficient. If you are doing type="sib", there is no distinction.
+#' inference on the mean of single region at the end of this branch ("reg"), or doing inference on the difference
+#' between this region and its sibling.
+#' @param alpha Function will compute an equi-tailed (1-alpha) confidence interval. Default is 0.05.
+#' @param sigma_y The true standard deviation of the response. If known, this should be passed in. Otherwise, the sample standard deviation
+#' will be used as a conservative estimate.
+#' @param c The p-value returned will test the null hypothesis that the parameter of interest is equal to c. Currently, only c=0 is a valid
+#' input.
+#' @param computeCI Boolean that specifies if you would like a confidence interval to be computed. Confidence intervals are much slower to compute than
+#' p-values, and so if you only wish to see a p-value you may want to set this to be false.
+#' @param permute Boolean. Only relevant if type="reg". If ``FALSE`` (default), inference is conducted conditional on the event that this exact branch
+#' appeared in the tree. If ``TRUE``, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
+#' latter achieves higher power, it can be computationally prohibitive in large trees.
 #' @return An object of class ``branch_inference`` that contains a confidence interval, a p-value,
 #' the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
 #' @export
@@ -224,10 +226,11 @@ getBranch <- function(tree, nn=NULL) {
 }
 
 
-#' Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
+#' Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+#' belong to the given region.
 #'
 #' @param tree An rpart object. Must have been built with model=TRUE
-#' @param nn A node number!! As a string or as an integer is fine
+#' @param nn A node number. Can be a string or an integer.
 #' @return The indices of data that belong to this region in the training set. The training set is stored in tree$model.
 #' @export
 #' @importFrom rpart path.rpart

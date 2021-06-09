@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this tutorial, we demonstrate how to use the ``treevalues`` package to perform inference on a CART (@breiman1984classification) tree fit using the ``rpart`` package (@therneau2015package). Throughout this tutorial, we work with an example tree fit to the Box Lunch Study dataset, which was originally provided in the ``visTree`` package. 
+In this tutorial, we demonstrate how to use the ``treevalues`` package to perform inference on a CART (@breiman1984classification) tree fit using the ``rpart`` package (@therneau2015package). Throughout this tutorial, we work with an example tree fit to the Box Lunch Study dataset, which was originally provided in the ``visTree`` package (@venkat2018package) and described in @venkatasubramaniam2017decision.
 
 We start by loading the two packages we will be working with. 
 
@@ -40,15 +40,15 @@ The arguement ``cp``, or complexity parameter, is a scaled version of the comple
 
 We begin by plotting our tree. While we could plot the tree using ``plot()`` from the ``rpart`` package, or ``rpart.plot()`` from the ``rpart.plot()`` package, we instead use our internal``treeval.plot()`` function. However, since we are just exploring and have not yet decided to conduct any inference, we set ``inferenceType=0`` (no p-values or confidence intervals are computed).   
 
-```{r}
+```{r, dpi=300, out.width="90%"}
 treeval.plot(bls.tree, inferenceType=0)
 ```
 
-A useful 
+A useful feature of the plot above is that it displays node numbers for each region in the tree. We will be using these numbers to identify the regions that we want to perform inference on. 
 
 # Inference on a pair of sibling regions. 
 
-Suppose we are interested in the whether or not the bottom-right split on ``resteating >= 14`` is "statistically significant". This means that we want a p-value for the difference in means between the nodes labeled ``8`` and ``9`` in our plot above. From our manuscript, we know that inference on this difference in means comes down to conditioning on the event that the ``branch`` that led to this split appearing in the tree.
+Suppose we are interested in the whether or not the bottom-right split on ``resteating >= 14`` is "statistically significant". This means that we want a p-value for the difference in means between the nodes labeled ``8`` and ``9`` in the plot above. From our manuscript, we know that inference on this difference in means involves conditioning on the event that the ``branch`` that led to this split appeared in the tree.
 
 ```{r}
 branch <- getBranch(bls.tree,8)
@@ -63,7 +63,7 @@ result$confint
 result$pval
 ```
 
-Note that, by default, this is a 95% confidence interval, and the pvalue corresponds to testing the null hypothesis that $\nu_{sib}^T \mu = 0$. We can change the null hypothesis by specifiying a different constant $c$, and we can change the confidence interval by specifying $\alpha$. By default, $\alpha=0.05$, so the $CI$ is a $1-\alpha$ CI. 
+Note that, by default, this is a 95% confidence interval, and the pvalue corresponds to testing the null hypothesis that $\nu_{sib}^T \mu = 0$. We can change the confidence level by specifying $\alpha$. By default, $\alpha=0.05$, so the $CI$ is a $1-\alpha$ CI. 
 
 ```{r}
 result <- branchInference(bls.tree, branch, type="sib", alpha=0.1)
@@ -71,17 +71,46 @@ result$confint
 result$pval
 ```
 
-The full ``result`` object contains a little bit of additional information, such as
+The full ``result`` object contains a little bit of additional information, such as the actual comditioning set that was computed.
+
+```{r}
+result$condset
+```
+
+Note that the smple statistic, which is also saved, falls within this conditioning set, but relatively close to the boundary of the set (which explains the large p-value). 
+
+```{r}
+result$samplemean
+```
+We could have also printed this information all at once.
+```{r}
+result
+```
+
+Note that, in our manuscript, it is assumed that $y_i \sim N(\mu_i, \sigma^2)$ and $\sigma^2$ is assumed known. If no arguement ``sigma_y`` is provided to the inference function, the conservative estimate $sd(y)$ is used. This is conservative because it assumes that $\mu_i = \mu$ for all $i$, and so is far too big if, in fact, $\mu$ is heterogenous. 
 
 # Inference on a single region
 
-Suppose that we want
+Suppose that we instead just want a confidence interval for the mean result within region 8.
+
+```{r}
+branchInference(bls.tree, branch, type="reg", alpha=0.05)
+```
+
+As mentioned in the manuscript, there is potential for higher powered inference if we actually condition on all possible permutations of the branch. In this case, the confidence interval got much narrower.
+
+While this seems like an arguement for always setting ``permute=TRUE``, we note that
+
+```{r}
+branchInference(bls.tree, branch, type="reg", alpha=0.05, permute=TRUE)
+```
+
 
 # Inference for the entire tree
 
 We can also bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95%
 
-```{r}
+```{r,dpi=300, out.width="90%"}
 treeval.plot(bls.tree, inferenceType=1)
 treeval.plot(bls.tree, inferenceType=2)
 ```

@@ -38,30 +38,21 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../articles/overview.html">Overview</a>
+</li>
+<li>
+  <a href="../articles/inference_tutorial.html">Tutorial</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/basic_inference_tutorial.html">Introduction to ``treevalues``.</a>
-    </li>
-  </ul>
+  <a></a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/anna-neufeld/splinetree/">
+  <a href="https://github.com/anna-neufeld/treevalues/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -76,25 +67,25 @@
 
       
 
-      </header><script src="basic_inference_tutorial_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="inference_tutorial_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Tutorial: using <code>treevalues</code> to perform inference on <code>rpart</code> trees</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/anna-neufeld/splinetree/blob/master/vignettes/basic_inference_tutorial.Rmd"><code>vignettes/basic_inference_tutorial.Rmd</code></a></small>
-      <div class="hidden name"><code>basic_inference_tutorial.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/anna-neufeld/treevalues/blob/master/vignettes/inference_tutorial.Rmd"><code>vignettes/inference_tutorial.Rmd</code></a></small>
+      <div class="hidden name"><code>inference_tutorial.Rmd</code></div>
 
     </div>
 
     
     
-<p>In this tutorial, we demonstrate how to use the <code>treevalues</code> package to perform inference on a CART (<span class="citation">Breiman et al. (1984)</span>) tree fit using the <code>rpart</code> package (<span class="citation">Therneau and Atkinson (2019)</span>). Throughout this tutorial, we work with an example tree fit to the Box Lunch Study dataset, which was originally provided in the <code>visTree</code> package.</p>
+<p>In this tutorial, we demonstrate how to use the <code>treevalues</code> package to perform inference on a CART (<span class="citation">Breiman et al. (1984)</span>) tree fit using the <code>rpart</code> package (<span class="citation">Therneau and Atkinson (2019)</span>). Throughout this tutorial, we work with an example tree fit to the Box Lunch Study dataset, which was originally provided in the <code>visTree</code> package (<span class="citation">Venkatasubramaniam and Wolfson (2018)</span>) and described in <span class="citation">Venkatasubramaniam et al. (2017)</span>.</p>
 <p>We start by loading the two packages we will be working with.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"anna-neufeld/treevalues"</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/anna-neufeld/splinetree">treevalues</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/anna-neufeld/treevalues">treevalues</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">blsdata</span>, package<span class="op">=</span><span class="st">"treevalues"</span><span class="op">)</span></code></pre></div>
 <div id="building-the-tree" class="section level1">
@@ -107,12 +98,13 @@
 <p>We begin by plotting our tree. While we could plot the tree using <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> from the <code>rpart</code> package, or <code>rpart.plot()</code> from the <code>rpart.plot()</code> package, we instead use our internal<code><a href="../reference/treeval.plot.html">treeval.plot()</a></code> function. However, since we are just exploring and have not yet decided to conduct any inference, we set <code>inferenceType=0</code> (no p-values or confidence intervals are computed).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">0</span><span class="op">)</span></code></pre></div>
-<p><img src="basic_inference_tutorial_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-4-1.png" width="90%"></p>
+<p>A useful feature of the plot above is that it displays node numbers for each region in the tree. We will be using these numbers to identify the regions that we want to perform inference on.</p>
 </div>
 <div id="inference-on-a-pair-of-sibling-regions-" class="section level1">
 <h1 class="hasAnchor">
 <a href="#inference-on-a-pair-of-sibling-regions-" class="anchor"></a>Inference on a pair of sibling regions.</h1>
-<p>Suppose we are interested in the whether or not the bottom-right split on <code>resteating &gt;= 14</code> is “statistically significant.” This means that we want a p-value for the difference in means between the nodes labeled <code>8</code> and <code>9</code> in our plot above. From our manuscript, we know that inference on this difference in means comes down to conditioning on the event that the <code>branch</code> that led to this split appearing in the tree.</p>
+<p>Suppose we are interested in the whether or not the bottom-right split on <code>resteating &gt;= 14</code> is “statistically significant.” This means that we want a p-value for the difference in means between the nodes labeled <code>8</code> and <code>9</code> in the plot above. From our manuscript, we know that inference on this difference in means involves conditioning on the event that the <code>branch</code> that led to this split appeared in the tree.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">branch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getBranch.html">getBranch</a></span><span class="op">(</span><span class="va">bls.tree</span>,<span class="fl">8</span><span class="op">)</span>
 <span class="va">branch</span>
@@ -125,30 +117,77 @@
 <span class="co">## [1] -1106.7470   136.5523</span>
 <span class="va">result</span><span class="op">$</span><span class="va">pval</span>
 <span class="co">## [1] 0.9002555</span></code></pre></div>
-<p>Note that, by default, this is a 95% confidence interval, and the pvalue corresponds to testing the null hypothesis that <span class="math inline">\(\nu_{sib}^T \mu = 0\)</span>. We can change the null hypothesis by specifiying a different constant <span class="math inline">\(c\)</span>, and we can change the confidence interval by specifying <span class="math inline">\(\alpha\)</span>. By default, <span class="math inline">\(\alpha=0.05\)</span>, so the <span class="math inline">\(CI\)</span> is a <span class="math inline">\(1-\alpha\)</span> CI.</p>
+<p>Note that, by default, this is a 95% confidence interval, and the pvalue corresponds to testing the null hypothesis that <span class="math inline">\(\nu_{sib}^T \mu = 0\)</span>. We can change the confidence level by specifying <span class="math inline">\(\alpha\)</span>. By default, <span class="math inline">\(\alpha=0.05\)</span>, so the <span class="math inline">\(CI\)</span> is a <span class="math inline">\(1-\alpha\)</span> CI.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"sib"</span>, alpha<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>
 <span class="va">result</span><span class="op">$</span><span class="va">confint</span>
 <span class="co">## [1] -667.0025  106.8585</span>
 <span class="va">result</span><span class="op">$</span><span class="va">pval</span>
 <span class="co">## [1] 0.9002555</span></code></pre></div>
-<p>The full <code>result</code> object contains a little bit of additional information, such as</p>
+<p>The full <code>result</code> object contains a little bit of additional information, such as the actual comditioning set that was computed.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span><span class="op">$</span><span class="va">condset</span>
+<span class="co">## Object of class Intervals_full</span>
+<span class="co">## 2 intervals over R:</span>
+<span class="co">## (-543.236399481531, -428.125574226105)</span>
+<span class="co">## (428.125574226104, 929.97322312961)</span></code></pre></div>
+<p>Note that the smple statistic, which is also saved, falls within this conditioning set, but relatively close to the boundary of the set (which explains the large p-value).</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span><span class="op">$</span><span class="va">samplemean</span>
+<span class="co">##           [,1]</span>
+<span class="co">## [1,] -435.6817</span></code></pre></div>
+<p>We could have also printed this information all at once.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span>
+<span class="co">## </span>
+<span class="co">## 90% confidence interval: -667.0025, 106.8585</span>
+<span class="co">## Type: sib</span>
+<span class="co">## p-value for test that param=0: 0.9002555</span>
+<span class="co">## Conditioning Set: </span>
+<span class="co">## Object of class Intervals_full</span>
+<span class="co">## 2 intervals over R:</span>
+<span class="co">## (-543.236399481531, -428.125574226105)</span>
+<span class="co">## (428.125574226104, 929.97322312961)</span></code></pre></div>
+<p>Note that, in our manuscript, it is assumed that <span class="math inline">\(y_i \sim N(\mu_i, \sigma^2)\)</span> and <span class="math inline">\(\sigma^2\)</span> is assumed known. If no arguement <code>sigma_y</code> is provided to the inference function, the conservative estimate <span class="math inline">\(sd(y)\)</span> is used. This is conservative because it assumes that <span class="math inline">\(\mu_i = \mu\)</span> for all <span class="math inline">\(i\)</span>, and so is far too big if, in fact, <span class="math inline">\(\mu\)</span> is heterogenous.</p>
 </div>
 <div id="inference-on-a-single-region" class="section level1">
 <h1 class="hasAnchor">
 <a href="#inference-on-a-single-region" class="anchor"></a>Inference on a single region</h1>
-<p>Suppose that we want</p>
+<p>Suppose that we instead just want a confidence interval for the mean result within region 8.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"reg"</span>, alpha<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span>
+<span class="co">## </span>
+<span class="co">## 95% confidence interval: 253.7905, 16592.033</span>
+<span class="co">## Type: reg</span>
+<span class="co">## p-value for test that param=0: 0.01663048</span>
+<span class="co">## Conditioning Set: </span>
+<span class="co">## Object of class Intervals_full</span>
+<span class="co">## 1 interval over R:</span>
+<span class="co">## (1224.75070250313, 1301.6652990799)</span></code></pre></div>
+<p>As mentioned in the manuscript, there is potential for higher powered inference if we actually condition on all possible permutations of the branch. In this case, the confidence interval got much narrower.</p>
+<p>While this seems like an arguement for always setting <code>permute=TRUE</code>, we note that</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"reg"</span>, alpha<span class="op">=</span><span class="fl">0.05</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">## </span>
+<span class="co">## 95% confidence interval: 253.7905, 2148.2956</span>
+<span class="co">## Type: reg</span>
+<span class="co">## p-value for test that param=0: 0.01663048</span>
+<span class="co">## Conditioning Set: </span>
+<span class="co">## Object of class Intervals_full</span>
+<span class="co">## 2 intervals over R:</span>
+<span class="co">## (1224.75070250313, 1301.6652990799)</span>
+<span class="co">## (2868.72223626769, 3427.28431563896)</span></code></pre></div>
 </div>
 <div id="inference-for-the-entire-tree" class="section level1">
 <h1 class="hasAnchor">
 <a href="#inference-for-the-entire-tree" class="anchor"></a>Inference for the entire tree</h1>
 <p>We can also bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95%</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p><img src="basic_inference_tutorial_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-1.png" width="90%"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p><img src="basic_inference_tutorial_files/figure-html/unnamed-chunk-8-2.png" width="700"></p>
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-2.png" width="90%"></p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -159,6 +198,12 @@ Breiman, Leo, Jerome Friedman, Charles J Stone, and Richard A Olshen. 1984. <em>
 </div>
 <div id="ref-therneau2015package" class="csl-entry">
 Therneau, Terry, and Beth Atkinson. 2019. <em>Rpart: Recursive Partitioning and Regression Trees</em>.
+</div>
+<div id="ref-venkat2018package" class="csl-entry">
+Venkatasubramaniam, Ashwini, and Julian Wolfson. 2018. <em>visTree: Visualization of Subgroups for Decision Trees</em>.
+</div>
+<div id="ref-venkatasubramaniam2017decision" class="csl-entry">
+Venkatasubramaniam, Ashwini, Julian Wolfson, Nathan Mitchell, Timothy Barnes, Meghan JaKa, and Simone French. 2017. <span>“Decision Trees in Epidemiological Research.”</span> <em><span>Emerging Themes in Epidemiology</span></em> 14 (1): 11.
 </div>
 </div>
 </div>

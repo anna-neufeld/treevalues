@@ -97,7 +97,7 @@ TNSurv <- function(q, mean, sd, E, approx = FALSE) {
 #' For \eqn{Z ~ N(0, 1)}, we have the approximation
 #'     \eqn{P(Z \ge z) \approx }\code{magicfun(z)*exp(-z^2/2)}.
 #'
-#' @export
+#'
 #'
 #'
 #' @param z, the number where the function is evaluated.
@@ -106,6 +106,8 @@ TNSurv <- function(q, mean, sd, E, approx = FALSE) {
 #'
 #' @references Bryc, Wlodzimierz. "A uniform approximation to the right normal tail integral."
 #'     Applied mathematics and computation 127.2 (2002): 365-374.
+#' @keywords internal
+#' @noRd
 magicfun = function(z){
   z2 <- z*z
   z3 <- z*z*z
@@ -126,6 +128,8 @@ magicfun = function(z){
 #'     a union of intervals with \emph{positive} but possibly infinite endpoints.
 #'
 #' @return This function returns an "Intervals" object or a matrix depending on the input.
+#' @keywords internal
+#' @noRd
 finiteE <- function(E) {
   ind.inf <- which(E == Inf)
   if (length(ind.inf) == 0) return(E)
@@ -149,6 +153,8 @@ finiteE <- function(E) {
 #'     a union of intervals with \emph{positive} but possibly infinite endpoints.
 #'
 #' @return This function returns an "Intervals" object or a matrix depending on the input.
+#' @keywords internal
+#' @noRd
 sortE <- function(E) {
   E.sorted <- lapply(1:nrow(E), function(i){
     temp <- as.numeric(E[i, ])
@@ -182,6 +188,8 @@ sortE <- function(E) {
 #'
 #' @references Bryc, Wlodzimierz. "A uniform approximation to the right normal tail integral."
 #'     Applied mathematics and computation 127.2 (2002): 365-374.
+#' @keywords internal
+#' @noRd
 TNRatioApprox <- function(E1, E2, scale = NULL) {
 
   if (is.null(scale)) {
@@ -214,6 +222,7 @@ TNRatioApprox <- function(E1, E2, scale = NULL) {
 #' This function returns \eqn{P(lo \le Z \le up)}, where \eqn{Z ~ N(0, 1)}.
 #'
 #' @keywords internal
+#' @noRd
 #'
 #' @param lo,up quantiles.
 #'
@@ -262,6 +271,8 @@ TNProb <- function(E) {
 #' @param int1,int2 "Intervals" objects.
 #'
 #' @return This function returns the desired logical result.
+#' @keywords internal
+#' @noRd
 isSameIntervals <- function(int1, int2) {
 
   # first make int1, int2 to the default order

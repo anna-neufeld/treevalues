@@ -2,6 +2,7 @@ pandoc: 2.11.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  basic_inference_tutorial: basic_inference_tutorial.html
-last_built: 2021-06-09T00:12Z
+  inference_tutorial: inference_tutorial.html
+  overview: overview.html
+last_built: 2021-06-09T17:58Z
 

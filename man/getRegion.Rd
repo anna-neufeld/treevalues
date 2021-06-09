@@ -2,18 +2,20 @@
 % Please edit documentation in R/user_funs.R
 \name{getRegion}
 \alias{getRegion}
-\title{Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)}
+\title{Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region.}
 \usage{
 getRegion(tree, nn)
 }
 \arguments{
 \item{tree}{An rpart object. Must have been built with model=TRUE}
 
-\item{nn}{A node number!! As a string or as an integer is fine}
+\item{nn}{A node number. Can be a string or an integer.}
 }
 \value{
 The indices of data that belong to this region in the training set. The training set is stored in tree$model.
 }
 \description{
-Pass in a tree and a node number (node number like the type that comes up in rpart.plot!!!)
+Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region.
 }

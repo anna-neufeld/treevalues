@@ -66,6 +66,7 @@ correctPVal <- function(phiInterval, nu, y, sigma) {
 #' @param E2 denominator interval
 #' @param scale determines the grid search
 #' @keywords internal
+#' @noRd
 myTNRatioApprox <- function(E1, E2, scale = NULL) {
   E1 <- sortE(E1)
   E2 <- sortE(E2)

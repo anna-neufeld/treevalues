@@ -19,4 +19,4 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/anna-neufeld/splinetree
+URL: https://github.com/anna-neufeld/treevalues
