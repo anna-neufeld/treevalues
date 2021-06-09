@@ -41,7 +41,10 @@ repeatedly by different calls of treeval.plot
 \examples{
 \dontrun{
 library(rpart)
-bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
+bls.tree <-rpart(
+  kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+  model = TRUE, data = blsdata, cp=0.02
+)
 bls.tree2 <- inferenceFrame(bls.tree)
 treeval.plot(bls.tree2, inferenceType=1)
 treeval.plot(bls.tree2, inferenceType=2)
