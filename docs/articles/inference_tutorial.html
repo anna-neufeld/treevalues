@@ -94,8 +94,8 @@
 <p>The <code>treevalues</code> package is designed for use with the <code>rpart</code> package, and so all trees should be built using <code>rpart</code>. All trees should be built with the parameter <code>model=TRUE</code>, which saves a copy of the training data inside of the fitted rpart object (this is useful so that the data need not be separately passed to each inference function).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bls.tree</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">kcal24h0</span><span class="op">~</span><span class="va">hunger</span><span class="op">+</span><span class="va">disinhibition</span><span class="op">+</span><span class="va">resteating</span><span class="op">+</span><span class="va">rrvfood</span><span class="op">+</span><span class="va">liking</span><span class="op">+</span><span class="va">wanting</span>, model <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">blsdata</span>, cp<span class="op">=</span><span class="fl">0.02</span><span class="op">)</span></code></pre></div>
-<p>The arguement <code>cp</code>, or complexity parameter, is a scaled version of the complexity parameter <span class="math inline">\(\lambda\)</span> described in our manuscript, <span class="math inline">\(\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2\)</span>. The larger the value of <code>cp</code>, the more the tree will be pruned.</p>
-<p>We begin by plotting our tree. While we could plot the tree using <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> from the <code>rpart</code> package, or <code>rpart.plot()</code> from the <code>rpart.plot()</code> package, we instead use our internal<code><a href="../reference/treeval.plot.html">treeval.plot()</a></code> function. However, since we are just exploring and have not yet decided to conduct any inference, we set <code>inferenceType=0</code> (no p-values or confidence intervals are computed).</p>
+<p>The arguement <code>cp</code>, or complexity parameter, is a scaled version of the complexity parameter <span class="math inline">\(\lambda\)</span> described in our manuscript. For response variable <span class="math inline">\(y\)</span>, <span class="math inline">\(\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2\)</span>. The larger the value of <code>cp</code>, the more the tree will be pruned.</p>
+<p>We begin by plotting our tree. While we could plot the tree using <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> from the <code>rpart</code> package, or <code>rpart.plot()</code> from the <code>rpart.plot()</code> package, we instead use our internal<code><a href="../reference/treeval.plot.html">treeval.plot()</a></code> function. To start, we set <code>inferenceType=0</code> (no p-values or confidence intervals are computed).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">0</span><span class="op">)</span></code></pre></div>
 <p><img src="inference_tutorial_files/figure-html/unnamed-chunk-4-1.png" width="90%"></p>
@@ -104,57 +104,42 @@
 <div id="inference-on-a-pair-of-sibling-regions-" class="section level1">
 <h1 class="hasAnchor">
 <a href="#inference-on-a-pair-of-sibling-regions-" class="anchor"></a>Inference on a pair of sibling regions.</h1>
-<p>Suppose we are interested in the whether or not the bottom-right split on <code>resteating &gt;= 14</code> is “statistically significant.” This means that we want a p-value for the difference in means between the nodes labeled <code>8</code> and <code>9</code> in the plot above. From our manuscript, we know that inference on this difference in means involves conditioning on the event that the <code>branch</code> that led to this split appeared in the tree.</p>
+<p>Suppose we are interested in the whether or not the bottom-left split on <code>resteating &gt;= 14</code> is “statistically significant.” This means that we want a p-value for the difference in means between the nodes labeled <code>8</code> and <code>9</code> in the plot above. Inference on this difference in means involves conditioning on the event that the <code>branch</code> that led to this split appeared in the tree; see <span class="citation">Neufeld, Gao, and Witten (2021)</span> for details. We first need to extract this branch.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">branch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getBranch.html">getBranch</a></span><span class="op">(</span><span class="va">bls.tree</span>,<span class="fl">8</span><span class="op">)</span>
 <span class="va">branch</span>
 <span class="co">## [1] "hunger  &lt; 10.5"           "wanting  &lt; -40.531939285"</span>
 <span class="co">## [3] "resteating  &gt;= 13.5"</span></code></pre></div>
-<p>We now pass this branch into <code>branchInference</code>, which does inference conditional on the event that this branch appeared in the tree. We should specify if we want to do inference just on region 8, or on the difference between region 8 and its sibling, region 9. In this section, we do the latter.</p>
+<p>We now pass this branch into <code>branchInference</code>. We specify that we are interested in the difference between region <code>8</code> and its sibling by setting <code>type="sib"</code>. The ``branchInference function returns a p-value for the test of the null hypothesis that regions 8 and 9 have the same mean response. It also returns a confidence interval for the true difference in means between the regions. In this case, the confidence interval includes 0 and the p-value is large.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"sib"</span><span class="op">)</span>
 <span class="va">result</span><span class="op">$</span><span class="va">confint</span>
 <span class="co">## [1] -1106.7470   136.5523</span>
 <span class="va">result</span><span class="op">$</span><span class="va">pval</span>
 <span class="co">## [1] 0.9002555</span></code></pre></div>
-<p>Note that, by default, this is a 95% confidence interval, and the pvalue corresponds to testing the null hypothesis that <span class="math inline">\(\nu_{sib}^T \mu = 0\)</span>. We can change the confidence level by specifying <span class="math inline">\(\alpha\)</span>. By default, <span class="math inline">\(\alpha=0.05\)</span>, so the <span class="math inline">\(CI\)</span> is a <span class="math inline">\(1-\alpha\)</span> CI.</p>
+<p>By default, a 95% confidence interval is computed. We can change the confidence level by specifying <span class="math inline">\(\alpha\)</span> such that a <span class="math inline">\((1-\alpha)\)</span> confidence interval is returned.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"sib"</span>, alpha<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>
 <span class="va">result</span><span class="op">$</span><span class="va">confint</span>
-<span class="co">## [1] -667.0025  106.8585</span>
-<span class="va">result</span><span class="op">$</span><span class="va">pval</span>
-<span class="co">## [1] 0.9002555</span></code></pre></div>
-<p>The full <code>result</code> object contains a little bit of additional information, such as the actual comditioning set that was computed.</p>
+<span class="co">## [1] -667.0025  106.8585</span></code></pre></div>
+<p>The full <code>result</code> object contains a little bit of additional information, such as the actual conditioning set that was computed and the sample statistic.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span><span class="op">$</span><span class="va">condset</span>
 <span class="co">## Object of class Intervals_full</span>
 <span class="co">## 2 intervals over R:</span>
 <span class="co">## (-543.236399481531, -428.125574226105)</span>
-<span class="co">## (428.125574226104, 929.97322312961)</span></code></pre></div>
-<p>Note that the smple statistic, which is also saved, falls within this conditioning set, but relatively close to the boundary of the set (which explains the large p-value).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span><span class="op">$</span><span class="va">samplemean</span>
+<span class="co">## (428.125574226104, 929.97322312961)</span>
+<span class="va">result</span><span class="op">$</span><span class="va">samplemean</span>
 <span class="co">##           [,1]</span>
 <span class="co">## [1,] -435.6817</span></code></pre></div>
-<p>We could have also printed this information all at once.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span>
-<span class="co">## </span>
-<span class="co">## 90% confidence interval: -667.0025, 106.8585</span>
-<span class="co">## Type: sib</span>
-<span class="co">## p-value for test that param=0: 0.9002555</span>
-<span class="co">## Conditioning Set: </span>
-<span class="co">## Object of class Intervals_full</span>
-<span class="co">## 2 intervals over R:</span>
-<span class="co">## (-543.236399481531, -428.125574226105)</span>
-<span class="co">## (428.125574226104, 929.97322312961)</span></code></pre></div>
-<p>Note that, in our manuscript, it is assumed that <span class="math inline">\(y_i \sim N(\mu_i, \sigma^2)\)</span> and <span class="math inline">\(\sigma^2\)</span> is assumed known. If no arguement <code>sigma_y</code> is provided to the inference function, the conservative estimate <span class="math inline">\(sd(y)\)</span> is used. This is conservative because it assumes that <span class="math inline">\(\mu_i = \mu\)</span> for all <span class="math inline">\(i\)</span>, and so is far too big if, in fact, <span class="math inline">\(\mu\)</span> is heterogenous.</p>
+<p>The sample statistic falls relatively close to the boundary of the truncation set, which explains the large p-value and the wide confidence interval. See <span class="citation">Kivaranovic and Leeb (2018)</span> for details.</p>
+<p>In our framework, it is assumed that <span class="math inline">\(y_i \sim N(\mu_i, \sigma^2)\)</span> and <span class="math inline">\(\sigma^2\)</span> is assumed known. If no arguement <code>sigma_y</code> is provided to the inference function, the conservative estimate <span class="math inline">\(sd(y)\)</span> is used.</p>
 </div>
 <div id="inference-on-a-single-region" class="section level1">
 <h1 class="hasAnchor">
 <a href="#inference-on-a-single-region" class="anchor"></a>Inference on a single region</h1>
-<p>Suppose that we instead just want a confidence interval for the mean result within region 8.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>Suppose that we instead just want a confidence interval for the mean result within region 8. We simply change the <code>type</code> arguement.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"reg"</span>, alpha<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">## 95% confidence interval: 253.7905, 16592.033</span>
@@ -164,9 +149,8 @@
 <span class="co">## Object of class Intervals_full</span>
 <span class="co">## 1 interval over R:</span>
 <span class="co">## (1224.75070250313, 1301.6652990799)</span></code></pre></div>
-<p>As mentioned in the manuscript, there is potential for higher powered inference if we actually condition on all possible permutations of the branch. In this case, the confidence interval got much narrower.</p>
-<p>While this seems like an arguement for always setting <code>permute=TRUE</code>, we note that</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p>By default, when <code>type="reg"</code>, the function <code><a href="../reference/branchInference.html">branchInference()</a></code> conditions on the event that the exact branch <code>branch</code> appears in the tree. As mentioned in <span class="citation">Neufeld, Gao, and Witten (2021)</span>, there is potential for higher powered inference if we actually condition on all possible permutations of the branch. Conditioning on all possible permutations increases power and, in this case, makes the confidence interval significantly narrower.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"reg"</span>, alpha<span class="op">=</span><span class="fl">0.05</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">## 95% confidence interval: 253.7905, 2148.2956</span>
@@ -177,17 +161,15 @@
 <span class="co">## 2 intervals over R:</span>
 <span class="co">## (1224.75070250313, 1301.6652990799)</span>
 <span class="co">## (2868.72223626769, 3427.28431563896)</span></code></pre></div>
+<p>While this seems like an arguement for always setting <code>permute=TRUE</code>, we note that computations can be prohibitely slow for large trees when <code>permute=TRUE</code>.</p>
 </div>
 <div id="inference-for-the-entire-tree" class="section level1">
 <h1 class="hasAnchor">
 <a href="#inference-for-the-entire-tree" class="anchor"></a>Inference for the entire tree</h1>
-<p>We can also bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95%</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-1.png" width="90%"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-2.png" width="90%"></p>
+<p>We can bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95% confidence intervals for the mean within each region and reports p-values for a test of no difference in means across each split. When looking at a large tree, this plot should be interpretted with care; the p-values have not been corrected for multiple testing.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span><span class="op">)</span></code></pre></div>
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-11-1.png" width="90%"></p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -195,6 +177,12 @@
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-breiman1984classification" class="csl-entry">
 Breiman, Leo, Jerome Friedman, Charles J Stone, and Richard A Olshen. 1984. <em>Classification and Regression Trees</em>. CRC press.
+</div>
+<div id="ref-kivaranovic2018expected" class="csl-entry">
+Kivaranovic, Danijel, and Hannes Leeb. 2018. <span>“Expected Length of Post-Model-Selection Confidence Intervals Conditional on Polyhedral Constraints.”</span> <em>arXiv Preprint arXiv:1803.01665</em>.
+</div>
+<div id="ref-neufeld2021treevalues" class="csl-entry">
+Neufeld, Anna, Lucy Gao, and Daniela Witten. 2021. <span>“Tree-Values: Selective Inference for Regression Trees.”</span> <em>arXiv Preprint ???</em>
 </div>
 <div id="ref-therneau2015package" class="csl-entry">
 Therneau, Terry, and Beth Atkinson. 2019. <em>Rpart: Recursive Partitioning and Regression Trees</em>.

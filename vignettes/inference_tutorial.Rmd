@@ -36,9 +36,9 @@ The ``treevalues`` package is designed for use with the ``rpart`` package, and s
 bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
 ```
 
-The arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. The larger the value of ``cp``, the more the tree will be pruned. 
+The arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript. For response variable $y$, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. The larger the value of ``cp``, the more the tree will be pruned. 
 
-We begin by plotting our tree. While we could plot the tree using ``plot()`` from the ``rpart`` package, or ``rpart.plot()`` from the ``rpart.plot()`` package, we instead use our internal``treeval.plot()`` function. However, since we are just exploring and have not yet decided to conduct any inference, we set ``inferenceType=0`` (no p-values or confidence intervals are computed).   
+We begin by plotting our tree. While we could plot the tree using ``plot()`` from the ``rpart`` package, or ``rpart.plot()`` from the ``rpart.plot()`` package, we instead use our internal``treeval.plot()`` function. To start, we set ``inferenceType=0`` (no p-values or confidence intervals are computed).   
 
 ```{r, dpi=300, out.width="90%"}
 treeval.plot(bls.tree, inferenceType=0)
@@ -48,14 +48,14 @@ A useful feature of the plot above is that it displays node numbers for each reg
 
 # Inference on a pair of sibling regions. 
 
-Suppose we are interested in the whether or not the bottom-right split on ``resteating >= 14`` is "statistically significant". This means that we want a p-value for the difference in means between the nodes labeled ``8`` and ``9`` in the plot above. From our manuscript, we know that inference on this difference in means involves conditioning on the event that the ``branch`` that led to this split appeared in the tree.
+Suppose we are interested in the whether or not the bottom-left split on ``resteating >= 14`` is "statistically significant". This means that we want a p-value for the difference in means between the nodes labeled ``8`` and ``9`` in the plot above. Inference on this difference in means involves conditioning on the event that the ``branch`` that led to this split appeared in the tree; see @neufeld2021treevalues for details. We first need to extract this branch.
 
 ```{r}
 branch <- getBranch(bls.tree,8)
 branch
 ```
 
-We now pass this branch into ``branchInference``, which does inference conditional on the event that this branch appeared in the tree. We should specify if we want to do inference just on region 8, or on the difference between region 8 and its sibling, region 9. In this section, we do the latter.
+We now pass this branch into ``branchInference``. We specify that we are interested in the difference between region `8` and its sibling by setting `type="sib"`. The ``branchInference function returns a p-value for the test of the null hypothesis that regions 8 and 9 have the same mean response. It also returns a confidence interval for the true difference in means between the regions. In this case, the confidence interval includes 0 and the p-value is large. 
 
 ```{r}
 result <- branchInference(bls.tree, branch, type="sib")
@@ -63,56 +63,47 @@ result$confint
 result$pval
 ```
 
-Note that, by default, this is a 95% confidence interval, and the pvalue corresponds to testing the null hypothesis that $\nu_{sib}^T \mu = 0$. We can change the confidence level by specifying $\alpha$. By default, $\alpha=0.05$, so the $CI$ is a $1-\alpha$ CI. 
+By default, a 95% confidence interval is computed. We can change the confidence level by specifying $\alpha$ such that a $(1-\alpha)$ confidence interval is returned.
 
 ```{r}
 result <- branchInference(bls.tree, branch, type="sib", alpha=0.1)
 result$confint
-result$pval
 ```
 
-The full ``result`` object contains a little bit of additional information, such as the actual comditioning set that was computed.
+The full ``result`` object contains a little bit of additional information, such as the actual conditioning set that was computed and the sample statistic. 
 
 ```{r}
 result$condset
-```
-
-Note that the smple statistic, which is also saved, falls within this conditioning set, but relatively close to the boundary of the set (which explains the large p-value). 
-
-```{r}
 result$samplemean
 ```
-We could have also printed this information all at once.
-```{r}
-result
-```
 
-Note that, in our manuscript, it is assumed that $y_i \sim N(\mu_i, \sigma^2)$ and $\sigma^2$ is assumed known. If no arguement ``sigma_y`` is provided to the inference function, the conservative estimate $sd(y)$ is used. This is conservative because it assumes that $\mu_i = \mu$ for all $i$, and so is far too big if, in fact, $\mu$ is heterogenous. 
+The sample statistic falls relatively close to the boundary of the truncation set, which explains the large p-value and the wide confidence interval. See @kivaranovic2018expected for details. 
+ 
+In our framework, it is assumed that $y_i \sim N(\mu_i, \sigma^2)$ and $\sigma^2$ is assumed known. If no arguement ``sigma_y`` is provided to the inference function, the conservative estimate $sd(y)$ is used.
 
 # Inference on a single region
 
-Suppose that we instead just want a confidence interval for the mean result within region 8.
+Suppose that we instead just want a confidence interval for the mean result within region 8. We simply change the ``type`` arguement. 
 
 ```{r}
 branchInference(bls.tree, branch, type="reg", alpha=0.05)
 ```
 
-As mentioned in the manuscript, there is potential for higher powered inference if we actually condition on all possible permutations of the branch. In this case, the confidence interval got much narrower.
-
-While this seems like an arguement for always setting ``permute=TRUE``, we note that
+By default, when ``type="reg"``, the function ``branchInference()`` conditions on the event that the exact branch ``branch`` appears in the tree. As mentioned in @neufeld2021treevalues, there is potential for higher powered inference if we actually condition on all possible permutations of the branch. Conditioning on all possible permutations increases power and, in this case, makes the confidence interval significantly narrower. 
 
 ```{r}
 branchInference(bls.tree, branch, type="reg", alpha=0.05, permute=TRUE)
 ```
 
+While this seems like an arguement for always setting ``permute=TRUE``, we note that computations can be prohibitely slow for large trees when ``permute=TRUE``. 
+
 
 # Inference for the entire tree
 
-We can also bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95%
+We can bypass the need to specify a specific branch by making the following plot, which includes p-values for each split and confidence intervals for each region. We can just see this in a plot. By default, the plot makes 95% confidence intervals for the mean within each region and reports p-values for a test of no difference in means across each split. When looking at a large tree, this plot should be interpretted with care; the p-values have not been corrected for multiple testing. 
 
 ```{r,dpi=300, out.width="90%"}
-treeval.plot(bls.tree, inferenceType=1)
-treeval.plot(bls.tree, inferenceType=2)
+treeval.plot(bls.tree)
 ```
 
 

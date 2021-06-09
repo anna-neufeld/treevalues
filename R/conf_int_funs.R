@@ -4,8 +4,7 @@
 
 
 # ----- Truncated Normal Distribution -----
-#' Survival function of truncated normal distribution. This comes directly from the Outference Package.
-#' The code and the documentation can be found at https://github.com/shuxiaoc/outference.
+#' Survival function of truncated normal distribution. This comes from the Outference Package https://github.com/shuxiaoc/outference.
 #'
 #' This function returns the upper tail probability of a truncated normal distribution
 #'     at quantile \code{q}.
@@ -294,23 +293,19 @@ isSameIntervals <- function(int1, int2) {
 
 # return selective ci for v^T mu (i.e. a single parameter)
 
-#' compute selective confidence intervals
-#'
-#' This function computes the selective confidence intervals.
-#' Code modified from the Outference package, available at https://github.com/shuxiaoc/outference.
-#'
-#' @keywords internal
+#' Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+#' Outference package, available at https://github.com/shuxiaoc/outference.
+#' @export
 #'
 #' @param truncation, the truncation set for the statistic v'y.
 #' Computes a confidence interval for the mean of a truncated normal distribution.
-#' @param v the contrast vector that defines the parameter of interest
+#' @param v the vector that defines the parameter of interest; v^T mu
 #' @param y the observed response vector
 #' @param sigma The known noise standard deviation. If unknown, we recommend a conservative estimate. If it
 #' is left blank, we automatically use a conservative estimate.
 #' @param alpha, the significance level.
 #'
 #' @return This function returns a vector of lower and upper confidence limits.
-#'
 computeCI <- function(v, y, sigma=NULL, truncation, alpha=0.05) {
   ### Conservative guess
   if (is.null(sigma)) {
