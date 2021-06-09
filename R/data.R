@@ -30,7 +30,6 @@
 #'   \item{rrvfood}{Relative reinforcement of food}
 #'}
 #' @keywords datasets
-#' @name blsdata
 #' @format A data frame with 226 rows and 26 variables
 #' @examples
 #' data(blsdata)
