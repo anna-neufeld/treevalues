@@ -1,5 +1,3 @@
-# treevalues: inference for CART regression trees. 
-
 What is treevalues?
 -----
 
