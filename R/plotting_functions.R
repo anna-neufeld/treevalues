@@ -52,7 +52,7 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
     }
     inner.plot(tree,inferenceType, roundint=FALSE, nn=nn, extra=(printn==TRUE),digits=digits,...)
   } else{
-    rpart.plot::rpart.plot(tree, nn=nn, extra=(printn==TRUE), roundint=FALSE, digits=digits, ...)
+    inner.plot(tree,inferenceType=0, roundint=FALSE, nn=nn, extra=(printn==TRUE),digits=digits,...)
   }
 }
 

@@ -457,7 +457,7 @@ prp <- function(x=stop("no 'x' arg"), inferenceType=4,
         border.col[!is.leaf] <-
             if(rpart.plot:::is.specified(split.border.col)) split.border.col else 1
     }
-    split.labs <- split.labs.wrapper(obj, split.fun,
+    split.labs <- split.labs.wrapper(obj, inferenceType, split.fun,
                 deparse(substitute(split.fun)),
                 split.prefix, split.suffix,
                 right.split.prefix, right.split.suffix,
@@ -848,7 +848,7 @@ get.boxes <- function(boxtype,  # one of "default", "left", "right", "undersplit
 #' @keywords internal
 #' @noRd
 # split.labs.R: functions for generating split.labels
-split.labs.wrapper <- function(x, split.fun, split.fun.name,
+split.labs.wrapper <- function(x, inferenceType, split.fun, split.fun.name,
                                split.prefix, split.suffix,
                                right.split.prefix, right.split.suffix,
                                type, clip.facs,
@@ -860,7 +860,7 @@ split.labs.wrapper <- function(x, split.fun, split.fun.name,
     if(clip.facs)
         eq <- "|" # special value used as a flag
 
-    labs <- internal.split.labs(x, type,
+    labs <- internal.split.labs(x, inferenceType, type,
                                 digits, varlen, faclen, roundint,
                                 clip.facs, clip.left.labs, clip.right.labs, xflip,
                                 trace,
@@ -882,7 +882,7 @@ split.labs.wrapper <- function(x, split.fun, split.fun.name,
 #' @noRd
 # Modified version of labels.rpart.
 # This uses format0 instead of formatg and has various other extensions.
-internal.split.labs <- function(x, type,
+internal.split.labs <- function(x, inferenceType, type,
                                 digits, varlen, faclen, roundint,
                                 clip.facs, clip.left.labs, clip.right.labs, xflip,
                                 trace,
@@ -922,7 +922,7 @@ internal.split.labs <- function(x, type,
         split$rsplit[is.eq.r] <- substring(split$rsplit[is.eq.r], 2)
     }
     ## SHOULD CHANGE SO THAT PVAL IS AN ARGUEMENT.
-    paste.split.labs(frame,
+    paste.split.labs(frame, inferenceType,
                      split.var.names, split$lsplit, split$rsplit,
                      type, clip.facs,
                      clip.left.labs, clip.right.labs, xflip, varlen,
@@ -938,7 +938,7 @@ internal.split.labs <- function(x, type,
 # ACTUALLY NEED THS ONE BC PVALS
 #' @keywords internal
 #' @noRd
-paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
+paste.split.labs <- function(frame, inferenceType, split.var.names, lsplit, rsplit,
                              type, clip.facs,
                              clip.left.labs, clip.right.labs, xflip, varlen,
                              split.prefix, right.split.prefix,
@@ -970,8 +970,13 @@ paste.split.labs <- function(frame, split.var.names, lsplit, rsplit,
     newline <- "\n\n"
 
     #### I MODIFIED THIS.
+    if (inferenceType==0) {
+    labs <- paste0(split.prefix, left.names[parent], lsplit[parent], split.suffix)
+    } else {
     labs  <- paste0(split.prefix, left.names[parent], lsplit[parent], split.suffix,
-                    newline, "pval", frame$pval)
+                        newline, "pval", frame$pval)
+    }
+
 
     labs[is.right] <- paste0(right.split.prefix,
                              right.names[parent],

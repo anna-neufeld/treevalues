@@ -95,7 +95,7 @@ By default, when ``type="reg"``, the function ``branchInference()`` conditions o
 branchInference(bls.tree, branch, type="reg", alpha=0.05, permute=TRUE)
 ```
 
-While this seems like an argument for always setting ``permute=TRUE``, we note that computations can be prohibively slow for large trees when ``permute=TRUE``. We also note that adding ``permute=TRUE`` tends to make a large difference only in trees where the overall signal is weak. Trees with very clear, significant splits tend to be more stable, and in more stable trees the addition of `permute=TRUE`` does not tend to substantially shorten confidence intervals. 
+While this seems like an argument for always setting ``permute=TRUE``, we note that computations can be prohibively slow for large trees when ``permute=TRUE``. We also note that adding ``permute=TRUE`` tends to make a large difference only in trees where the overall signal is weak. Trees with strong signal and highly significant splits tend to be more stable, and in more stable trees the addition of ``permute=TRUE`` does not tend to substantially shorten confidence intervals. 
 
 
 # Inference for the entire tree
@@ -111,11 +111,17 @@ If we set ``permute=TRUE``, we will get slightly narrower confidence intervals i
 treeval.plot(bls.tree, permute=TRUE)
 ```
 
+# Custom plotting
 
-There are many ways to customize this plot. If the default version is too congested, alternate values of ``inferenceType`` can be provided to customize how much information is displayed. Addional arguments provided will be passed on to ```rpart.plot()``. For example,
+There are many ways to customize the output of ``treeval.plot``. If the default version is too congested, alternate values of ``inferenceType`` can be provided to customize how much information is displayed. Addional arguments provided will be passed on to ```rpart.plot()``. 
+
+The computationally intensive part of creating the plots is appending p-values and confidence intervals to the tree's ``frame``. If you plan to plan to play around extensively with plot formatting, you can avoid re-computing the p-values and confidence intervals for each plot by pre-augmenting the tree frame with this information. After running the ``inferenceFrame`` function once (this can run slowly, particularly if ``permute=TRUE``), each plot can be made quite quickly. 
 
 ```{r,dpi=300, out.width="90%"}
-treeval.plot(bls.tree, inferenceType=1, cex=0.5, printn=FALSE)
+bls.tree <- inferenceFrame(bls.tree, permute=TRUE)
+treeval.plot(bls.tree, inferenceType=2, printn=FALSE, box.col="green")
+treeval.plot(bls.tree, inferenceType=1, printn=FALSE, box.col="purple")
+treeval.plot(bls.tree, inferenceType=1, printn=TRUE, box.col="white", nn=FALSE)
 ```
 
 

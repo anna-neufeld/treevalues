@@ -163,7 +163,7 @@
 <span class="co">## 2 intervals over R:</span>
 <span class="co">## (1224.75070250313, 1301.6652990799)</span>
 <span class="co">## (2868.72223626769, 3427.28431563896)</span></code></pre></div>
-<p>While this seems like an argument for always setting <code>permute=TRUE</code>, we note that computations can be prohibively slow for large trees when <code>permute=TRUE</code>. We also note that adding <code>permute=TRUE</code> tends to make a large difference only in trees where the overall signal is weak. Trees with very clear, significant splits tend to be more stable, and in more stable trees the addition of `permute=TRUE`` does not tend to substantially shorten confidence intervals.</p>
+<p>While this seems like an argument for always setting <code>permute=TRUE</code>, we note that computations can be prohibively slow for large trees when <code>permute=TRUE</code>. We also note that adding <code>permute=TRUE</code> tends to make a large difference only in trees where the overall signal is weak. Trees with strong signal and highly significant splits tend to be more stable, and in more stable trees the addition of <code>permute=TRUE</code> does not tend to substantially shorten confidence intervals.</p>
 </div>
 <div id="inference-for-the-entire-tree" class="section level1">
 <h1 class="hasAnchor">
@@ -176,10 +176,21 @@
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="inference_tutorial_files/figure-html/unnamed-chunk-12-1.png" width="90%"></p>
-<p>There are many ways to customize this plot. If the default version is too congested, alternate values of <code>inferenceType</code> can be provided to customize how much information is displayed. Addional arguments provided will be passed on to `<code>rpart.plot()</code>. For example,</p>
+</div>
+<div id="custom-plotting" class="section level1">
+<h1 class="hasAnchor">
+<a href="#custom-plotting" class="anchor"></a>Custom plotting</h1>
+<p>There are many ways to customize the output of <code>treeval.plot</code>. If the default version is too congested, alternate values of <code>inferenceType</code> can be provided to customize how much information is displayed. Addional arguments provided will be passed on to `<code>rpart.plot()</code>. The computationally intensive part of creating the plots is appending p-values and confidence intervals to the tree’s <code>frame</code>. If you plan to plan to play around extensively with plot formatting, you can avoid re-computing the p-values and confidence intervals for each plot by pre-augmenting the tree frame with this information. After running the <code>inferenceFrame</code> function once (this can run slowly, particularly if <code>permute=TRUE</code>), each plot can be made quite quickly.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">1</span>, cex<span class="op">=</span><span class="fl">0.5</span>, printn<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">bls.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inferenceFrame.html">inferenceFrame</a></span><span class="op">(</span><span class="va">bls.tree</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">2</span>, printn<span class="op">=</span><span class="cn">FALSE</span>, box.col<span class="op">=</span><span class="st">"green"</span><span class="op">)</span></code></pre></div>
 <p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-1.png" width="90%"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">1</span>, printn<span class="op">=</span><span class="cn">FALSE</span>, box.col<span class="op">=</span><span class="st">"purple"</span><span class="op">)</span></code></pre></div>
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-2.png" width="90%"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">1</span>, printn<span class="op">=</span><span class="cn">TRUE</span>, box.col<span class="op">=</span><span class="st">"white"</span>, nn<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p><img src="inference_tutorial_files/figure-html/unnamed-chunk-13-3.png" width="90%"></p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
