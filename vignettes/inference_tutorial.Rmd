@@ -119,9 +119,9 @@ The computationally intensive part of creating the plots is appending p-values a
 
 ```{r,dpi=300, out.width="90%"}
 bls.tree <- inferenceFrame(bls.tree, permute=TRUE)
-treeval.plot(bls.tree, inferenceType=2, printn=FALSE, box.col="green")
-treeval.plot(bls.tree, inferenceType=1, printn=FALSE, box.col="purple")
 treeval.plot(bls.tree, inferenceType=1, printn=TRUE, box.col="white", nn=FALSE)
+treeval.plot(bls.tree, inferenceType=2, printn=TRUE, box.col="white", fallen.leaves=FALSE)
+
 ```
 
 
