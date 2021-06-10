@@ -75,7 +75,9 @@
 <div id="what-is-treevalues" class="section level2">
 <h2 class="hasAnchor">
 <a href="#what-is-treevalues" class="anchor"></a>What is treevalues?</h2>
-<p>The <code>treevalues</code> R package computes confidence intervals and p-values for the mean response within a region or the difference in mean response between two regions in a CART regression tree (built using the package <code>rpart</code>). As the regions in a regression tree are selected using the data, the same data cannot naively be used to do inference on these means. The <code>treevalues</code> package implements a selective inference approach to conduct inference without <em>double dipping</em> in the data.</p>
+<p>The <code>treevalues</code> R package computes confidence intervals and p-values for the mean response within a region or the difference in mean response between two regions in a CART regression tree (built using the package <code>rpart</code>).</p>
+<p>Because the regions in a regression tree are selected using the data, we cannot naively “double dip” in the same data to do inference on the meains within these regions.</p>
+<p>The <code>treevalues</code> package implements a selective inference approach to conduct inference without double dipping in the data.</p>
 </div>
 <div id="how-can-i-get-treevalues" class="section level2">
 <h2 class="hasAnchor">
@@ -87,7 +89,8 @@
 <div id="where-can-i-learn-more" class="section level2">
 <h2 class="hasAnchor">
 <a href="#where-can-i-learn-more" class="anchor"></a>Where can I learn more?</h2>
-<p>See <a href="https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html">https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html</a> for instructions on how to use this package on real data. See <a href="???">???</a> for the preprint.</p>
+<p>See the <a href="https://anna-neufeld.github.io/treevalues/articles/overview.html">overview</a> tab for a more detailed motivation for our framework, and the <a href="https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html">tutorial</a> tab for instructions on how to use this package on real data.</p>
+<p>See <a href="???">???</a> for the preprint that describes the selective inference methodology.</p>
 <p>See <a href="https://github.com/anna-neufeld/treevalues-simulations">https://github.com/anna-neufeld/treevalues-simulations</a> for code to reproduce the experiements and figures in the preprint.</p>
 </div>
 </div>
