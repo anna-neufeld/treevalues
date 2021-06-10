@@ -72,16 +72,21 @@
 <div id="treevalues-inference-for-cart-regression-trees" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#treevalues-inference-for-cart-regression-trees" class="anchor"></a>treevalues: inference for CART regression trees.</h1></div>
-<div id="installation" class="section level2">
+<div id="what-is-treevalues" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<a href="#what-is-treevalues" class="anchor"></a>What is treevalues?</h2>
+<p>The <code>treevalues</code> R package computes confidence intervals and p-values for the mean response within a region or the difference in mean response between two regions in a CART regression tree (built using the package <code>rpart</code>). As the regions in a regression tree are selected using the data, the same data cannot naively be used to do inference on these means. The <code>treevalues</code> package implements a selective inference approach to conduct inference without <em>double dipping</em> in the data.</p>
+</div>
+<div id="how-can-i-get-treevalues" class="section level2">
+<h2 class="hasAnchor">
+<a href="#how-can-i-get-treevalues" class="anchor"></a>How can I get treevalues?</h2>
 <p>Make sure that <code>remotes</code> is installed by running <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("remotes")</a></code>, then type</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"anna-neufeld/treevalues"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="usage" class="section level2">
+<div id="where-can-i-learn-more" class="section level2">
 <h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<a href="#where-can-i-learn-more" class="anchor"></a>Where can I learn more?</h2>
 <p>See <a href="https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html">https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html</a> for instructions on how to use this package on real data. See <a href="???">???</a> for the preprint.</p>
 <p>See <a href="https://github.com/anna-neufeld/treevalues-simulations">https://github.com/anna-neufeld/treevalues-simulations</a> for code to reproduce the experiements and figures in the preprint.</p>
 </div>
