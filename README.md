@@ -14,5 +14,8 @@ Usage
 
 See [https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html](https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html) for instructions on how to use this package on real data. See [???](???) for the preprint.
 
+See [https://github.com/anna-neufeld/treevalues-simulations](https://github.com/anna-neufeld/treevalues-simulations) for code to reproduce the experiements and figures in the preprint. 
+
+
 
 
