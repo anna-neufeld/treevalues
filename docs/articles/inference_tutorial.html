@@ -94,7 +94,7 @@
 <p>The <code>treevalues</code> package is designed for use with the <code>rpart</code> package, and so all trees should be built using <code>rpart</code>. All trees should be built with the parameter <code>model=TRUE</code>, which saves a copy of the training data inside of the fitted rpart object (this is useful so that the data need not be separately passed to each inference function).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bls.tree</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">kcal24h0</span><span class="op">~</span><span class="va">hunger</span><span class="op">+</span><span class="va">disinhibition</span><span class="op">+</span><span class="va">resteating</span><span class="op">+</span><span class="va">rrvfood</span><span class="op">+</span><span class="va">liking</span><span class="op">+</span><span class="va">wanting</span>, model <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">blsdata</span>, cp<span class="op">=</span><span class="fl">0.02</span><span class="op">)</span></code></pre></div>
-<p>The arguement <code>cp</code>, or complexity parameter, is a scaled version of the complexity parameter <span class="math inline">\(\lambda\)</span> described in our manuscript. For response variable <span class="math inline">\(y\)</span>, <span class="math inline">\(\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2\)</span>. The larger the value of <code>cp</code>, the more the tree will be pruned.</p>
+<p>The argument <code>cp</code>, or complexity parameter, is a scaled version of the complexity parameter <span class="math inline">\(\lambda\)</span> described in our manuscript. For response variable <span class="math inline">\(y\)</span>, <span class="math inline">\(\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2\)</span>. The larger the value of <code>cp</code>, the more the tree will be pruned.</p>
 <p>We begin by plotting our tree. While we could plot the tree using <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> from the <code>rpart</code> package, or <code>rpart.plot()</code> from the <code>rpart.plot()</code> package, we instead use our internal<code><a href="../reference/treeval.plot.html">treeval.plot()</a></code> function. To start, we set <code>inferenceType=0</code> (no p-values or confidence intervals are computed).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">0</span><span class="op">)</span></code></pre></div>
@@ -133,12 +133,12 @@
 <span class="co">##           [,1]</span>
 <span class="co">## [1,] -435.6817</span></code></pre></div>
 <p>The sample statistic falls relatively close to the boundary of the truncation set, which explains the large p-value and the wide confidence interval. See <span class="citation">Kivaranovic and Leeb (2018)</span> for details.</p>
-<p>In our framework, it is assumed that <span class="math inline">\(y_i \sim N(\mu_i, \sigma^2)\)</span> and <span class="math inline">\(\sigma^2\)</span> is assumed known. If no arguement <code>sigma_y</code> is provided to the inference function, the conservative estimate <span class="math inline">\(sd(y)\)</span> is used.</p>
+<p>In our framework, it is assumed that <span class="math inline">\(y_i \sim N(\mu_i, \sigma^2)\)</span> and <span class="math inline">\(\sigma^2\)</span> is assumed known. If no argument <code>sigma_y</code> is provided to the inference function, the conservative estimate <span class="math inline">\(sd(y)\)</span> is used.</p>
 </div>
 <div id="inference-on-a-single-region" class="section level1">
 <h1 class="hasAnchor">
 <a href="#inference-on-a-single-region" class="anchor"></a>Inference on a single region</h1>
-<p>Suppose that we instead just want a confidence interval for the mean result within region 8. We simply change the <code>type</code> arguement.</p>
+<p>Suppose that we instead just want a confidence interval for the mean result within region 8. We simply change the <code>type</code> argument.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/branchInference.html">branchInference</a></span><span class="op">(</span><span class="va">bls.tree</span>, <span class="va">branch</span>, type<span class="op">=</span><span class="st">"reg"</span>, alpha<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span>
 <span class="co">## </span>
@@ -161,7 +161,7 @@
 <span class="co">## 2 intervals over R:</span>
 <span class="co">## (1224.75070250313, 1301.6652990799)</span>
 <span class="co">## (2868.72223626769, 3427.28431563896)</span></code></pre></div>
-<p>While this seems like an arguement for always setting <code>permute=TRUE</code>, we note that computations can be prohibitely slow for large trees when <code>permute=TRUE</code>.</p>
+<p>While this seems like an argument for always setting <code>permute=TRUE</code>, we note that computations can be prohibively slow for large trees when <code>permute=TRUE</code>. We also note that adding <code>permute=TRUE</code> tends to make a large difference only in trees where the overall signal is weak. Trees with very clear, significant splits tend to be more stable, and in more stable trees the addition of `permute=TRUE`` does not tend to substantially shorten confidence intervals.</p>
 </div>
 <div id="inference-for-the-entire-tree" class="section level1">
 <h1 class="hasAnchor">
@@ -176,7 +176,7 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, permute<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">## [1] 2</span></code></pre></div>
 <p><img src="inference_tutorial_files/figure-html/unnamed-chunk-12-1.png" width="90%"></p>
-<p>There are many ways to customize this plot. If the default version is too congested, alternate values of <code>inferenceType</code> can be provided to customize how much information is displayed. Addional arguements provided will be passed on to `<code>rpart.plot()</code>. For example,</p>
+<p>There are many ways to customize this plot. If the default version is too congested, alternate values of <code>inferenceType</code> can be provided to customize how much information is displayed. Addional arguments provided will be passed on to `<code>rpart.plot()</code>. For example,</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/treeval.plot.html">treeval.plot</a></span><span class="op">(</span><span class="va">bls.tree</span>, inferenceType<span class="op">=</span><span class="fl">1</span>, cex<span class="op">=</span><span class="fl">0.5</span>, printn<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">## [1] 2</span></code></pre></div>

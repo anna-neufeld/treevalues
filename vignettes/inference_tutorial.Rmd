@@ -36,7 +36,7 @@ The ``treevalues`` package is designed for use with the ``rpart`` package, and s
 bls.tree <-rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting, model = TRUE, data = blsdata, cp=0.02)
 ```
 
-The arguement ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript. For response variable $y$, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. The larger the value of ``cp``, the more the tree will be pruned. 
+The argument ``cp``, or complexity parameter, is a scaled version of the complexity parameter $\lambda$ described in our manuscript. For response variable $y$, $\lambda =\text{cp} \times \sum_{i=1}^n (y_i-\bar{y})^2$. The larger the value of ``cp``, the more the tree will be pruned. 
 
 We begin by plotting our tree. While we could plot the tree using ``plot()`` from the ``rpart`` package, or ``rpart.plot()`` from the ``rpart.plot()`` package, we instead use our internal``treeval.plot()`` function. To start, we set ``inferenceType=0`` (no p-values or confidence intervals are computed).   
 
@@ -79,11 +79,11 @@ result$samplemean
 
 The sample statistic falls relatively close to the boundary of the truncation set, which explains the large p-value and the wide confidence interval. See @kivaranovic2018expected for details. 
  
-In our framework, it is assumed that $y_i \sim N(\mu_i, \sigma^2)$ and $\sigma^2$ is assumed known. If no arguement ``sigma_y`` is provided to the inference function, the conservative estimate $sd(y)$ is used.
+In our framework, it is assumed that $y_i \sim N(\mu_i, \sigma^2)$ and $\sigma^2$ is assumed known. If no argument ``sigma_y`` is provided to the inference function, the conservative estimate $sd(y)$ is used.
 
 # Inference on a single region
 
-Suppose that we instead just want a confidence interval for the mean result within region 8. We simply change the ``type`` arguement. 
+Suppose that we instead just want a confidence interval for the mean result within region 8. We simply change the ``type`` argument. 
 
 ```{r}
 branchInference(bls.tree, branch, type="reg", alpha=0.05)
@@ -95,7 +95,7 @@ By default, when ``type="reg"``, the function ``branchInference()`` conditions o
 branchInference(bls.tree, branch, type="reg", alpha=0.05, permute=TRUE)
 ```
 
-While this seems like an arguement for always setting ``permute=TRUE``, we note that computations can be prohibitely slow for large trees when ``permute=TRUE``. 
+While this seems like an argument for always setting ``permute=TRUE``, we note that computations can be prohibively slow for large trees when ``permute=TRUE``. We also note that adding ``permute=TRUE`` tends to make a large difference only in trees where the overall signal is weak. Trees with very clear, significant splits tend to be more stable, and in more stable trees the addition of `permute=TRUE`` does not tend to substantially shorten confidence intervals. 
 
 
 # Inference for the entire tree
@@ -112,7 +112,7 @@ treeval.plot(bls.tree, permute=TRUE)
 ```
 
 
-There are many ways to customize this plot. If the default version is too congested, alternate values of ``inferenceType`` can be provided to customize how much information is displayed. Addional arguements provided will be passed on to ```rpart.plot()``. For example,
+There are many ways to customize this plot. If the default version is too congested, alternate values of ``inferenceType`` can be provided to customize how much information is displayed. Addional arguments provided will be passed on to ```rpart.plot()``. For example,
 
 ```{r,dpi=300, out.width="90%"}
 treeval.plot(bls.tree, inferenceType=1, cex=0.5, printn=FALSE)
