@@ -65,7 +65,7 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
 #' repeatedly by different calls of treeval.plot
 #'
 #' @param tree The tree that you will be plotting.
-#' @param sigma_y The standard deviation of the response. If known, should be provided. Otherwise, a convervative estiamte (the sample
+#' @param sigma_y The standard deviation of the response. If known, should be provided. Otherwise, a convervative estimate (the sample
 #' standard deviation of the response) is used.
 #' @param CI Boolean. Should confidence intervals be computed? As confidence intervals are inefficient to compute, this should be set to
 #' ``FALSE`` if you intend to make a plot that does not display confidence intervals.
