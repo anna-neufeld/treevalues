@@ -7,7 +7,7 @@
 getInterval(tree, nu, branch, sib = FALSE, grow = FALSE, prune = FALSE)
 }
 \arguments{
-\item{tree}{An rpart object. Must have been built with model=TRUE arguement.}
+\item{tree}{An rpart object. Must have been built with model=TRUE argument.}
 
 \item{nu}{The contrast vector that defines the parameter.}
 

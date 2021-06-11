@@ -3,7 +3,7 @@ What is treevalues?
 
 The ``treevalues`` R package computes confidence intervals and p-values for the mean response within a region or the difference in mean response between two regions in a CART regression tree (built using the package ``rpart``). 
 
-Because the regions in a regression tree are selected using the data, we cannot naively "double dip" in the same data to do inference on the meains within these regions. 
+Because the regions in a regression tree are selected using the data, we cannot naively "double dip" in the same data to do inference on the means within these regions. 
 
 The ``treevalues`` package implements a selective inference approach to conduct inference without double dipping in the data. 
 
@@ -24,7 +24,7 @@ See the [overview](https://anna-neufeld.github.io/treevalues/articles/overview.h
 
 See [???](???) for the preprint that describes the selective inference methodology. 
 
-See [https://github.com/anna-neufeld/treevalues-simulations](https://github.com/anna-neufeld/treevalues-simulations) for code to reproduce the experiements and figures in the preprint. 
+See [https://github.com/anna-neufeld/treevalues-simulations](https://github.com/anna-neufeld/treevalues-simulations) for code to reproduce the experiments and figures in the preprint. 
 
 
 

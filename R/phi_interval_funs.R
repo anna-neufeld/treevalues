@@ -3,7 +3,7 @@
 #' Returns the interval for phi such that Tree(y'(phi)) (where the definition of y'(phi) depends on nu)
 #' contains the series of branch "branch". An rpart object build with model=TRUE must be provided.
 #'
-#' @param tree An rpart object. Must have been built with model=TRUE arguement.
+#' @param tree An rpart object. Must have been built with model=TRUE argument.
 #' @param nu The contrast vector that defines the parameter.
 #' @param branch A vector of strings specifying the branch.
 #' @param sib If you are doing inference and nu=nu_sib, this takes advantage of some computational speedups!
