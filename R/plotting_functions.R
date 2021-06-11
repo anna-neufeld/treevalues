@@ -20,7 +20,7 @@
 #' @param permute If inferenceType is such that confidence intervals will be printed, should the conditioning set for the confidence intervals include
 #' all permutations of the relevant branch? Setting this to TRUE will lead to slightly narrower confidence intervals, but will make computations more expensive.
 #' See paper for more details.
-#' @param ... Additional arguements are passed on to rpart.plot(). Examples include "cex".
+#' @param ... Additional arguments are passed on to rpart.plot(). Examples include "cex".
 #' @importFrom intervals interval_union
 #' @importFrom intervals interval_complement
 #' @importFrom rpart rpart
@@ -65,7 +65,7 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
 #' repeatedly by different calls of treeval.plot
 #'
 #' @param tree The tree that you will be plotting.
-#' @param sigma_y The standard deviation of the response. If known, should be provided. Otherwise, a convervative estimate (the sample
+#' @param sigma_y The standard deviation of the response. If known, should be provided. Otherwise, a conservative estimate (the sample
 #' standard deviation of the response) is used.
 #' @param CI Boolean. Should confidence intervals be computed? As confidence intervals are inefficient to compute, this should be set to
 #' ``FALSE`` if you intend to make a plot that does not display confidence intervals.
