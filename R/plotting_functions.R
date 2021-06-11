@@ -59,7 +59,7 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
 
 #' This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.
 #'
-#' This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. Ths function is called internally by ``treeval.plot``,
+#' This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. This function is called internally by ``treeval.plot``,
 #' as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed by ``treeval.plot()``. If you will be
 #' making several plots while playing around with font size and formatting, it is a good idea to call this function first so that it need not be called
 #' repeatedly by different calls of treeval.plot

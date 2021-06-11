@@ -293,7 +293,7 @@ isSameIntervals <- function(int1, int2) {
 
 # return selective ci for v^T mu (i.e. a single parameter)
 
-#' Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+#' Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 #' Outference package, available at https://github.com/shuxiaoc/outference.
 #' @export
 #'
