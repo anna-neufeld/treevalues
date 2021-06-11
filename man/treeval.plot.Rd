@@ -43,7 +43,7 @@ formatting tweaks.}
 all permutations of the relevant branch? Setting this to TRUE will lead to slightly narrower confidence intervals, but will make computations more expensive.
 See paper for more details.}
 
-\item{...}{Additional arguements are passed on to rpart.plot(). Examples include "cex".}
+\item{...}{Additional arguments are passed on to rpart.plot(). Examples include "cex".}
 }
 \description{
 This function allows users to plot their rpart object with all splits labeled with p-values and all nodes

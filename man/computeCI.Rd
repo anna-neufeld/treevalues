@@ -2,7 +2,7 @@
 % Please edit documentation in R/conf_int_funs.R
 \name{computeCI}
 \alias{computeCI}
-\title{Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+\title{Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 Outference package, available at https://github.com/shuxiaoc/outference.}
 \usage{
 computeCI(v, y, sigma = NULL, truncation, alpha = 0.05)
@@ -24,6 +24,6 @@ Computes a confidence interval for the mean of a truncated normal distribution.}
 This function returns a vector of lower and upper confidence limits.
 }
 \description{
-Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modiication of code found in the
+Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 Outference package, available at https://github.com/shuxiaoc/outference.
 }

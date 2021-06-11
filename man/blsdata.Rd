@@ -41,7 +41,7 @@ blsdata
 }
 \description{
 This dataset was originally made public in the R package visTree (Venkatasubramaniam and Wolfson, 2018). The covariates of interest are
-laboratory- and questionairre-based measures of eating habits and attitudes towards food. The response is the average number of calories consumed
+laboratory- and questionnairre-based measures of eating habits and attitudes towards food. The response is the average number of calories consumed
 in a 24 hour period. This data comes from the baseline measurements of the Box Lunch Study (French et al., 2014)
 }
 \examples{
