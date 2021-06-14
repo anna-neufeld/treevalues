@@ -10,7 +10,7 @@
 #' @param sigma_y Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
 #' as a conservative estimate.
 #' @param nn boolean- would you like node numbers to be printed? Nodes are numbered using the same methodology as the \code{rpart} package. If node \code{n} has children,
-#' its children are numered \code{2n} and \code{2n+1}.
+#' its children are numbered \code{2n} and \code{2n+1}.
 #' @param printn boolean - would you like the number of observations to be printed in each node?
 #' @param inferenceType An integer specifying which pieces of inference information should be added to the plot. The options
 #' currently available are

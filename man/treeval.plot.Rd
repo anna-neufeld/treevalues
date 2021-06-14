@@ -24,7 +24,7 @@ treeval.plot(
 as a conservative estimate.}
 
 \item{nn}{boolean- would you like node numbers to be printed? Nodes are numbered using the same methodology as the \code{rpart} package. If node \code{n} has children,
-its children are numered \code{2n} and \code{2n+1}.}
+its children are numbered \code{2n} and \code{2n+1}.}
 
 \item{printn}{boolean - would you like the number of observations to be printed in each node?}
 
