@@ -6,10 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.
-This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations. — computeCI • treevalues</title>
+<title>Return selective confidence interval for v^T mu (a single parameter). — computeCI • treevalues</title>
 
 
 <!-- jquery -->
@@ -42,14 +39,11 @@ needed by most users (it is called internally by ``branchInference``), but is ne
 
 
 
-<meta property="og:title" content="Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.
-This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations. — computeCI" />
+<meta property="og:title" content="Return selective confidence interval for v^T mu (a single parameter). — computeCI" />
 <meta property="og:description" content="Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 Outference package, available at https://github.com/shuxiaoc/outference.
 This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations." />
+needed by most users (it is called internally by branchInference), but is needed to reproduce our paper simulations." />
 
 
 
@@ -97,9 +91,6 @@ needed by most users (it is called internally by ``branchInference``), but is ne
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-<li>
   <a></a>
 </li>
       </ul>
@@ -123,10 +114,7 @@ needed by most users (it is called internally by ``branchInference``), but is ne
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.
-This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.</h1>
+    <h1>Return selective confidence interval for v^T mu (a single parameter).</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/conf_int_funs.R'><code>R/conf_int_funs.R</code></a></small>
     <div class="hidden name"><code>computeCI.Rd</code></div>
     </div>
@@ -135,7 +123,7 @@ needed by most users (it is called internally by ``branchInference``), but is ne
     <p>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 Outference package, available at https://github.com/shuxiaoc/outference.
 This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.</p>
+needed by most users (it is called internally by <code>branchInference</code>), but is needed to reproduce our paper simulations.</p>
     </div>
 
     <pre class="usage"><span class='fu'>computeCI</span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>y</span>, sigma <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>truncation</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span></pre>

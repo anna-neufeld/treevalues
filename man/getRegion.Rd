@@ -2,8 +2,7 @@
 % Please edit documentation in R/user_funs.R
 \name{getRegion}
 \alias{getRegion}
-\title{Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
-belong to the given region.}
+\title{Get observations belonging to a region in \code{tree}.}
 \usage{
 getRegion(tree, nn)
 }
@@ -16,7 +15,9 @@ getRegion(tree, nn)
 The indices of data that belong to this region in the training set. The training set is stored in tree$model.
 }
 \description{
-Mainly used to form vectors nu to define parameters from a given tree. Since this is called internally by ``branchInference()``,
+Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
+belong to the given region.
+Mainly used to form vectors nu to define parameters from a given tree. Since this is called internally by \code{branchInference()},
 will rarely be needed directly by users.
 }
 \examples{

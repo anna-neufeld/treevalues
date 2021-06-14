@@ -8,9 +8,9 @@
 #' which accomplishes a similar task. Code modified from code found at
 #' https://github.com/shuxiaoc/outference.
 #' This function shouldn't be
-#' needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.
+#' needed by most users (it is called internally by \code{branchInference()}), but is needed to reproduce our paper simulations.
 #'
-#' @param phiInterval the conditioning set (truncation interval). An object of class "Interval", where the rows represent the union of
+#' @param phiInterval the conditioning set (truncation interval). An object of class \code{Interval}, where the rows represent the union of
 #' disjoint intervals on the real line.
 #' @param nu the vector that defines the parameter of interest. We are testing the hypothesis that nu^T mu = 0.
 #' @param y the response data y.

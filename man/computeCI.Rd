@@ -2,10 +2,7 @@
 % Please edit documentation in R/conf_int_funs.R
 \name{computeCI}
 \alias{computeCI}
-\title{Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.
-This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.}
+\title{Return selective confidence interval for v^T mu (a single parameter).}
 \usage{
 computeCI(v, y, sigma = NULL, truncation, alpha = 0.05)
 }
@@ -29,7 +26,7 @@ This function returns a vector of lower and upper confidence limits.
 Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 Outference package, available at https://github.com/shuxiaoc/outference.
 This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.
+needed by most users (it is called internally by \code{branchInference}), but is needed to reproduce our paper simulations.
 }
 \examples{
 data(blsdata, package="treevalues")

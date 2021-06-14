@@ -41,8 +41,9 @@
 
 <meta property="og:title" content="Workhorse function for computing conditioning sets. — getInterval" />
 <meta property="og:description" content="Returns the interval for phi such that Tree(y'(phi,nu))
-contains the set of regions induced by branch ``branch``. An rpart object built with ``model=TRUE`` must be provided. This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations." />
+contains the set of regions induced by branch branch. An rpart object built with
+model=TRUE must be provided. This function shouldn't be
+needed by most users (it is called internally by branchInference), but is needed to reproduce our paper simulations." />
 
 
 
@@ -90,9 +91,6 @@ needed by most users (it is called internally by ``branchInference``), but is ne
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-<li>
   <a></a>
 </li>
       </ul>
@@ -123,8 +121,9 @@ needed by most users (it is called internally by ``branchInference``), but is ne
 
     <div class="ref-description">
     <p>Returns the interval for phi such that Tree(y'(phi,nu))
-contains the set of regions induced by branch ``branch``. An rpart object built with ``model=TRUE`` must be provided. This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.</p>
+contains the set of regions induced by branch <code>branch</code>. An rpart object built with
+<code>model=TRUE</code> must be provided. This function shouldn't be
+needed by most users (it is called internally by <code>branchInference</code>), but is needed to reproduce our paper simulations.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getInterval</span><span class='op'>(</span><span class='va'>tree</span>, <span class='va'>nu</span>, <span class='va'>branch</span>, sib <span class='op'>=</span> <span class='cn'>FALSE</span>, grow <span class='op'>=</span> <span class='cn'>FALSE</span>, prune <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -134,7 +133,7 @@ needed by most users (it is called internally by ``branchInference``), but is ne
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>tree</th>
-      <td><p>An rpart object. Must have been built with ``model=TRUE`` argument.</p></td>
+      <td><p>An rpart object. Must have been built with <code>model=TRUE</code> argument.</p></td>
     </tr>
     <tr>
       <th>nu</th>
@@ -167,7 +166,6 @@ needed by most users (it is called internally by ``branchInference``), but is ne
 <span class='va'>bls.tree</span> <span class='op'>&lt;-</span><span class='fu'>rpart</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rpart/man/rpart.html'>rpart</a></span><span class='op'>(</span><span class='va'>kcal24h0</span><span class='op'>~</span><span class='va'>hunger</span><span class='op'>+</span><span class='va'>disinhibition</span><span class='op'>+</span><span class='va'>resteating</span><span class='op'>+</span><span class='va'>rrvfood</span><span class='op'>+</span><span class='va'>liking</span><span class='op'>+</span><span class='va'>wanting</span>,
       model <span class='op'>=</span> <span class='cn'>TRUE</span>, data <span class='op'>=</span> <span class='va'>blsdata</span>, cp<span class='op'>=</span><span class='fl'>0.02</span><span class='op'>)</span>
 <span class='va'>branch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getBranch.html'>getBranch</a></span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>full_result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='branchInference.html'>branchInference</a></span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='va'>branch</span>, type<span class='op'>=</span><span class='st'>"sib"</span><span class='op'>)</span>
 <span class='va'>left_child</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getRegion.html'>getRegion</a></span><span class='op'>(</span><span class='va'>bls.tree</span>,<span class='fl'>2</span><span class='op'>)</span>
 <span class='va'>right_child</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getRegion.html'>getRegion</a></span><span class='op'>(</span><span class='va'>bls.tree</span>,<span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>nu_sib</span> <span class='op'>&lt;-</span> <span class='va'>left_child</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>left_child</span><span class='op'>)</span> <span class='op'>-</span>  <span class='va'>right_child</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>right_child</span><span class='op'>)</span>
@@ -176,7 +174,7 @@ needed by most users (it is called internally by ``branchInference``), but is ne
 </div><div class='output co'>#&gt; Object of class Intervals
 #&gt; 2 intervals over R:
 #&gt; (-Inf, -980.709890684641)
-#&gt; (1591.88198272855, Inf)</div><div class='input'><span class='va'>full_result</span><span class='op'>$</span><span class='va'>condset</span>
+#&gt; (1591.88198272855, Inf)</div><div class='input'><span class='fu'><a href='branchInference.html'>branchInference</a></span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='va'>branch</span>, type<span class='op'>=</span><span class='st'>"sib"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>condset</span>
 </div><div class='output co'>#&gt; Object of class Intervals
 #&gt; 2 intervals over R:
 #&gt; (-Inf, -980.709890684641)

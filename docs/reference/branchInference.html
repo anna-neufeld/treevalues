@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region. — branchInference • treevalues</title>
+<title>Main function for carrying out inference on an rpart regression tree. — branchInference • treevalues</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ carry out inference on a pair of sibling regions or on a single region. — bran
 
 
 
-<meta property="og:title" content="The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region. — branchInference" />
-<meta property="og:description" content="The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region." />
+<meta property="og:title" content="Main function for carrying out inference on an rpart regression tree. — branchInference" />
+<meta property="og:description" content="Can be used to carry out inference on a pair of sibling regions or on a single region." />
 
 
 
@@ -91,9 +88,6 @@ carry out inference on a pair of sibling regions or on a single region." />
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-<li>
   <a></a>
 </li>
       </ul>
@@ -117,15 +111,13 @@ carry out inference on a pair of sibling regions or on a single region." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region.</h1>
+    <h1>Main function for carrying out inference on an <code>rpart</code> regression tree.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/user_funs.R'><code>R/user_funs.R</code></a></small>
     <div class="hidden name"><code>branchInference.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region.</p>
+    <p>Can be used to carry out inference on a pair of sibling regions or on a single region.</p>
     </div>
 
     <pre class="usage"><span class='fu'>branchInference</span><span class='op'>(</span>
@@ -144,23 +136,23 @@ carry out inference on a pair of sibling regions or on a single region.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>tree</th>
-      <td><p>An ``rpart`` object corresponding to the tree that you wish to do inference on. This tree must have been built
-with ``rpart`` parameter ``model=TRUE``.</p></td>
+      <td><p>An <code>rpart</code> object corresponding to the tree that you wish to do inference on. This tree must have been built
+with <code>rpart</code> parameter <code>model=TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>branch</th>
       <td><p>A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
-``getBranch()``. Must actually correspond to a branch in ``tree``.</p></td>
+`getBranch()`. Must actually correspond to a branch in <code>tree</code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
+      <td><p>A string that should be set to either <code>"reg"</code> (default) or <code>"sib"</code>. This specifies whether you are doing
 inference on the mean of single region at the end of this branch ("reg"), or doing inference on the difference
 between this region and its sibling.</p></td>
     </tr>
     <tr>
       <th>alpha</th>
-      <td><p>Function will compute an equi-tailed (1-alpha) confidence interval. Default is 0.05.</p></td>
+      <td><p>Function will compute an equi-tailed <code>(1-alpha)</code> confidence interval. Default is <code>0.05</code>.</p></td>
     </tr>
     <tr>
       <th>sigma_y</th>
@@ -179,16 +171,16 @@ p-values, and so if you only wish to see a p-value you may want to set this to b
     </tr>
     <tr>
       <th>permute</th>
-      <td><p>Boolean. Only relevant if type="reg". If ``FALSE`` (default), inference is conducted conditional on the event that this exact branch
-appeared in the tree. If ``TRUE``, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
+      <td><p>Boolean. Only relevant if type="reg". If <code>FALSE</code> (default), inference is conducted conditional on the event that this exact branch
+appeared in the tree. If <code>TRUE</code>, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
 latter achieves higher power, it can be computationally prohibitive in large trees.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class ``branch_inference`` that contains a confidence interval, a p-value,
-the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".</p>
+    <p>An object of class <code>branch_inference</code> that contains a confidence interval, a p-value,
+the sample statistic, the conditioning set, and a flag reminding the user if <code>type="reg"</code> or <code>type="sib"</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>bls.tree</span> <span class='op'>&lt;-</span> <span class='fu'>rpart</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rpart/man/rpart.html'>rpart</a></span><span class='op'>(</span><span class='va'>kcal24h0</span><span class='op'>~</span><span class='va'>hunger</span><span class='op'>+</span><span class='va'>disinhibition</span><span class='op'>+</span><span class='va'>resteating</span><span class='op'>+</span><span class='va'>rrvfood</span><span class='op'>+</span><span class='va'>liking</span><span class='op'>+</span><span class='va'>wanting</span>,

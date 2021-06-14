@@ -2,8 +2,7 @@
 % Please edit documentation in R/user_funs.R
 \name{branchInference}
 \alias{branchInference}
-\title{The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region.}
+\title{Main function for carrying out inference on an \code{rpart} regression tree.}
 \usage{
 branchInference(
   tree,
@@ -17,17 +16,17 @@ branchInference(
 )
 }
 \arguments{
-\item{tree}{An ``rpart`` object corresponding to the tree that you wish to do inference on. This tree must have been built
-with ``rpart`` parameter ``model=TRUE``.}
+\item{tree}{An \code{rpart} object corresponding to the tree that you wish to do inference on. This tree must have been built
+with \code{rpart} parameter \code{model=TRUE}.}
 
 \item{branch}{A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
-``getBranch()``. Must actually correspond to a branch in ``tree``.}
+`getBranch()`. Must actually correspond to a branch in \code{tree}.}
 
-\item{type}{A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
+\item{type}{A string that should be set to either \code{"reg"} (default) or \code{"sib"}. This specifies whether you are doing
 inference on the mean of single region at the end of this branch ("reg"), or doing inference on the difference
 between this region and its sibling.}
 
-\item{alpha}{Function will compute an equi-tailed (1-alpha) confidence interval. Default is 0.05.}
+\item{alpha}{Function will compute an equi-tailed \code{(1-alpha)} confidence interval. Default is \code{0.05}.}
 
 \item{sigma_y}{The true standard deviation of the response. If known, this should be passed in. Otherwise, the sample standard deviation
 will be used as a conservative estimate.}
@@ -38,17 +37,16 @@ input.}
 \item{computeCI}{Boolean that specifies if you would like a confidence interval to be computed. Confidence intervals are much slower to compute than
 p-values, and so if you only wish to see a p-value you may want to set this to be false.}
 
-\item{permute}{Boolean. Only relevant if type="reg". If ``FALSE`` (default), inference is conducted conditional on the event that this exact branch
-appeared in the tree. If ``TRUE``, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
+\item{permute}{Boolean. Only relevant if type="reg". If \code{FALSE} (default), inference is conducted conditional on the event that this exact branch
+appeared in the tree. If \code{TRUE}, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
 latter achieves higher power, it can be computationally prohibitive in large trees.}
 }
 \value{
-An object of class ``branch_inference`` that contains a confidence interval, a p-value,
-the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
+An object of class \code{branch_inference} that contains a confidence interval, a p-value,
+the sample statistic, the conditioning set, and a flag reminding the user if \code{type="reg"} or \code{type="sib"}.
 }
 \description{
-The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region.
+Can be used to carry out inference on a pair of sibling regions or on a single region.
 }
 \examples{
 bls.tree <- rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,

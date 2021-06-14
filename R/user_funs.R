@@ -1,25 +1,26 @@
-#' The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-#' carry out inference on a pair of sibling regions or on a single region.
+#' Main function for carrying out inference on an \code{rpart} regression tree.
 #'
-#' @param tree An ``rpart`` object corresponding to the tree that you wish to do inference on. This tree must have been built
-#' with ``rpart`` parameter ``model=TRUE``.
+#' Can be used to carry out inference on a pair of sibling regions or on a single region.
+#'
+#' @param tree An \code{rpart} object corresponding to the tree that you wish to do inference on. This tree must have been built
+#' with \code{rpart} parameter \code{model=TRUE}.
 #' @param branch A vector of splits describing the branch that you wish to do inference on. You should obtain this using the function
-#' ``getBranch()``. Must actually correspond to a branch in ``tree``.
-#' @param type A string that should be set to either "reg" (default) or "sib". This specifies whether you are doing
+#' `getBranch()`. Must actually correspond to a branch in \code{tree}.
+#' @param type A string that should be set to either \code{"reg"} (default) or \code{"sib"}. This specifies whether you are doing
 #' inference on the mean of single region at the end of this branch ("reg"), or doing inference on the difference
 #' between this region and its sibling.
-#' @param alpha Function will compute an equi-tailed (1-alpha) confidence interval. Default is 0.05.
+#' @param alpha Function will compute an equi-tailed \code{(1-alpha)} confidence interval. Default is \code{0.05}.
 #' @param sigma_y The true standard deviation of the response. If known, this should be passed in. Otherwise, the sample standard deviation
 #' will be used as a conservative estimate.
 #' @param c The p-value returned will test the null hypothesis that the parameter of interest is equal to c. Currently, only c=0 is a valid
 #' input.
 #' @param computeCI Boolean that specifies if you would like a confidence interval to be computed. Confidence intervals are much slower to compute than
 #' p-values, and so if you only wish to see a p-value you may want to set this to be false.
-#' @param permute Boolean. Only relevant if type="reg". If ``FALSE`` (default), inference is conducted conditional on the event that this exact branch
-#' appeared in the tree. If ``TRUE``, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
+#' @param permute Boolean. Only relevant if type="reg". If \code{FALSE} (default), inference is conducted conditional on the event that this exact branch
+#' appeared in the tree. If \code{TRUE}, inference is conducted conditional on the event that some permutation of this branch appeared in the tree. While the
 #' latter achieves higher power, it can be computationally prohibitive in large trees.
-#' @return An object of class ``branch_inference`` that contains a confidence interval, a p-value,
-#' the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".
+#' @return An object of class \code{branch_inference} that contains a confidence interval, a p-value,
+#' the sample statistic, the conditioning set, and a flag reminding the user if \code{type="reg"} or \code{type="sib"}.
 #' @export
 #' @importFrom intervals Intervals
 #' @importFrom intervals size
@@ -159,7 +160,7 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
   return(out)
 }
 
-#' Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.
+#' Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to \code{branchInference()}.
 #'
 #' @param tree An rpart object. Must have been built with model=TRUE
 #' @return A list. Each entry corresponds to a branch in the tree. The entries are named with the node-number of the node that falls at the end of the branch.
@@ -218,14 +219,15 @@ getAllBranches <- function(tree) {
   return(allSplits)
 }
 
-#' Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
+#' Get branch or list of branches from tree.
 #'
+#' Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
 #' If no node number is provided, returns a list describing every branch in the tree.
-#' Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.
+#' Useful for extracting individual branches, which are necessary inputs to \code{branchInference()}.
 #'
 #' @param tree An rpart object.
-#' @param nn A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
-#' ``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot()``. The node number can be passed in as
+#' @param nn A node number that corresponds to a valid node in \code{tree}. The list of valid node numbers can be obtained with
+#' \code{row.names(tree$frame)} or by plotting \code{tree} with \code{treeval.plot()}. The node number can be passed in as
 #' either a character string or an integer. If no node number is provided, a list of all branches in the tree will be returned.
 #' @return Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 #' @export
@@ -242,10 +244,11 @@ getBranch <- function(tree, nn=NULL) {
 }
 
 
+#' Get observations belonging to a region in \code{tree}.
+#'
 #' Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
 #' belong to the given region.
-#'
-#' Mainly used to form vectors nu to define parameters from a given tree. Since this is called internally by ``branchInference()``,
+#' Mainly used to form vectors nu to define parameters from a given tree. Since this is called internally by \code{branchInference()},
 #' will rarely be needed directly by users.
 #'
 #' @param tree An rpart object. Must have been built with model=TRUE

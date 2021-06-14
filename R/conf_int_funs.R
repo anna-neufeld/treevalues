@@ -292,12 +292,12 @@ isSameIntervals <- function(int1, int2) {
 
 # ----- computing the confidence intervals -----
 
-# return selective ci for v^T mu (i.e. a single parameter)
-
+#' Return selective confidence interval for v^T mu (a single parameter).
+#'
 #' Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 #' Outference package, available at https://github.com/shuxiaoc/outference.
 #' This function shouldn't be
-#' needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.
+#' needed by most users (it is called internally by \code{branchInference}), but is needed to reproduce our paper simulations.
 #' @export
 #'
 #' @param truncation, the truncation set for the statistic v'y.

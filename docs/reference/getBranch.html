@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node. — getBranch • treevalues</title>
+<title>Get branch or list of branches from tree. — getBranch • treevalues</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node. — getBranch" />
-<meta property="og:description" content="If no node number is provided, returns a list describing every branch in the tree.
-Useful for extracting individual branches, which are necessary inputs to ``branchInference()``." />
+<meta property="og:title" content="Get branch or list of branches from tree. — getBranch" />
+<meta property="og:description" content="Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
+If no node number is provided, returns a list describing every branch in the tree.
+Useful for extracting individual branches, which are necessary inputs to branchInference()." />
 
 
 
@@ -89,9 +90,6 @@ Useful for extracting individual branches, which are necessary inputs to ``branc
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-<li>
   <a></a>
 </li>
       </ul>
@@ -115,14 +113,15 @@ Useful for extracting individual branches, which are necessary inputs to ``branc
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.</h1>
+    <h1>Get branch or list of branches from tree.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/user_funs.R'><code>R/user_funs.R</code></a></small>
     <div class="hidden name"><code>getBranch.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>If no node number is provided, returns a list describing every branch in the tree.
-Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.</p>
+    <p>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
+If no node number is provided, returns a list describing every branch in the tree.
+Useful for extracting individual branches, which are necessary inputs to <code><a href='branchInference.html'>branchInference()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getBranch</span><span class='op'>(</span><span class='va'>tree</span>, nn <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -136,8 +135,8 @@ Useful for extracting individual branches, which are necessary inputs to ``branc
     </tr>
     <tr>
       <th>nn</th>
-      <td><p>A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
-``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot()``. The node number can be passed in as
+      <td><p>A node number that corresponds to a valid node in <code>tree</code>. The list of valid node numbers can be obtained with
+<code><a href='https://rdrr.io/r/base/row.names.html'>row.names(tree$frame)</a></code> or by plotting <code>tree</code> with <code><a href='treeval.plot.html'>treeval.plot()</a></code>. The node number can be passed in as
 either a character string or an integer. If no node number is provided, a list of all branches in the tree will be returned.</p></td>
     </tr>
     </table>

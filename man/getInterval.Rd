@@ -7,7 +7,7 @@
 getInterval(tree, nu, branch, sib = FALSE, grow = FALSE, prune = FALSE)
 }
 \arguments{
-\item{tree}{An rpart object. Must have been built with ``model=TRUE`` argument.}
+\item{tree}{An rpart object. Must have been built with \code{model=TRUE} argument.}
 
 \item{nu}{The vector that defines the parameter nu^T mu.}
 
@@ -24,19 +24,19 @@ an object of class Interval that defines the set S.
 }
 \description{
 Returns the interval for phi such that Tree(y'(phi,nu))
-contains the set of regions induced by branch ``branch``. An rpart object built with ``model=TRUE`` must be provided. This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.
+contains the set of regions induced by branch \code{branch}. An rpart object built with
+\code{model=TRUE} must be provided. This function shouldn't be
+needed by most users (it is called internally by \code{branchInference}), but is needed to reproduce our paper simulations.
 }
 \examples{
 data(blsdata, package="treevalues")
 bls.tree <-rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
       model = TRUE, data = blsdata, cp=0.02)
 branch <- getBranch(bls.tree, 2)
-full_result <- branchInference(bls.tree, branch, type="sib")
 left_child <- getRegion(bls.tree,2)
 right_child <- getRegion(bls.tree,3)
 nu_sib <- left_child/sum(left_child) -  right_child/sum(right_child)
 S_sib <- getInterval(bls.tree, nu_sib,branch)
 S_sib
-full_result$condset
+branchInference(bls.tree, branch, type="sib")$condset
 }

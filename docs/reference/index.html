@@ -87,9 +87,6 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-<li>
   <a></a>
 </li>
       </ul>
@@ -141,14 +138,13 @@
         <td>
           <p><code><a href="branchInference.html">branchInference()</a></code> </p>
         </td>
-        <td><p>The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
-carry out inference on a pair of sibling regions or on a single region.</p></td>
+        <td><p>Main function for carrying out inference on an <code>rpart</code> regression tree.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="treeval.plot.html">treeval.plot()</a></code> </p>
         </td>
-        <td><p>This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
+        <td><p>Plot an rpart object with all splits labeled with p-values and all nodes
 labeled with confidence intervals.</p></td>
       </tr><tr>
         
@@ -161,7 +157,7 @@ labeled with confidence intervals.</p></td>
         <td>
           <p><code><a href="getBranch.html">getBranch()</a></code> </p>
         </td>
-        <td><p>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.</p></td>
+        <td><p>Get branch or list of branches from tree.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -180,8 +176,7 @@ labeled with confidence intervals.</p></td>
         <td>
           <p><code><a href="getRegion.html">getRegion()</a></code> </p>
         </td>
-        <td><p>Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
-belong to the given region.</p></td>
+        <td><p>Get observations belonging to a region in <code>tree</code>.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -212,10 +207,7 @@ belong to the given region.</p></td>
         <td>
           <p><code><a href="computeCI.html">computeCI()</a></code> </p>
         </td>
-        <td><p>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.
-This function shouldn't be
-needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.</p></td>
+        <td><p>Return selective confidence interval for v^T mu (a single parameter).</p></td>
       </tr>
     </tbody>
     </table>
