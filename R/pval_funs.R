@@ -2,7 +2,7 @@
 #### written by Shuxiao Chen.
 ### The code and the documentation can be found at https://github.com/shuxiaoc/outference.
 
-#' Get a pvalue for a selective Z-test using a truncated normal distribution.
+#' Get a pvalue for a selective Z-test using a truncated normal distribution. Not typically needed by users.
 #'
 #' Based on the similar function from the Outference package,
 #' which accomplishes a similar task. Code modified from code found at

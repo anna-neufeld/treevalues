@@ -2,7 +2,7 @@
 % Please edit documentation in R/conf_int_funs.R
 \name{computeCI}
 \alias{computeCI}
-\title{Return selective confidence interval for v^T mu (a single parameter).}
+\title{Return selective confidence interval for v^T mu (a single parameter). Not typically needed by users.}
 \usage{
 computeCI(v, y, sigma = NULL, truncation, alpha = 0.05)
 }

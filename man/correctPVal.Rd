@@ -2,7 +2,7 @@
 % Please edit documentation in R/pval_funs.R
 \name{correctPVal}
 \alias{correctPVal}
-\title{Get a pvalue for a selective Z-test using a truncated normal distribution.}
+\title{Get a pvalue for a selective Z-test using a truncated normal distribution. Not typically needed by users.}
 \usage{
 correctPVal(phiInterval, nu, y, sigma)
 }
