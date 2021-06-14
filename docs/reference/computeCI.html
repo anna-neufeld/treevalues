@@ -7,7 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference. — computeCI • treevalues</title>
+Outference package, available at https://github.com/shuxiaoc/outference.
+This function shouldn't be
+needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations. — computeCI • treevalues</title>
 
 
 <!-- jquery -->
@@ -41,9 +43,13 @@ Outference package, available at https://github.com/shuxiaoc/outference. — com
 
 
 <meta property="og:title" content="Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference. — computeCI" />
+Outference package, available at https://github.com/shuxiaoc/outference.
+This function shouldn't be
+needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations. — computeCI" />
 <meta property="og:description" content="Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference." />
+Outference package, available at https://github.com/shuxiaoc/outference.
+This function shouldn't be
+needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations." />
 
 
 
@@ -91,6 +97,9 @@ Outference package, available at https://github.com/shuxiaoc/outference." />
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../news/index.html">Changelog</a>
+</li>
+<li>
   <a></a>
 </li>
       </ul>
@@ -115,14 +124,18 @@ Outference package, available at https://github.com/shuxiaoc/outference." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.</h1>
+Outference package, available at https://github.com/shuxiaoc/outference.
+This function shouldn't be
+needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/conf_int_funs.R'><code>R/conf_int_funs.R</code></a></small>
     <div class="hidden name"><code>computeCI.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.</p>
+Outference package, available at https://github.com/shuxiaoc/outference.
+This function shouldn't be
+needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.</p>
     </div>
 
     <pre class="usage"><span class='fu'>computeCI</span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>y</span>, sigma <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>truncation</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span></pre>
@@ -158,6 +171,20 @@ Computes a confidence interval for the mean of a truncated normal distribution.<
 
     <p>This function returns a vector of lower and upper confidence limits.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>blsdata</span>, package<span class='op'>=</span><span class='st'>"treevalues"</span><span class='op'>)</span>
+<span class='va'>bls.tree</span> <span class='op'>&lt;-</span> <span class='fu'>rpart</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rpart/man/rpart.html'>rpart</a></span><span class='op'>(</span><span class='va'>kcal24h0</span><span class='op'>~</span><span class='va'>hunger</span><span class='op'>+</span><span class='va'>disinhibition</span><span class='op'>+</span><span class='va'>resteating</span><span class='op'>+</span><span class='va'>rrvfood</span><span class='op'>+</span><span class='va'>liking</span><span class='op'>+</span><span class='va'>wanting</span>,
+    model <span class='op'>=</span> <span class='cn'>TRUE</span>, data <span class='op'>=</span> <span class='va'>blsdata</span>, cp<span class='op'>=</span><span class='fl'>0.02</span><span class='op'>)</span>
+<span class='va'>branch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getBranch.html'>getBranch</a></span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>full_result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='branchInference.html'>branchInference</a></span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='va'>branch</span>, type<span class='op'>=</span><span class='st'>"sib"</span><span class='op'>)</span>
+<span class='va'>left_child</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getRegion.html'>getRegion</a></span><span class='op'>(</span><span class='va'>bls.tree</span>,<span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>right_child</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getRegion.html'>getRegion</a></span><span class='op'>(</span><span class='va'>bls.tree</span>,<span class='fl'>3</span><span class='op'>)</span>
+<span class='va'>nu_sib</span> <span class='op'>&lt;-</span> <span class='va'>left_child</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>left_child</span><span class='op'>)</span> <span class='op'>-</span>  <span class='va'>right_child</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>right_child</span><span class='op'>)</span>
+<span class='va'>S_sib</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getInterval.html'>getInterval</a></span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='va'>nu_sib</span>,<span class='va'>branch</span><span class='op'>)</span>
+
+<span class='fu'>computeCI</span><span class='op'>(</span><span class='va'>nu_sib</span>, <span class='va'>blsdata</span><span class='op'>$</span><span class='va'>kcal24h0</span>, <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>blsdata</span><span class='op'>$</span><span class='va'>kcal24h0</span><span class='op'>)</span>,<span class='va'>S_sib</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] -1255.5306   340.1185</div><div class='input'><span class='va'>full_result</span><span class='op'>$</span><span class='va'>confint</span>
+</div><div class='output co'>#&gt; [1] -1255.5306   340.1185</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

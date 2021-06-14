@@ -42,8 +42,7 @@ labeled with confidence intervals. — treeval.plot • treevalues</title>
 
 <meta property="og:title" content="This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
 labeled with confidence intervals. — treeval.plot" />
-<meta property="og:description" content="This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
-labeled with confidence intervals." />
+<meta property="og:description" content="By default, node numbers pare printed" />
 
 
 
@@ -91,6 +90,9 @@ labeled with confidence intervals." />
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../news/index.html">Changelog</a>
+</li>
+<li>
   <a></a>
 </li>
       </ul>
@@ -121,8 +123,7 @@ labeled with confidence intervals.</h1>
     </div>
 
     <div class="ref-description">
-    <p>This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
-labeled with confidence intervals.</p>
+    <p>By default, node numbers pare printed</p>
     </div>
 
     <pre class="usage"><span class='fu'>treeval.plot</span><span class='op'>(</span>
@@ -151,7 +152,8 @@ as a conservative estimate.</p></td>
     </tr>
     <tr>
       <th>nn</th>
-      <td><p>boolean- would you like node numbers to be printed?</p></td>
+      <td><p>boolean- would you like node numbers to be printed? Nodes are numbered using the same methodology as the ``rpart`` package. If node ``n``` has children,
+its children are</p></td>
     </tr>
     <tr>
       <th>printn</th>
@@ -188,6 +190,11 @@ See paper for more details.</p></td>
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>bls.tree</span> <span class='op'>&lt;-</span><span class='fu'>rpart</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rpart/man/rpart.html'>rpart</a></span><span class='op'>(</span><span class='va'>kcal24h0</span><span class='op'>~</span><span class='va'>hunger</span><span class='op'>+</span><span class='va'>disinhibition</span><span class='op'>+</span><span class='va'>resteating</span><span class='op'>+</span><span class='va'>rrvfood</span><span class='op'>+</span><span class='va'>liking</span><span class='op'>+</span><span class='va'>wanting</span>,
+    model <span class='op'>=</span> <span class='cn'>TRUE</span>, data <span class='op'>=</span> <span class='va'>blsdata</span>, cp<span class='op'>=</span><span class='fl'>0.02</span><span class='op'>)</span>
+<span class='fu'>treeval.plot</span><span class='op'>(</span><span class='va'>bls.tree</span><span class='op'>)</span>
+</div><div class='img'><img src='treeval.plot-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

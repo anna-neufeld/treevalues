@@ -87,6 +87,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../news/index.html">Changelog</a>
+</li>
+<li>
   <a></a>
 </li>
       </ul>
@@ -159,12 +162,6 @@ labeled with confidence intervals.</p></td>
           <p><code><a href="getBranch.html">getBranch()</a></code> </p>
         </td>
         <td><p>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getAllBranches.html">getAllBranches()</a></code> </p>
-        </td>
-        <td><p>Given an rpart tree, returns a list describing every branch in the tree. Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -179,18 +176,6 @@ labeled with confidence intervals.</p></td>
       
       
       <tr>
-        
-        <td>
-          <p><code><a href="getAnc.html">getAnc()</a></code> </p>
-        </td>
-        <td><p>Returns vector of ancestors in ``tree`` for node ``nn``.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getDesc.html">getDesc()</a></code> </p>
-        </td>
-        <td><p>Returns vector of descendants in ``tree`` for node ``nn``.</p></td>
-      </tr><tr>
         
         <td>
           <p><code><a href="getRegion.html">getRegion()</a></code> </p>
@@ -228,19 +213,9 @@ belong to the given region.</p></td>
           <p><code><a href="computeCI.html">computeCI()</a></code> </p>
         </td>
         <td><p>Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
-Outference package, available at https://github.com/shuxiaoc/outference.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="TNSurv.html">TNSurv()</a></code> </p>
-        </td>
-        <td><p>Survival function of truncated normal distribution. This comes from the Outference Package https://github.com/shuxiaoc/outference.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="TNProb.html">TNProb()</a></code> </p>
-        </td>
-        <td><p>Probability of a standard normal in a union of intervals</p></td>
+Outference package, available at https://github.com/shuxiaoc/outference.
+This function shouldn't be
+needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.</p></td>
       </tr>
     </tbody>
     </table>

@@ -91,6 +91,9 @@ carry out inference on a pair of sibling regions or on a single region." />
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../news/index.html">Changelog</a>
+</li>
+<li>
   <a></a>
 </li>
       </ul>
@@ -187,6 +190,31 @@ latter achieves higher power, it can be computationally prohibitive in large tre
     <p>An object of class ``branch_inference`` that contains a confidence interval, a p-value,
 the sample statistic, the conditioning set, and a flag reminding the user if type="reg" or type="sib".</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>bls.tree</span> <span class='op'>&lt;-</span> <span class='fu'>rpart</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rpart/man/rpart.html'>rpart</a></span><span class='op'>(</span><span class='va'>kcal24h0</span><span class='op'>~</span><span class='va'>hunger</span><span class='op'>+</span><span class='va'>disinhibition</span><span class='op'>+</span><span class='va'>resteating</span><span class='op'>+</span><span class='va'>rrvfood</span><span class='op'>+</span><span class='va'>liking</span><span class='op'>+</span><span class='va'>wanting</span>,
+    model <span class='op'>=</span> <span class='cn'>TRUE</span>, data <span class='op'>=</span> <span class='va'>blsdata</span>, cp<span class='op'>=</span><span class='fl'>0.02</span><span class='op'>)</span>
+<span class='va'>branch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getBranch.html'>getBranch</a></span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='fl'>8</span><span class='op'>)</span>
+<span class='fu'>branchInference</span> <span class='op'>(</span><span class='va'>bls.tree</span>, <span class='va'>branch</span>, type<span class='op'>=</span><span class='st'>"sib"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 
+#&gt; Sample statistic:  -435.6817
+#&gt; 95% confidence interval: -1106.747, 136.5523
+#&gt; Type: sib
+#&gt; p-value for test that param=0: 0.9002555
+#&gt; Conditioning Set: 
+#&gt; Object of class Intervals_full
+#&gt; 2 intervals over R:
+#&gt; (-543.236399481531, -428.125574226105)
+#&gt; (428.125574226104, 929.97322312961)</div><div class='input'><span class='fu'>branchInference</span> <span class='op'>(</span><span class='va'>bls.tree</span>, <span class='va'>branch</span>, type<span class='op'>=</span><span class='st'>"reg"</span>, permute<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 
+#&gt; Sample statistic:  1294.109
+#&gt; 95% confidence interval: 253.7905, 2148.2956
+#&gt; Type: reg
+#&gt; p-value for test that param=0: 0.01663048
+#&gt; Conditioning Set: 
+#&gt; Object of class Intervals_full
+#&gt; 2 intervals over R:
+#&gt; (1224.75070250313, 1301.6652990799)
+#&gt; (2868.72223626769, 3427.28431563896)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

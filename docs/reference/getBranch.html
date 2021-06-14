@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node. — getBranch" />
-<meta property="og:description" content="Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node." />
+<meta property="og:description" content="If no node number is provided, returns a list describing every branch in the tree.
+Useful for extracting individual branches, which are necessary inputs to ``branchInference()``." />
 
 
 
@@ -88,6 +89,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../news/index.html">Changelog</a>
+</li>
+<li>
   <a></a>
 </li>
       </ul>
@@ -117,7 +121,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.</p>
+    <p>If no node number is provided, returns a list describing every branch in the tree.
+Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getBranch</span><span class='op'>(</span><span class='va'>tree</span>, nn <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -141,6 +146,21 @@ either a character string or an integer. If no node number is provided, a list o
 
     <p>Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>bls.tree</span> <span class='op'>&lt;-</span> <span class='fu'>rpart</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rpart/man/rpart.html'>rpart</a></span><span class='op'>(</span><span class='va'>kcal24h0</span><span class='op'>~</span><span class='va'>hunger</span><span class='op'>+</span><span class='va'>disinhibition</span><span class='op'>+</span><span class='va'>resteating</span><span class='op'>+</span><span class='va'>rrvfood</span><span class='op'>+</span><span class='va'>liking</span><span class='op'>+</span><span class='va'>wanting</span>,
+    model <span class='op'>=</span> <span class='cn'>TRUE</span>, data <span class='op'>=</span> <span class='va'>blsdata</span>, cp<span class='op'>=</span><span class='fl'>0.02</span><span class='op'>)</span>
+<span class='va'>branch</span> <span class='op'>&lt;-</span> <span class='fu'>getBranch</span><span class='op'>(</span><span class='va'>bls.tree</span>, <span class='fl'>8</span><span class='op'>)</span>
+<span class='fu'><a href='branchInference.html'>branchInference</a></span> <span class='op'>(</span><span class='va'>bls.tree</span>, <span class='va'>branch</span>, type<span class='op'>=</span><span class='st'>"sib"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 
+#&gt; Sample statistic:  -435.6817
+#&gt; 95% confidence interval: -1106.747, 136.5523
+#&gt; Type: sib
+#&gt; p-value for test that param=0: 0.9002555
+#&gt; Conditioning Set: 
+#&gt; Object of class Intervals_full
+#&gt; 2 intervals over R:
+#&gt; (-543.236399481531, -428.125574226105)
+#&gt; (428.125574226104, 929.97322312961)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
