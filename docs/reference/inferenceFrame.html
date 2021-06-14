@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently. — inferenceFrame • treevalues</title>
+<title>This function can optionally be used prior to running treeval.plot to make treeval.plot run more efficiently. — inferenceFrame • treevalues</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently. — inferenceFrame" />
-<meta property="og:description" content="This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. This function is called internally by ``treeval.plot``,
-as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed by ``treeval.plot()``. If you will be
+<meta property="og:title" content="This function can optionally be used prior to running treeval.plot to make treeval.plot run more efficiently. — inferenceFrame" />
+<meta property="og:description" content="This function is computationally expensive, especially if CI=TRUE and/or permute=TRUE. This function is called internally by treeval.plot(),
+as it updates tree$frame to store information (pvalues and confidence intervals) that will be printed by treeval.plot(). If you will be
 making several plots while playing around with font size and formatting, it is a good idea to call this function first so that it need not be called
 repeatedly by different calls of treeval.plot" />
 
@@ -114,14 +114,14 @@ repeatedly by different calls of treeval.plot" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.</h1>
+    <h1>This function can optionally be used prior to running <code>treeval.plot</code> to make <code>treeval.plot</code> run more efficiently.</h1>
     <small class="dont-index">Source: <a href='https://github.com/anna-neufeld/treevalues/blob/master/R/plotting_functions.R'><code>R/plotting_functions.R</code></a></small>
     <div class="hidden name"><code>inferenceFrame.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. This function is called internally by ``treeval.plot``,
-as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed by ``treeval.plot()``. If you will be
+    <p>This function is computationally expensive, especially if <code>CI=TRUE</code> and/or <code>permute=TRUE</code>. This function is called internally by <code><a href='treeval.plot.html'>treeval.plot()</a></code>,
+as it updates <code>tree$frame</code> to store information (pvalues and confidence intervals) that will be printed by <code><a href='treeval.plot.html'>treeval.plot()</a></code>. If you will be
 making several plots while playing around with font size and formatting, it is a good idea to call this function first so that it need not be called
 repeatedly by different calls of treeval.plot</p>
     </div>
@@ -150,11 +150,11 @@ standard deviation of the response) is used.</p></td>
     <tr>
       <th>CI</th>
       <td><p>Boolean. Should confidence intervals be computed? As confidence intervals are inefficient to compute, this should be set to
-``FALSE`` if you intend to make a plot that does not display confidence intervals.</p></td>
+<code>FALSE</code> if you intend to make a plot that does not display confidence intervals.</p></td>
     </tr>
     <tr>
       <th>alpha</th>
-      <td><p>If ``CI=TRUE``, the confidence intervals that are computed will be (1-alpha) confidence intervals.</p></td>
+      <td><p>If <code>CI=TRUE</code>, the confidence intervals that are computed will be <code>(1-alpha)</code> confidence intervals.</p></td>
     </tr>
     <tr>
       <th>digits</th>
@@ -162,14 +162,14 @@ standard deviation of the response) is used.</p></td>
     </tr>
     <tr>
       <th>permute</th>
-      <td><p>If ``CI=TRUE``, this boolean says whether or not the</p></td>
+      <td><p>If <code>CI=TRUE</code>, this boolean says whether or not the</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An rpart object. Identical to ``tree`` expect that now ``tree$frame`` has two extra columns; one storing p-values for splits and the other
-storing confidence intervals for regions. If this object is passed in to ``treeval.plot``, the plots will be made more efficiently.</p>
+    <p>An rpart object. Identical to <code>tree</code> expect that now <code>tree$frame</code> has two extra columns; one storing p-values for splits and the other
+storing confidence intervals for regions. If this object is passed in to <code>treeval.plot</code>, the plots will be made more efficiently.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

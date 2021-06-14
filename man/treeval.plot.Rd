@@ -38,7 +38,7 @@ formatting tweaks.}
 
 \item{digits}{Integer- how many digits would you like the text in the plot rounded to.}
 
-\item{alpha}{If inferenceType is such that confidence intervals will be printed, (1-alpha) confidence intervals will be printed.}
+\item{alpha}{If inferenceType is such that confidence intervals will be printed, \code{(1-alpha)} confidence intervals will be printed.}
 
 \item{permute}{If inferenceType is such that confidence intervals will be printed, should the conditioning set for the confidence intervals include
 all permutations of the relevant branch? Setting this to TRUE will lead to slightly narrower confidence intervals, but will make computations more expensive.

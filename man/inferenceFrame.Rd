@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotting_functions.R
 \name{inferenceFrame}
 \alias{inferenceFrame}
-\title{This function can optionally be used prior to running ``treeval.plot`` to make ``treeval.plot`` run more efficiently.}
+\title{This function can optionally be used prior to running \code{treeval.plot} to make \code{treeval.plot} run more efficiently.}
 \usage{
 inferenceFrame(
   tree,
@@ -20,21 +20,21 @@ inferenceFrame(
 standard deviation of the response) is used.}
 
 \item{CI}{Boolean. Should confidence intervals be computed? As confidence intervals are inefficient to compute, this should be set to
-``FALSE`` if you intend to make a plot that does not display confidence intervals.}
+\code{FALSE} if you intend to make a plot that does not display confidence intervals.}
 
-\item{alpha}{If ``CI=TRUE``, the confidence intervals that are computed will be (1-alpha) confidence intervals.}
+\item{alpha}{If \code{CI=TRUE}, the confidence intervals that are computed will be \code{(1-alpha)} confidence intervals.}
 
 \item{digits}{Integer. The number of digits that the p-values and confidence intervals will be rounded to in the later plot.}
 
-\item{permute}{If ``CI=TRUE``, this boolean says whether or not the}
+\item{permute}{If \code{CI=TRUE}, this boolean says whether or not the}
 }
 \value{
-An rpart object. Identical to ``tree`` expect that now ``tree$frame`` has two extra columns; one storing p-values for splits and the other
-storing confidence intervals for regions. If this object is passed in to ``treeval.plot``, the plots will be made more efficiently.
+An rpart object. Identical to \code{tree} expect that now \code{tree$frame} has two extra columns; one storing p-values for splits and the other
+storing confidence intervals for regions. If this object is passed in to \code{treeval.plot}, the plots will be made more efficiently.
 }
 \description{
-This function is computationally expensive, especially if ``CI=TRUE`` and/or ``permute=TRUE``. This function is called internally by ``treeval.plot``,
-as it updates ``tree$frame`` to store information (pvalues and confidence intervals) that will be printed by ``treeval.plot()``. If you will be
+This function is computationally expensive, especially if \code{CI=TRUE} and/or \code{permute=TRUE}. This function is called internally by \code{treeval.plot()},
+as it updates \code{tree$frame} to store information (pvalues and confidence intervals) that will be printed by \code{treeval.plot()}. If you will be
 making several plots while playing around with font size and formatting, it is a good idea to call this function first so that it need not be called
 repeatedly by different calls of treeval.plot
 }
