@@ -1,4 +1,4 @@
-#' Workhorse function for computing conditioning sets.
+#' Workhorse function for computing conditioning sets. Not typically needed by users.
 #'
 #' Returns the interval for phi such that Tree(y'(phi,nu))
 #' contains the set of regions induced by branch \code{branch}. An rpart object built with

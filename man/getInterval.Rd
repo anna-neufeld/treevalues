@@ -2,7 +2,7 @@
 % Please edit documentation in R/phi_interval_funs.R
 \name{getInterval}
 \alias{getInterval}
-\title{Workhorse function for computing conditioning sets.}
+\title{Workhorse function for computing conditioning sets. Not typically needed by users.}
 \usage{
 getInterval(tree, nu, branch, sib = FALSE, grow = FALSE, prune = FALSE)
 }
