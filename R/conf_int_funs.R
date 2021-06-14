@@ -13,7 +13,8 @@
 #'     \eqn{X} to the set \eqn{E} is equivalent to conditioning on \eqn{{X \in E}}. So this function
 #'     returns \eqn{P(X \ge q | X \in E)}.
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 #'
 #' @param q the quantile.
 #' @param mean the mean parameter
@@ -295,6 +296,8 @@ isSameIntervals <- function(int1, int2) {
 
 #' Compute selective confidence interval for parameter v^T mu based on a truncated normal distribution. A slight modification of code found in the
 #' Outference package, available at https://github.com/shuxiaoc/outference.
+#' This function shouldn't be
+#' needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.
 #' @export
 #'
 #' @param truncation, the truncation set for the statistic v'y.
@@ -306,6 +309,19 @@ isSameIntervals <- function(int1, int2) {
 #' @param alpha, the significance level.
 #'
 #' @return This function returns a vector of lower and upper confidence limits.
+#' @examples
+#' data(blsdata, package="treevalues")
+#' bls.tree <- rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+#'     model = TRUE, data = blsdata, cp=0.02)
+#' branch <- getBranch(bls.tree, 2)
+#' full_result <- branchInference(bls.tree, branch, type="sib")
+#' left_child <- getRegion(bls.tree,2)
+#' right_child <- getRegion(bls.tree,3)
+#' nu_sib <- left_child/sum(left_child) -  right_child/sum(right_child)
+#' S_sib <- getInterval(bls.tree, nu_sib,branch)
+#'
+#' computeCI(nu_sib, blsdata$kcal24h0, sd(blsdata$kcal24h0),S_sib)
+#' full_result$confint
 computeCI <- function(v, y, sigma=NULL, truncation, alpha=0.05) {
   ### Conservative guess
   if (is.null(sigma)) {

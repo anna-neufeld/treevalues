@@ -23,4 +23,19 @@ a p-value.
 Based on the similar function from the Outference package,
 which accomplishes a similar task. Code modified from code found at
 https://github.com/shuxiaoc/outference.
+This function shouldn't be
+needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.
+}
+\examples{
+data(blsdata, package="treevalues")
+bls.tree <-rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+    model = TRUE,  data = blsdata, cp=0.02)
+branch <- getBranch(bls.tree, 2)
+left_child <- getRegion(bls.tree,2)
+right_child <- getRegion(bls.tree,3)
+nu_sib <- left_child/sum(left_child) -  right_child/sum(right_child)
+S_sib <- getInterval(bls.tree, nu_sib,branch)
+correctPVal(S_sib, nu_sib, blsdata$kcal24h0, sd(blsdata$kcal24h0))
+# Same answer as using branchInference()
+branchInference(bls.tree, branch, type="sib")$pval
 }

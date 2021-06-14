@@ -33,13 +33,10 @@ reference:
   - treeval.plot
   - inferenceFrame
   - getBranch
-  - getAllBranches
 
 - title: Helper functions for working with trees
   desc: ~
   contents:
-    - getAnc
-    - getDesc
     - getRegion
 - title: Selective Inference Functions
   desc: ~
@@ -47,5 +44,3 @@ reference:
     - getInterval
     - correctPVal
     - computeCI
-    - TNSurv
-    - TNProb

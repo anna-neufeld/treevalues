@@ -3,7 +3,8 @@
 #' @param tree an rpart object.
 #' @param nn the number of a node in tree. Must correspond to a valid node number (found in row names of tree$frame).
 #' @return a vector of node numbers corresponding to the descendants of ``nn`` in ``tree``.
-#' @export
+#' @keywords internal
+#' @noRd
 getDesc <- function(tree, nn) {
   allNodes <- as.numeric(row.names(tree$frame))
   if (nn %in% allNodes) return(c(nn, getDesc(tree,2*nn), getDesc(tree,2*nn+1)))
@@ -16,7 +17,8 @@ getDesc <- function(tree, nn) {
 #' @param tree an rpart object.
 #' @param nn the number of a node in tree. Must correspond to a valid node number (found in row names of tree$frame).
 #' @return a vector of node numbers corresponding to the ancestors of ``nn`` in ``tree``.
-#' @export
+#' @keywords internal
+#' @noRd
 getAnc <- function(tree, nn) {
   anc <- c()
   allNodes <- as.numeric(row.names(tree$frame))
@@ -35,8 +37,8 @@ getAnc <- function(tree, nn) {
 #' @param nn the node number of the region whose ancestors you want to leave in the tree.
 #' @param y the response vector to evaluate the pruning on.
 #' @return An rpart object; intermediately pruned.
+#' @keywords internal
 #' @noRd
-#' @internal
 tree_KL <- function(tree,lambda,nn, y=NULL) {
   if (is.null(y)) {
     y <- tree$model[,1]

@@ -17,5 +17,12 @@ either a character string or an integer. If no node number is provided, a list o
 Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 }
 \description{
-Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
+If no node number is provided, returns a list describing every branch in the tree.
+Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.
+}
+\examples{
+bls.tree <- rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+    model = TRUE, data = blsdata, cp=0.02)
+branch <- getBranch(bls.tree, 8)
+branchInference (bls.tree, branch, type="sib")
 }

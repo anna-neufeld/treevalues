@@ -1,17 +1,30 @@
 #' Workhorse function for computing conditioning sets.
 #'
-#' Returns the interval for phi such that Tree(y'(phi)) (where the definition of y'(phi) depends on nu)
-#' contains the series of branch "branch". An rpart object build with model=TRUE must be provided.
+#' Returns the interval for phi such that Tree(y'(phi,nu))
+#' contains the set of regions induced by branch ``branch``. An rpart object built with ``model=TRUE`` must be provided. This function shouldn't be
+#' needed by most users (it is called internally by ``branchInference``), but is needed to reproduce our paper simulations.
 #'
-#' @param tree An rpart object. Must have been built with model=TRUE argument.
-#' @param nu The contrast vector that defines the parameter.
+#' @param tree An rpart object. Must have been built with ``model=TRUE`` argument.
+#' @param nu The vector that defines the parameter nu^T mu.
 #' @param branch A vector of strings specifying the branch.
 #' @param sib If you are doing inference and nu=nu_sib, this takes advantage of some computational speedups!
-#' @param grow Set this to true if you only want to compute S_grow
+#' @param grow Set this to true if you only want to compute S_grow (ignore cost complexity pruning).
 #' @param prune Set this to true if you only want to see what gets REMOVED from S_grow during pruning
 #' @return an object of class Interval that defines the set S.
 #' @importFrom stats predict
 #' @export
+#' @examples
+#' data(blsdata, package="treevalues")
+#' bls.tree <-rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+#'       model = TRUE, data = blsdata, cp=0.02)
+#' branch <- getBranch(bls.tree, 2)
+#' full_result <- branchInference(bls.tree, branch, type="sib")
+#' left_child <- getRegion(bls.tree,2)
+#' right_child <- getRegion(bls.tree,3)
+#' nu_sib <- left_child/sum(left_child) -  right_child/sum(right_child)
+#' S_sib <- getInterval(bls.tree, nu_sib,branch)
+#' S_sib
+#' full_result$condset
 getInterval <- function(tree, nu, branch,sib=FALSE,grow=FALSE,prune=FALSE) {
 
   branch <- paste("dat$", branch)

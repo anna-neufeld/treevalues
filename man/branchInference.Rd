@@ -50,3 +50,10 @@ the sample statistic, the conditioning set, and a flag reminding the user if typ
 The main function for carrying out inference on an ``rpart`` regression tree. Can be used to
 carry out inference on a pair of sibling regions or on a single region.
 }
+\examples{
+bls.tree <- rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+    model = TRUE, data = blsdata, cp=0.02)
+branch <- getBranch(bls.tree, 8)
+branchInference (bls.tree, branch, type="sib")
+branchInference (bls.tree, branch, type="reg", permute=TRUE)
+}

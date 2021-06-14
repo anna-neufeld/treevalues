@@ -23,7 +23,8 @@ treeval.plot(
 \item{sigma_y}{Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
 as a conservative estimate.}
 
-\item{nn}{boolean- would you like node numbers to be printed?}
+\item{nn}{boolean- would you like node numbers to be printed? Nodes are numbered using the same methodology as the ``rpart`` package. If node ``n``` has children,
+its children are}
 
 \item{printn}{boolean - would you like the number of observations to be printed in each node?}
 
@@ -46,6 +47,10 @@ See paper for more details.}
 \item{...}{Additional arguments are passed on to rpart.plot(). Examples include "cex".}
 }
 \description{
-This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
-labeled with confidence intervals.
+By default, node numbers pare printed
+}
+\examples{
+bls.tree <-rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+    model = TRUE, data = blsdata, cp=0.02)
+treeval.plot(bls.tree)
 }

@@ -1,12 +1,15 @@
 #' This function allows users to plot their rpart object with all splits labeled with p-values and all nodes
 #' labeled with confidence intervals.
 #'
+#' By default, node numbers pare printed
+#'
 #' @export
 #'
 #' @param tree An rpart tree. The tree must have been build with parameter ``model=TRUE``.
 #' @param sigma_y Provide the standard deviation of y, if known. If not provided, the sample standard deviation of y will be used
 #' as a conservative estimate.
-#' @param nn boolean- would you like node numbers to be printed?
+#' @param nn boolean- would you like node numbers to be printed? Nodes are numbered using the same methodology as the ``rpart`` package. If node ``n``` has children,
+#' its children are
 #' @param printn boolean - would you like the number of observations to be printed in each node?
 #' @param inferenceType An integer specifying which pieces of inference information should be added to the plot. The options
 #' currently available are
@@ -27,6 +30,10 @@
 #' @importFrom stats update
 #' @importFrom stats qnorm
 #' @importFrom stats sd
+#' @examples
+#' bls.tree <-rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+#'     model = TRUE, data = blsdata, cp=0.02)
+#' treeval.plot(bls.tree)
 treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
                          inferenceType=2, digits=3,alpha=0.05, permute=FALSE, ...) {
 

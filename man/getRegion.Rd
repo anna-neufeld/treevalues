@@ -16,6 +16,17 @@ getRegion(tree, nn)
 The indices of data that belong to this region in the training set. The training set is stored in tree$model.
 }
 \description{
-Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
-belong to the given region.
+Mainly used to form vectors nu to define parameters from a given tree. Since this is called internally by ``branchInference()``,
+will rarely be needed directly by users.
+}
+\examples{
+data(blsdata, package="treevalues")
+bls.tree <-rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+    model = TRUE,  data = blsdata, cp=0.02)
+branch <- getBranch(bls.tree, 2)
+left_child <- getRegion(bls.tree,2)
+right_child <- getRegion(bls.tree,3)
+nu_sib <- left_child/sum(left_child) -  right_child/sum(right_child)
+S_sib <- getInterval(bls.tree, nu_sib,branch)
+correctPVal(S_sib, nu_sib, blsdata$kcal24h0, sd(blsdata$kcal24h0))
 }

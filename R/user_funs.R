@@ -23,6 +23,12 @@
 #' @export
 #' @importFrom intervals Intervals
 #' @importFrom intervals size
+#' @examples
+#' bls.tree <- rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+#'     model = TRUE, data = blsdata, cp=0.02)
+#' branch <- getBranch(bls.tree, 8)
+#' branchInference (bls.tree, branch, type="sib")
+#' branchInference (bls.tree, branch, type="reg", permute=TRUE)
 branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=0, computeCI=TRUE,
                             permute=FALSE) {
 
@@ -158,8 +164,8 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
 #' @param tree An rpart object. Must have been built with model=TRUE
 #' @return A list. Each entry corresponds to a branch in the tree. The entries are named with the node-number of the node that falls at the end of the branch.
 #' Each entry is a vector of strings.
-#' @export
-#'
+#' @keywords internal
+#' @noRd
 getAllBranches <- function(tree) {
   if (length(unique(tree$where))==1) {return(NA)}
   allNodes <- sort(as.numeric(as.character(unique(rpart.utils::rpart.rules.table(tree)$Rule)[-1])))
@@ -214,12 +220,20 @@ getAllBranches <- function(tree) {
 
 #' Given an rpart tree and a node number, returns a vector of strings that describes the branch which defines the node.
 #'
+#' If no node number is provided, returns a list describing every branch in the tree.
+#' Useful for extracting individual branches, which are necessary inputs to ``branchInference()``.
+#'
 #' @param tree An rpart object.
 #' @param nn A node number that corresponds to a valid node in ``tree``. The list of valid node numbers can be obtained with
 #' ``row.names(tree$frame)`` or by plotting ``tree`` with ``treeval.plot()``. The node number can be passed in as
 #' either a character string or an integer. If no node number is provided, a list of all branches in the tree will be returned.
 #' @return Either a single branch (which is a vector of splits) or (if nn=NULL), a list of all branches in the tree.
 #' @export
+#' @examples
+#' bls.tree <- rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+#'     model = TRUE, data = blsdata, cp=0.02)
+#' branch <- getBranch(bls.tree, 8)
+#' branchInference (bls.tree, branch, type="sib")
 getBranch <- function(tree, nn=NULL) {
   branches <- getAllBranches(tree)
   if (is.null(nn)) {return(branches)}
@@ -231,11 +245,24 @@ getBranch <- function(tree, nn=NULL) {
 #' Pass in a tree and a node number. This returns a vector of booleans identifying which members of the training set
 #' belong to the given region.
 #'
+#' Mainly used to form vectors nu to define parameters from a given tree. Since this is called internally by ``branchInference()``,
+#' will rarely be needed directly by users.
+#'
 #' @param tree An rpart object. Must have been built with model=TRUE
 #' @param nn A node number. Can be a string or an integer.
 #' @return The indices of data that belong to this region in the training set. The training set is stored in tree$model.
 #' @export
 #' @importFrom rpart path.rpart
+#' @examples
+#'data(blsdata, package="treevalues")
+#' bls.tree <-rpart::rpart(kcal24h0~hunger+disinhibition+resteating+rrvfood+liking+wanting,
+#'     model = TRUE,  data = blsdata, cp=0.02)
+#' branch <- getBranch(bls.tree, 2)
+#' left_child <- getRegion(bls.tree,2)
+#' right_child <- getRegion(bls.tree,3)
+#' nu_sib <- left_child/sum(left_child) -  right_child/sum(right_child)
+#' S_sib <- getInterval(bls.tree, nu_sib,branch)
+#' correctPVal(S_sib, nu_sib, blsdata$kcal24h0, sd(blsdata$kcal24h0))
 getRegion <- function(tree, nn){
   rule <- path.rpart(tree, nn,print.it=FALSE)
   dat <- tree$model
