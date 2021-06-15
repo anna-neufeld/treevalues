@@ -26,7 +26,10 @@ standard deviation of the response) is used.}
 
 \item{digits}{Integer. The number of digits that the p-values and confidence intervals will be rounded to in the later plot.}
 
-\item{permute}{If \code{CI=TRUE}, this boolean says whether or not the}
+\item{permute}{Boolean. If \code{TRUE}, inference for each region conditions on the event that the region appears in the tree
+(all permutations of the branch). This leads to narrower intervals but is computationally expensive. If \code{FALSE}, inference
+for each regon conditions on the event that the particular branch appears in the tree; this is a computationally-efficient alternative.
+Only relevant if \code{CI=TRUE}.}
 }
 \value{
 An rpart object. Identical to \code{tree} expect that now \code{tree$frame} has two extra columns; one storing p-values for splits and the other

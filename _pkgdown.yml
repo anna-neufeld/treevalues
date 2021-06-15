@@ -34,13 +34,10 @@ reference:
   - inferenceFrame
   - getBranch
 
-- title: Helper functions for working with trees
+- title: Functions needed to run simulation codelective Inference Functions
   desc: ~
   contents:
     - getRegion
-- title: Selective Inference Functions
-  desc: ~
-  contents:
     - getInterval
     - correctPVal
     - computeCI

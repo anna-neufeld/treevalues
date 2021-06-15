@@ -81,7 +81,10 @@ treeval.plot <- function(tree, sigma_y=NULL,nn=TRUE, printn=TRUE,
 #' \code{FALSE} if you intend to make a plot that does not display confidence intervals.
 #' @param alpha If \code{CI=TRUE}, the confidence intervals that are computed will be \code{(1-alpha)} confidence intervals.
 #' @param digits Integer. The number of digits that the p-values and confidence intervals will be rounded to in the later plot.
-#' @param permute If \code{CI=TRUE}, this boolean says whether or not the
+#' @param permute Boolean. If \code{TRUE}, inference for each region conditions on the event that the region appears in the tree
+#' (all permutations of the branch). This leads to narrower intervals but is computationally expensive. If \code{FALSE}, inference
+#' for each regon conditions on the event that the particular branch appears in the tree; this is a computationally-efficient alternative.
+#' Only relevant if \code{CI=TRUE}.
 #' @return An rpart object. Identical to \code{tree} expect that now \code{tree$frame} has two extra columns; one storing p-values for splits and the other
 #' storing confidence intervals for regions. If this object is passed in to \code{treeval.plot}, the plots will be made more efficiently.
 #' @importFrom stats qnorm

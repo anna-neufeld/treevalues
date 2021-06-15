@@ -153,7 +153,7 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
   }
 
   out <- list(
-    confint = CI, pval = pval, samplemean = t(nu)%*%y, condset = phiBounds, type=type,
+    confint = CI, pval = pval, samplemean = as.numeric(t(nu)%*%y), condset = phiBounds, type=type,
     branch=branch,c=c,alpha=alpha
   )
   class(out) <- "branch_inference"
