@@ -162,7 +162,10 @@ standard deviation of the response) is used.</p></td>
     </tr>
     <tr>
       <th>permute</th>
-      <td><p>If <code>CI=TRUE</code>, this boolean says whether or not the</p></td>
+      <td><p>Boolean. If <code>TRUE</code>, inference for each region conditions on the event that the region appears in the tree
+(all permutations of the branch). This leads to narrower intervals but is computationally expensive. If <code>FALSE</code>, inference
+for each regon conditions on the event that the particular branch appears in the tree; this is a computationally-efficient alternative.
+Only relevant if <code>CI=TRUE</code>.</p></td>
     </tr>
     </table>
 

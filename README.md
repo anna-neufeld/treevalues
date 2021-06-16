@@ -22,7 +22,7 @@ Where can I learn more?
 
 See the [overview](https://anna-neufeld.github.io/treevalues/articles/overview.html) tab for a more detailed motivation for our framework, and the [tutorial](https://anna-neufeld.github.io/treevalues/articles/inference_tutorial.html) tab for instructions on how to use this package on real data. 
 
-See [???](???) for the preprint that describes the selective inference methodology. 
+See [https://arxiv.org/abs/2106.07816](https://arxiv.org/abs/2106.07816) for the preprint that describes the selective inference methodology. 
 
 See [https://github.com/anna-neufeld/treevalues-simulations](https://github.com/anna-neufeld/treevalues-simulations) for code to reproduce the experiments and figures in the preprint. 
 
