@@ -34,7 +34,7 @@ reference:
   - inferenceFrame
   - getBranch
 
-- title: Functions needed to run simulation codelective Inference Functions
+- title: Functions needed to run simulations
   desc: ~
   contents:
     - getRegion
