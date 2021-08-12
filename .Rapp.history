@@ -1,4 +1,3 @@
-Sigma[ts==13.5, ts==14.2]
 Sigma[ts==13.5, ts==14]
 myCob(13.5, 14.2)
 myCov(13.5, 14.2)
@@ -448,4 +447,5 @@ Ns <- c(20,50,100,300,500,1000,10000)
 dims <- rep(dims,length(Ns))
 dims
 setwd("~/treevalues")
+pkgdown::build_site()
 pkgdown::build_site()
