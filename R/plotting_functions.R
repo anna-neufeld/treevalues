@@ -132,9 +132,9 @@ inferenceFrame <- function(tree, sigma_y = sd(tree$model[,1]), CI=TRUE, alpha=0.
                             round(  fullMean + zstar*sigma_y/sqrt(n),digits), ")",
                             sep="")
   if (NROW(tree$frame) > 1) {
-    rootnodepval <- branchInference(tree, allBranches[["2"]], type="sib", computeCI=FALSE)$pval
-    child1CI <- branchInference(tree, allBranches[["2"]], type="reg", computeCI=TRUE, alpha=alpha, permute=permute)$confint
-    child2CI <- branchInference(tree, allBranches[["3"]], type="reg", computeCI=TRUE,alpha=alpha, permute=permute)$confint
+    rootnodepval <- branchInference(tree, allBranches[["2"]], sigma_y = sigma_y, type="sib", computeCI=FALSE)$pval
+    child1CI <- branchInference(tree, allBranches[["2"]], type="reg", sigma_y = sigma_y, computeCI=TRUE, alpha=alpha, permute=permute)$confint
+    child2CI <- branchInference(tree, allBranches[["3"]], type="reg", sigma_y = sigma_y, computeCI=TRUE,alpha=alpha, permute=permute)$confint
     tree$frame["2",9] <- paste("(", round(child1CI[1],digits), ", ", round(child1CI[2],digits), ")", sep="")
     tree$frame["3",9] <- paste("(", round(child2CI[1],digits), ", ", round(child2CI[2],digits), ")", sep="")
     tree$frame["2",10] <- ifelse(rootnodepval < 1e-3, "<1e-3", paste(" = ", round(rootnodepval, digits)))
@@ -146,9 +146,9 @@ inferenceFrame <- function(tree, sigma_y = sd(tree$model[,1]), CI=TRUE, alpha=0.
     if (tree$frame[i,1] != "<leaf>") {
       child1 <- as.character(as.numeric(region)*2+1)
       child2 <- as.character(as.numeric(region)*2)
-      splitpval <- branchInference(tree, allBranches[[child1]], type="sib", computeCI=FALSE)$pval
-      child1CI <- branchInference(tree, allBranches[[child1]], type="reg", computeCI=TRUE, alpha=alpha, permute=permute)$confint
-      child2CI <- branchInference(tree, allBranches[[child2]], type="reg", computeCI=TRUE,alpha=alpha, permute=permute)$confint
+      splitpval <- branchInference(tree, allBranches[[child1]], type="sib", sigma_y = sigma_y, computeCI=FALSE)$pval
+      child1CI <- branchInference(tree, allBranches[[child1]], type="reg", sigma_y = sigma_y, computeCI=TRUE, alpha=alpha, permute=permute)$confint
+      child2CI <- branchInference(tree, allBranches[[child2]], type="reg", sigma_y = sigma_y, computeCI=TRUE,alpha=alpha, permute=permute)$confint
 
       if (splitpval < 1e-3) {
         tree$frame[child1,10] <-  "<1e-3"
