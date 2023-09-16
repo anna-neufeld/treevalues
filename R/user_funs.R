@@ -169,11 +169,11 @@ branchInference <- function(tree, branch, type="reg", alpha=0.05,sigma_y=NULL,c=
 #' @noRd
 getAllBranches <- function(tree) {
   if (length(unique(tree$where))==1) {return(NA)}
-  allNodes <- sort(as.numeric(as.character(unique(rpart.utils::rpart.rules.table(tree)$Rule)[-1])))
-  ruleTab <- rpart.utils::rpart.rules.table(tree)[-1,]
+  allNodes <- sort(as.numeric(as.character(unique(rpart.rules.table(tree)$Rule)[-1])))
+  ruleTab <- rpart.rules.table(tree)[-1,]
   ruleTab$Subrule <- factor(ruleTab$Subrule)
 
-  subruleTab <-  rpart.utils::rpart.subrules.table(tree)
+  subruleTab <-  rpart.subrules.table(tree)
 
   allSplits <- list()
   index <- 1
